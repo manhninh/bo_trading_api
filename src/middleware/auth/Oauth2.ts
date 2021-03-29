@@ -78,9 +78,9 @@ server.exchange(exchange.refreshToken(function (client, refreshToken, _scope, do
 }));
 
 /**
- * @api {post} /oauth/token 1. Sign in
- * @apiVersion 0.1.0
- * @apiGroup VII. Authorization
+ * @api {post} /oauth/token 2. Sign in
+ * @apiVersion 1.0.0
+ * @apiGroup I. Users
  *
  * @apiHeader {String} Content-Type application/json.
  * @apiHeader {String} Accept application/json.
@@ -91,7 +91,6 @@ server.exchange(exchange.refreshToken(function (client, refreshToken, _scope, do
  *
  * @apiParam {String} username
  * @apiParam {String} password
- * @apiParam {String} type (ADMIN/USER/EXPERT)
  * @apiParam {String} grant_type password
  * @apiParam {String} client_id b109f3bbbc244eb82441917ed06d618b9008dd09b3bef
  * @apiParam {String} client_secret password

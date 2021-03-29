@@ -2,9 +2,9 @@ import { createUserController } from '@src/controllers/users/CreateUserControlle
 import { Router } from 'express';
 
 /**
- * @api {post} /accounts/create 1. Create a new account
- * @apiVersion 0.1.0
- * @apiGroup II. Accounts
+ * @api {post} /users/create 1. Create new user
+ * @apiVersion 1.0.0
+ * @apiGroup I. Users
  *
  * @apiHeader {String} Content-Type application/json.
  * @apiHeader {String} Accept application/json.
@@ -14,24 +14,16 @@ import { Router } from 'express';
  *    "Accept": "application/json"
  *
  * @apiParam {String} email
+ * @apiParam {String} username
  * @apiParam {String} password
- * @apiParam {String} first_name
- * @apiParam {String} last_name
- * @apiParam {String} avatar
+ * @apiParam {String} referralUser
  *
  * @apiSuccess {Object} data
  *
  * @apiSuccessExample {json} Success
  *    HTTP/1.1 200 OK
  *    {
- *        "data": {
- *            "id": 14,
- *            "email": "manhninh91@gmail.com",
- *            "first_name": "Ninh",
- *            "last_name": "Pham",
- *            "updated_at": "2020-04-03T06:34:15.153Z",
- *            "created_at": "2020-04-03T06:34:15.153Z"
- *        }
+ *        "data": true
  *    }
  *
  * @apiError (404 Not Found) NotFound API not found
