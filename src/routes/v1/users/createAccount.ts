@@ -1,5 +1,5 @@
-import { createUserController } from '@src/controllers/users/CreateUserController';
-import { Router } from 'express';
+import {createUserController} from '@src/controllers/users/CreateUserController';
+import {Router} from 'express';
 
 /**
  * @api {post} /users/create 1. Create new user
@@ -16,7 +16,7 @@ import { Router } from 'express';
  * @apiParam {String} email
  * @apiParam {String} username
  * @apiParam {String} password
- * @apiParam {String} referralUser
+ * @apiParam {String} referralUser Link ref tuyến trên
  *
  * @apiSuccess {Object} data
  *

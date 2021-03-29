@@ -1,7 +1,7 @@
 import IUserModel from '@src/models/Users/IUserModel';
 import UserSchema from '@src/schemas/UserSchema';
-import { ObjectId, UpdateQuery } from 'mongoose';
-import { RepositoryBase } from './base';
+import {ObjectId, UpdateQuery} from 'mongoose';
+import {RepositoryBase} from './base';
 
 export default class UserRepository extends RepositoryBase<IUserModel> {
   constructor() {
@@ -11,7 +11,8 @@ export default class UserRepository extends RepositoryBase<IUserModel> {
   public async checkUserOrEmail(userOrEmail: string): Promise<IUserModel> {
     try {
       const result = await UserSchema.findOne({
-        $or: [{ username: userOrEmail }, { email: userOrEmail }],
+        $or: [{username: userOrEmail}, {email: userOrEmail}],
+        type_user: 0,
       });
       return result;
     } catch (err) {
@@ -21,7 +22,7 @@ export default class UserRepository extends RepositoryBase<IUserModel> {
 
   public async updateById(id: ObjectId, update: UpdateQuery<IUserModel>): Promise<IUserModel> {
     try {
-      const result = await UserSchema.findOneAndUpdate({ id }, update);
+      const result = await UserSchema.findOneAndUpdate({id}, update);
       return result;
     } catch (err) {
       throw err.errors ? err.errors.shift() : err;

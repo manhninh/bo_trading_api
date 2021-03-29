@@ -1,61 +1,65 @@
 import IUserModel from './IUserModel';
 
 export default class UserModel {
-  private _UserModel: IUserModel;
+  private _userModel: IUserModel;
 
   constructor(UserModel: IUserModel) {
-    this._UserModel = UserModel;
+    this._userModel = UserModel;
   }
 
   get full_name(): string {
-    return this._UserModel.full_name;
+    return this._userModel.full_name;
   }
 
   get username(): string {
-    return this._UserModel.username;
+    return this._userModel.username;
   }
 
   get email(): string {
-    return this._UserModel.email;
+    return this._userModel.email;
   }
 
   get salt(): string {
-    return this._UserModel.salt;
+    return this._userModel.salt;
   }
 
   get hashed_password(): string {
-    return this._UserModel.hashed_password;
+    return this._userModel.hashed_password;
   }
 
   get phone(): string {
-    return this._UserModel.phone;
+    return this._userModel.phone;
   }
 
-  get real_user(): boolean {
-    return this._UserModel.real_user;
+  get type_user(): number {
+    return this._userModel.type_user;
+  }
+
+  get user_parent_id(): string {
+    return this._userModel.user_parent_id;
   }
 
   get tfa(): string {
-    return this._UserModel.tfa;
+    return this._userModel.tfa;
   }
 
   get commission_level(): string[] {
-    return this._UserModel.commission_level;
+    return this._userModel.commission_level;
   }
 
   get ref_code(): string {
-    return this._UserModel.ref_code;
+    return this._userModel.ref_code;
   }
 
   get amount(): number {
-    return this._UserModel.amount;
+    return this._userModel.amount;
   }
 
   get verify_code(): string {
-    return this._UserModel.verify_code;
+    return this._userModel.verify_code;
   }
 
   get status(): number {
-    return this._UserModel.status;
+    return this._userModel.status;
   }
 }

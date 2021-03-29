@@ -7,7 +7,8 @@ export default interface IUserModel extends mongoose.Document {
   salt: string;
   hashed_password: string;
   phone: string;
-  real_user: boolean;
+  type_user: number;
+  user_parent_id: string;
   tfa: string;
   commission_level: string[];
   ref_code: string;
