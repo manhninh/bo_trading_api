@@ -1,4 +1,4 @@
-import mongoose, { FilterQuery } from 'mongoose';
+import mongoose, {FilterQuery} from 'mongoose';
 import IRead from '../interfaces/IRead';
 import IWrite from '../interfaces/IWrite';
 
@@ -14,7 +14,7 @@ export class RepositoryBase<T extends mongoose.Document> implements IRead<T>, IW
       const result = await this._model.findById(id);
       return result as T;
     } catch (err) {
-      throw err.errors ? err.errors.shift() : err;
+      throw err;
     }
   }
 
@@ -23,7 +23,7 @@ export class RepositoryBase<T extends mongoose.Document> implements IRead<T>, IW
       const result = await this._model.findOne(filter);
       return result as T;
     } catch (err) {
-      throw err.errors ? err.errors.shift() : err;
+      throw err;
     }
   }
 
@@ -32,7 +32,7 @@ export class RepositoryBase<T extends mongoose.Document> implements IRead<T>, IW
       const result = await this._model.find({});
       return result as T[];
     } catch (err) {
-      throw err.errors ? err.errors.shift() : err;
+      throw err;
     }
   }
 
@@ -41,16 +41,16 @@ export class RepositoryBase<T extends mongoose.Document> implements IRead<T>, IW
       const result = await this._model.create(item);
       return result as T;
     } catch (err) {
-      throw err.errors ? err.errors.shift() : err;
+      throw err;
     }
   }
 
   public async delete(id: string): Promise<boolean> {
     try {
-      await this._model.remove({ id });
+      await this._model.remove({id});
       return true;
     } catch (err) {
-      throw err.errors ? err.errors.shift() : err;
+      throw err;
     }
   }
 

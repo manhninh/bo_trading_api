@@ -16,7 +16,7 @@ export default class UserRepository extends RepositoryBase<IUserModel> {
       });
       return result;
     } catch (err) {
-      throw err.errors ? err.errors.shift() : err;
+      throw err;
     }
   }
 
@@ -25,7 +25,7 @@ export default class UserRepository extends RepositoryBase<IUserModel> {
       const result = await UserSchema.findOneAndUpdate({id}, update);
       return result;
     } catch (err) {
-      throw err.errors ? err.errors.shift() : err;
+      throw err;
     }
   }
 }
