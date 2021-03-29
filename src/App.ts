@@ -1,9 +1,11 @@
-import {json, urlencoded} from 'body-parser';
+import { json, urlencoded } from 'body-parser';
 import compression from 'compression';
 import express from 'express';
 import passport from 'passport';
-import {errorMiddleware, notFoundMiddleware} from './middleware/Exceptions';
-import routes from './routes';
+import auth from './middleware/auth';
+import { token } from './middleware/auth/Oauth2';
+import { errorMiddleware, notFoundMiddleware } from './middleware/Exceptions';
+import v1Routes from './routes/v1';
 import Scheduler from './schedulers';
 
 class App {
@@ -23,14 +25,16 @@ class App {
     this.app.use(compression());
 
     /** support application/json type post data */
-    this.app.use(json({limit: '10MB'}));
-    this.app.use(urlencoded({extended: true}));
+    this.app.use(json({ limit: '10MB' }));
+    this.app.use(urlencoded({ extended: true }));
 
     /** middle-ware that initialises Passport */
     this.app.use(passport.initialize());
+    auth();
+    this.app.post('/api/oauth/token', token);
 
     /** add routes */
-    this.app.use('/api/v1', routes);
+    this.app.use('/api/v1', v1Routes);
 
     /** not found error */
     this.app.use(notFoundMiddleware);

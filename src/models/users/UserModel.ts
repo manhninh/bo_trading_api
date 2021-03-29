@@ -1,4 +1,3 @@
-import {ObjectId} from 'mongoose';
 import IUserModel from './IUserModel';
 
 export default class UserModel {
@@ -40,7 +39,7 @@ export default class UserModel {
     return this._UserModel.tfa;
   }
 
-  get commission_level(): ObjectId[] {
+  get commission_level(): string[] {
     return this._UserModel.commission_level;
   }
 
@@ -50,10 +49,6 @@ export default class UserModel {
 
   get amount(): number {
     return this._UserModel.amount;
-  }
-
-  get acces_token(): string {
-    return this._UserModel.acces_token;
   }
 
   get verify_code(): string {

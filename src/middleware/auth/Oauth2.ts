@@ -1,18 +1,34 @@
-import {STATUS} from '@src/contants/Response';
+import config from '@src/config';
+import { STATUS } from '@src/contants/Response';
+import IAccessTokenModel from '@src/models/accessTokens/IAccessTokenModel';
 import IUserModel from '@src/models/users/IUserModel';
+import AccessTokenRepository from '@src/repository/AccessTokenRepository';
+import RefreshTokenRepository from '@src/repository/RefreshTokenRepository';
 import UserRepository from '@src/repository/UserRepository';
-import {checkPassword} from '@src/utils/SecurityPass';
-import {randomBytes} from 'crypto';
-import {createServer, exchange, ExchangeDoneFunction} from 'oauth2orize';
+import { randomBytes } from 'crypto';
+import { createServer, exchange, ExchangeDoneFunction } from 'oauth2orize';
 import passport from 'passport';
 
 // initialization token
-const initToken = async (userModel: IUserModel, done: ExchangeDoneFunction) => {
+const initToken = async (user: IUserModel, client: any, done: ExchangeDoneFunction) => {
   try {
-    const userRes = new UserRepository();
-    const accessToken = randomBytes(512).toString('hex');
-    userRes.createAccessToken(userModel.id, accessToken);
-    done(null, accessToken);
+    const accessTokenRes = new AccessTokenRepository();
+    accessTokenRes.removeByUserIdAndClientId(user.id, client.clientId);
+    const refreshTokenRes = new RefreshTokenRepository();
+    refreshTokenRes.removeByUserIdAndClientId(user.id, client.clientId);
+    const refreshToken = randomBytes(128).toString('hex');
+    refreshTokenRes.create(<IAccessTokenModel>{
+      user_id: user.id,
+      client_id: client.clientId,
+      token: refreshToken
+    });
+    const accessToken = randomBytes(128).toString('hex');
+    accessTokenRes.create(<IAccessTokenModel>{
+      user_id: user.id,
+      client_id: client.clientId,
+      token: accessToken
+    });
+    done(null, accessToken, refreshToken, { 'expires_in': config.TOKEN_LIFE });
   } catch (error) {
     done(error);
   }
@@ -23,32 +39,43 @@ const server = createServer();
 
 // Exchange username & password for an access token.
 server.exchange(
-  exchange.password(
-    {},
-    async (_client, username: string, password: string, _scope, _body, issused: ExchangeDoneFunction) => {
-      try {
-        const userRes = new UserRepository();
-        const user = await userRes.checkUserOrEmail(username);
-        if (!user) {
-          return issused(new Error('ACCOUNT_NOT_EXIST'));
-        }
-        if (!checkPassword(password, user.salt, user.hashed_password)) {
-          return issused(new Error('ACCOUNT_LOGIN_FAIL'));
+  exchange.password(async (client, username: string, password: string, _scope, done: ExchangeDoneFunction) => {
+    try {
+      const userRes = new UserRepository();
+      userRes.checkUserOrEmail(username).then(user => {
+        if (!user) return done(new Error('ACCOUNT_NOT_EXIST'));
+        if (!user.checkPassword(password)) return done(new Error('ACCOUNT_LOGIN_FAIL'));
+        if (user.status === STATUS.ACTIVE) {
+          initToken(user, client, done);
+        } else if (user.status === STATUS.BLOCK) {
+          return done(new Error('ACCOUNT_BLOCK'));
         } else {
-          if (user.status === STATUS.ACTIVE) {
-            initToken(user, issused);
-          } else if (user.status === STATUS.BLOCK) {
-            return issused(new Error('ACCOUNT_BLOCK'));
-          } else {
-            return issused(new Error('ACCOUNT_NOT_ACTIVE'));
-          }
+          return done(new Error('ACCOUNT_NOT_ACTIVE'));
         }
-      } catch (error) {
-        issused(error);
-      }
-    },
+      }).catch(err => done(err));
+    } catch (error) {
+      done(error);
+    }
+  },
   ),
 );
+
+// Exchange refreshToken for an access token.
+server.exchange(exchange.refreshToken(function (client, refreshToken, _scope, done) {
+  try {
+    const refreshTokenRes = new RefreshTokenRepository();
+    refreshTokenRes.findByToken(refreshToken).then((refreshToken) => {
+      if (!refreshToken) { return done(null, false); }
+      const userRes = new UserRepository();
+      userRes.findById(refreshToken.user_id).then(user => {
+        if (!user) { return done(null, false); }
+        initToken(user, client, done);
+      }).catch(err => done(err));
+    }).catch(err => done(err));
+  } catch (error) {
+    done(error);
+  }
+}));
 
 /**
  * @api {post} /oauth/token 1. Sign in
@@ -111,11 +138,12 @@ server.exchange(
  */
 
 const token = [
-  passport.authenticate(['basic', 'oauth2-client-password'], {session: false}),
+  passport.authenticate(['basic', 'oauth2-client-password'], { session: false }),
   server.token(),
   server.errorHandler(),
 ];
 
-const isAuthenticated = passport.authenticate('bearer', {session: false});
+const isAuthenticated = passport.authenticate('bearer', { session: false });
 
-export {token, isAuthenticated};
+export { token, isAuthenticated };
+
