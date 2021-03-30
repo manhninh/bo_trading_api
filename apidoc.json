@@ -1,8 +1,8 @@
 {
-  "name": "Copy Trading",
+  "name": "BO Trading Api",
   "version": "1.0.0",
   "description": "BO Trading API Document",
-  "title": "BO Trading API Candlestick",
+  "title": "BO Trading API Document",
   "url": "http://localhost:3000/api/v1",
   "template": {
     "forceLanguage": "en"

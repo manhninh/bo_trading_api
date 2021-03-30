@@ -1,13 +1,13 @@
 import config from '@src/config';
-import {STATUS} from '@src/contants/Response';
+import { STATUS } from '@src/contants/Response';
 import IAccessTokenModel from '@src/models/accessTokens/IAccessTokenModel';
 import IClientModel from '@src/models/clients/IClientModel';
 import IUserModel from '@src/models/users/IUserModel';
 import AccessTokenRepository from '@src/repository/AccessTokenRepository';
 import RefreshTokenRepository from '@src/repository/RefreshTokenRepository';
 import UserRepository from '@src/repository/UserRepository';
-import {randomBytes} from 'crypto';
-import {createServer, exchange, ExchangeDoneFunction} from 'oauth2orize';
+import { randomBytes } from 'crypto';
+import { createServer, exchange, ExchangeDoneFunction } from 'oauth2orize';
 import passport from 'passport';
 
 // initialization token
@@ -29,7 +29,7 @@ const initToken = async (user: IUserModel, client: IClientModel, done: ExchangeD
       client_id: client.client_id,
       token: accessToken,
     });
-    done(null, accessToken, refreshToken, {expires_in: config.TOKEN_LIFE});
+    done(null, accessToken, refreshToken, { expires_in: config.TOKEN_LIFE });
   } catch (error) {
     done(error);
   }
@@ -91,7 +91,7 @@ server.exchange(
 );
 
 /**
- * @api {post} /api/v1/oauth/token 2. Sign in
+ * @api {post} /api/v1/oauth/token Sign in
  * @apiVersion 1.0.0
  * @apiGroup I. Users
  *
@@ -150,11 +150,12 @@ server.exchange(
  */
 
 const token = [
-  passport.authenticate(['basic', 'oauth2-client-password'], {session: false}),
+  passport.authenticate(['basic', 'oauth2-client-password'], { session: false }),
   server.token(),
   server.errorHandler(),
 ];
 
-const isAuthenticated = passport.authenticate('bearer', {session: false});
+const isAuthenticated = passport.authenticate('bearer', { session: false });
 
-export {token, isAuthenticated};
+export { token, isAuthenticated };
+

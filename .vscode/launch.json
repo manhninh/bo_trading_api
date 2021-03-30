@@ -30,7 +30,7 @@
         "NODEMAILER_USER": "dayana.connelly@ethereal.email",
         "NODEMAILER_PASS": "EYg9bv9WDCQkKT9BtF",
         "EMAIL_ROOT": "IOGOETH ninh.phammanh@powergatesoftware.com",
-        "PATH_TEMPLATE_EMAIL": "E:\\Freelancers\\BOTrading\\bo_trading_api\\email_template"
+        "PATH_TEMPLATE_EMAIL": "D:\\Freelancer\\BOTrading\\bo_trading_api\\email_template"
       }
     }
   ]

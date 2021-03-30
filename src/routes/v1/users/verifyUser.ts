@@ -1,8 +1,8 @@
-import {createUserController} from '@src/controllers/users/CreateUserController';
-import {Router} from 'express';
+import { verifyUserController } from '@src/controllers/users/VerifyUserController';
+import { Router } from 'express';
 
 /**
- * @api {post} /users/create 1. Create new user
+ * @api {post} /users/create Verify user
  * @apiVersion 1.0.0
  * @apiGroup I. Users
  *
@@ -13,17 +13,14 @@ import {Router} from 'express';
  *    "Content-Type": "application/json"
  *    "Accept": "application/json"
  *
- * @apiParam {String} email
- * @apiParam {String} username
- * @apiParam {String} password
- * @apiParam {String} referralUser Link ref tuyến trên
+ * @apiParam {String} uuid
  *
  * @apiSuccess {Object} data
  *
  * @apiSuccessExample {json} Success
  *    HTTP/1.1 200 OK
  *    {
- *        "data": true
+ *        "message": "Your account has been verified. Let's start trading"
  *    }
  *
  * @apiError (404 Not Found) NotFound API not found
@@ -37,4 +34,4 @@ import {Router} from 'express';
  *       "message": "error message"
  *    }
  */
-export default (route: Router) => route.post('/create', createUserController);
+export default (route: Router) => route.post('/verify-user', verifyUserController);

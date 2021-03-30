@@ -1,10 +1,12 @@
 import { Router } from 'express';
-import createAccount from './createAccount';
+import createUser from './createUser';
+import verifyUser from "./verifyUser";
 
 export default class UserRouters {
   public router: Router = Router();
 
   constructor() {
-    createAccount(this.router);
+    createUser(this.router);
+    verifyUser(this.router);
   }
 }
