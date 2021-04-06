@@ -19,9 +19,8 @@
       "outputCapture": "std",
       "env": {
         "NODE_ENV": "development",
-        "PORT": "5001",
+        "PORT": "5002",
         "MONGODB_URI": "mongodb+srv://ninhpm:ninhpm123@cluster0.ofmu5.mongodb.net/bo_trading_new",
-        "BINANCE_BASE_ENDPOINT": "wss://stream.binance.com:9443",
         "TOKEN_LIFE": "3600",
         "URL_WEB_VERIFICATION_EMAIL": "http://localhost:3000/verification/email/",
         "NODEMAILER_HOST": "smtp.ethereal.email",
