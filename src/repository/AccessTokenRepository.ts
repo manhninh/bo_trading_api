@@ -1,5 +1,5 @@
 import IAccessTokenModel from '@src/models/accessTokens/IAccessTokenModel';
-import AccessTokenSchema from '@src/schemas/accessTokenSchema';
+import AccessTokenSchema from '@src/schemas/AccessTokenSchema';
 import {RepositoryBase} from './base';
 
 export default class AccessTokenRepository extends RepositoryBase<IAccessTokenModel> {
