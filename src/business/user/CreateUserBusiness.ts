@@ -1,7 +1,7 @@
 import config from '@src/config';
-import IUserModel from '@src/models/Users/IUserModel';
+import IUserModel from '@src/models/users/IUserModel';
 import UserRepository from '@src/repository/UserRepository';
-import EmailConfig from '@src/utils/emailConfig';
+import EmailConfig from '@src/utils/EmailConfig';
 import { CreateUserValidator } from '@src/validator/users/CreateUser';
 import { validate } from 'class-validator';
 import handlebars from 'handlebars';
