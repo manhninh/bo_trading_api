@@ -33,7 +33,7 @@ export const createUserBusiness = async (account: CreateUserValidator): Promise<
       userRes.create(<IUserModel>{
         username: `${user.username}_demo`,
         full_name: `${user.username} Demo`,
-        email: account.password,
+        email: account.email,
         password: account.password,
         type_user: 1,
         user_parent_id: user.id,
