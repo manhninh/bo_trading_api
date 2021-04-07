@@ -1,4 +1,4 @@
-import IUserModel from '@src/models/Users/IUserModel';
+import IUserModel from '@src/models/users/IUserModel';
 import UserSchema from '@src/schemas/UserSchema';
 import { ObjectId, UpdateQuery } from 'mongoose';
 import { RepositoryBase } from './base';
