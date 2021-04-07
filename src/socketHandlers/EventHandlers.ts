@@ -1,8 +1,8 @@
-import logger from '@src/middleware/Logger';
-import {Server, Socket} from 'socket.io';
-import {ExtendedError} from 'socket.io/dist/namespace';
+import { logger } from 'bo-trading-common/lib/utils';
+import { Server, Socket } from 'socket.io';
+import { ExtendedError } from 'socket.io/dist/namespace';
 import TradingSystemEvents from './events/TradingSystem';
-import {AppData, SocketHandler} from './EventTypes';
+import { AppData, SocketHandler } from './EventTypes';
 import TradingSystemRooms from './rooms/TradingSystem';
 
 const app: AppData = {

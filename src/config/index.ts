@@ -1,3 +1,4 @@
+import { SendMailOptions } from "bo-trading-common/lib/utils";
 import { config } from 'dotenv';
 
 const envFound = config({ path: `./.env.${process.env.NODE_ENV || 'development'}` });
@@ -16,17 +17,14 @@ export default {
 
   URL_WEB_VERIFICATION_EMAIL: process.env.URL_WEB_VERIFICATION_EMAIL,
 
-  NODEMAILER_HOST: process.env.NODEMAILER_HOST,
-
-  NODEMAILER_PORT: process.env.NODEMAILER_PORT,
-
-  NODEMAILER_SECURE: process.env.NODEMAILER_SECURE,
-
-  NODEMAILER_USER: process.env.NODEMAILER_USER,
-
-  NODEMAILER_PASS: process.env.NODEMAILER_PASS,
-
   EMAIL_ROOT: process.env.EMAIL_ROOT,
 
   PATH_TEMPLATE_EMAIL: process.env.PATH_TEMPLATE_EMAIL,
+};
+
+export const configSendEmail: SendMailOptions = {
+  host: process.env.NODEMAILER_HOST,
+  port: Number(process.env.NODEMAILER_PORT),
+  // secure: Boolean(config.NODEMAILER_SECURE), // true for 465, false for other ports
+  auth: { user: process.env.NODEMAILER_USER, pass: process.env.NODEMAILER_PASS },
 };

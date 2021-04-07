@@ -1,5 +1,5 @@
-import IBlockModel from '@src/models/blocks/IBlockModel';
-import BlockSchema from '@src/schemas/BlockSchema';
+import { IBlockModel } from 'bo-trading-common/lib/models/blocks';
+import { BlockSchema } from 'bo-trading-common/lib/schemas';
 import { RepositoryBase } from './base';
 
 export default class BlockRepository extends RepositoryBase<IBlockModel> {

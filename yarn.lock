@@ -1016,13 +1016,6 @@
   resolved "https://registry.yarnpkg.com/@types/node/-/node-14.14.37.tgz#a3dd8da4eb84a996c36e331df98d82abd76b516e"
   integrity sha512-XYmBiy+ohOR4Lh5jE379fV2IU+6Jn4g5qASinhitfyO71b/sCo6MKsMLF5tc7Zf2CE8hViVQyYSobJNke8OvUw==
 
-"@types/nodemailer@^6.4.1":
-  version "6.4.1"
-  resolved "https://registry.yarnpkg.com/@types/nodemailer/-/nodemailer-6.4.1.tgz#31f96f4410632f781d3613bd1f4293649e423f75"
-  integrity sha512-8081UY/0XTTDpuGqCnDc8IY+Q3DSg604wB3dBH0CaZlj4nZWHWuxtZ3NRZ9c9WUrz1Vfm6wioAUnqL3bsh49uQ==
-  dependencies:
-    "@types/node" "*"
-
 "@types/oauth2orize@^1.8.3":
   version "1.8.8"
   resolved "https://registry.yarnpkg.com/@types/oauth2orize/-/oauth2orize-1.8.8.tgz#83910bcb4f0acd9089fbfd624a68b81db9c76f89"
@@ -1315,6 +1308,18 @@ bluebird@3.5.1:
   version "3.5.1"
   resolved "https://registry.yarnpkg.com/bluebird/-/bluebird-3.5.1.tgz#d9551f9de98f1fcda1e683d17ee91a0602ee2eb9"
   integrity sha512-MKiLiV+I1AA596t9w1sQJ8jkiSr5+ZKi0WKrYGUn6d1Fx+Ij4tIj+m2WMQSGczs5jZVxV339chE8iwk6F64wjA==
+
+bo-trading-common@^1.0.7:
+  version "1.0.7"
+  resolved "https://registry.yarnpkg.com/bo-trading-common/-/bo-trading-common-1.0.7.tgz#e7a0bfce692c3cf6b5c9e779cbb087295fea041f"
+  integrity sha512-IVKJdS3d+vjIsE4lBdFhC4j+8G7xJWHxaOwBAKm2Z37z4bveqOprDJYe1ogybS4pTjkwMaJBO58EBVZ9Pufl3w==
+  dependencies:
+    express "^4.16.3"
+    moment "^2.22.2"
+    mongoose "^5.12.3"
+    nodemailer "^6.5.0"
+    typescript "^4.1.2"
+    winston "^3.0.0"
 
 body-parser@1.19.0, body-parser@^1.18.3:
   version "1.19.0"

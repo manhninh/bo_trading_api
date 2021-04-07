@@ -1,11 +1,11 @@
 import config from '@src/config';
 import { STATUS } from '@src/contants/Response';
-import IAccessTokenModel from '@src/models/accessTokens/IAccessTokenModel';
-import IClientModel from '@src/models/clients/IClientModel';
-import IUserModel from '@src/models/users/IUserModel';
 import AccessTokenRepository from '@src/repository/AccessTokenRepository';
 import RefreshTokenRepository from '@src/repository/RefreshTokenRepository';
 import UserRepository from '@src/repository/UserRepository';
+import { IAccessTokenModel } from 'bo-trading-common/lib/models/accessTokens';
+import { IClientModel } from 'bo-trading-common/lib/models/clients';
+import { IUserModel } from 'bo-trading-common/lib/models/users';
 import { randomBytes } from 'crypto';
 import { createServer, exchange, ExchangeDoneFunction } from 'oauth2orize';
 import passport from 'passport';

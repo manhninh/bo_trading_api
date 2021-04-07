@@ -1,6 +1,6 @@
-import IAccessTokenModel from '@src/models/accessTokens/IAccessTokenModel';
-import AccessTokenSchema from '@src/schemas/AccessTokenSchema';
-import {RepositoryBase} from './base';
+import { IAccessTokenModel } from 'bo-trading-common/lib/models/accessTokens';
+import { AccessTokenSchema } from 'bo-trading-common/lib/schemas';
+import { RepositoryBase } from './base';
 
 export default class AccessTokenRepository extends RepositoryBase<IAccessTokenModel> {
   constructor() {
@@ -9,7 +9,7 @@ export default class AccessTokenRepository extends RepositoryBase<IAccessTokenMo
 
   public async findByToken(token: string): Promise<IAccessTokenModel> {
     try {
-      const result = await AccessTokenSchema.findOne({token});
+      const result = await AccessTokenSchema.findOne({ token });
       return result;
     } catch (err) {
       throw err;
@@ -18,7 +18,7 @@ export default class AccessTokenRepository extends RepositoryBase<IAccessTokenMo
 
   public removeToken(token: string): void {
     try {
-      AccessTokenSchema.remove({token});
+      AccessTokenSchema.remove({ token });
     } catch (err) {
       throw err;
     }
@@ -26,7 +26,7 @@ export default class AccessTokenRepository extends RepositoryBase<IAccessTokenMo
 
   public removeByUserIdAndClientId(userId: string, clientId: string): void {
     try {
-      AccessTokenSchema.remove({userId: this.toObjectId(userId), client_id: clientId});
+      AccessTokenSchema.remove({ userId: this.toObjectId(userId), client_id: clientId });
     } catch (err) {
       throw err;
     }
