@@ -54,6 +54,7 @@ export const createUserBusiness = async (account: CreateUserValidator): Promise<
       });
 
       /** tạo wallets cho tài khoản */
+      // TODO: Tạo ví người dùng
       const userWalletRes = new UserWalletRepository();
       userWalletRes.create(<IUserWalletModel>{
         user_id: user.id
