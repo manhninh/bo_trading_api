@@ -1,7 +1,7 @@
 import UserRepository from '@src/repository/UserRepository';
-import { VerifyUserValidator } from '@src/validator/users/VerifyUser';
-import { validate } from 'class-validator';
-import { ObjectId } from 'mongoose';
+import {VerifyUserValidator} from '@src/validator/users/VerifyUser';
+import {validate} from 'class-validator';
+import {ObjectId} from 'mongoose';
 
 /**
  * Verification user
@@ -15,18 +15,20 @@ export const verifyUserBusiness = async (verification: VerifyUserValidator): Pro
       throw new Error(Object.values(validation[0].constraints)[0]);
     } else {
       const userRes = new UserRepository();
-      const user = await userRes.findOne({ type_user: 0, verify_code: verification.uuid });
-      if (user) {
-        if (user.status === 1) return 0;
-        else if (user.status === 0) {
-          const ids: ObjectId[] = [user.id];
-          const userDemo = await userRes.findOne({ user_parent_id: user.id });
-          if (userDemo) ids.push(userDemo.id);
-          const activeAcount = await userRes.activeManyUsers(ids);
-          if (activeAcount.ok) return 1;
-          else return 3;
-        }
-      } else return 2;
+      const user = await userRes.findOne({type_user: 0, verify_code: verification.uuid});
+      if (!user) return 2;
+      if (user.status === 1) return 0;
+      if (user.status === 0) {
+        userRes.renderRefCodeUsers(user.id);
+        const ids: ObjectId[] = [user.id];
+        // lấy thông tin tài khoản demo theo tài khoản thật
+        const userDemo = await userRes.findOne({user_parent_id: user.id});
+        if (userDemo) ids.push(userDemo.id);
+        // active cả tài khoản demo và tài khoản thật
+        const activeAcount = await userRes.activeManyUsers(ids);
+        if (activeAcount.ok) return 1;
+        else return 3;
+      }
     }
   } catch (err) {
     throw err;
