@@ -25,6 +25,6 @@ export default {
 export const configSendEmail: SendMailOptions = {
   host: process.env.NODEMAILER_HOST,
   port: Number(process.env.NODEMAILER_PORT),
-  // secure: Boolean(config.NODEMAILER_SECURE), // true for 465, false for other ports
+  secure: Boolean(process.env.NODEMAILER_SECURE),
   auth: { user: process.env.NODEMAILER_USER, pass: process.env.NODEMAILER_PASS },
 };

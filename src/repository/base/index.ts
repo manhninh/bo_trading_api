@@ -1,4 +1,4 @@
-import mongoose, {FilterQuery} from 'mongoose';
+import mongoose, { FilterQuery } from 'mongoose';
 import IRead from '../interfaces/IRead';
 import IWrite from '../interfaces/IWrite';
 
@@ -47,7 +47,7 @@ export class RepositoryBase<T extends mongoose.Document> implements IRead<T>, IW
 
   public async delete(id: string): Promise<boolean> {
     try {
-      await this._model.remove({id});
+      await this._model.remove({ id });
       return true;
     } catch (err) {
       throw err;
@@ -55,6 +55,6 @@ export class RepositoryBase<T extends mongoose.Document> implements IRead<T>, IW
   }
 
   public toObjectId(id: string): mongoose.Types.ObjectId {
-    return mongoose.Types.ObjectId.createFromHexString(id);
+    return mongoose.Types.ObjectId(id);
   }
 }
