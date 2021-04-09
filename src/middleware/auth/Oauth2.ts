@@ -1,13 +1,13 @@
 import config from '@src/config';
-import { STATUS } from '@src/contants/Response';
+import {STATUS} from '@src/contants/Response';
 import AccessTokenRepository from '@src/repository/AccessTokenRepository';
 import RefreshTokenRepository from '@src/repository/RefreshTokenRepository';
 import UserRepository from '@src/repository/UserRepository';
-import { IAccessTokenModel } from 'bo-trading-common/lib/models/accessTokens';
-import { IClientModel } from 'bo-trading-common/lib/models/clients';
-import { IUserModel } from 'bo-trading-common/lib/models/users';
-import { randomBytes } from 'crypto';
-import { createServer, exchange, ExchangeDoneFunction } from 'oauth2orize';
+import {IAccessTokenModel} from 'bo-trading-common/lib/models/accessTokens';
+import {IClientModel} from 'bo-trading-common/lib/models/clients';
+import {IUserModel} from 'bo-trading-common/lib/models/users';
+import {randomBytes} from 'crypto';
+import {createServer, exchange, ExchangeDoneFunction} from 'oauth2orize';
 import passport from 'passport';
 
 // initialization token
@@ -29,7 +29,7 @@ const initToken = async (user: IUserModel, client: IClientModel, done: ExchangeD
       client_id: client.client_id,
       token: accessToken,
     });
-    done(null, accessToken, refreshToken, { expires_in: config.TOKEN_LIFE });
+    done(null, accessToken, refreshToken, {expires_in: config.TOKEN_LIFE});
   } catch (error) {
     done(error);
   }
@@ -47,14 +47,14 @@ server.exchange(
         userRes
           .checkUserOrEmail(username)
           .then((user) => {
-            if (!user) return done(new Error('ACCOUNT_NOT_EXIST'));
-            if (!user.checkPassword(password)) return done(new Error('ACCOUNT_LOGIN_FAIL'));
+            if (!user) return done(new Error('Your account does not exist!'));
+            if (!user.checkPassword(password)) return done(new Error('Login failed!'));
             if (user.status === STATUS.ACTIVE) {
               initToken(user, client, done);
             } else if (user.status === STATUS.BLOCK) {
-              return done(new Error('ACCOUNT_BLOCK'));
+              return done(new Error('Your account is locked! Contact support for more details.'));
             } else {
-              return done(new Error('ACCOUNT_NOT_ACTIVE'));
+              return done(new Error('Your account has not been verified!'));
             }
           })
           .catch((err) => done(err));
@@ -150,12 +150,11 @@ server.exchange(
  */
 
 const token = [
-  passport.authenticate(['basic', 'oauth2-client-password'], { session: false }),
+  passport.authenticate(['basic', 'oauth2-client-password'], {session: false}),
   server.token(),
   server.errorHandler(),
 ];
 
-const isAuthenticated = passport.authenticate('bearer', { session: false });
+const isAuthenticated = passport.authenticate('bearer', {session: false});
 
-export { token, isAuthenticated };
-
+export {token, isAuthenticated};

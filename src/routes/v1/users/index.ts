@@ -1,5 +1,6 @@
 import { Router } from 'express';
 import createUser from './createUser';
+import getUserInfor from "./getUserInfor";
 import verifyUser from "./verifyUser";
 
 export default class UserRouters {
@@ -8,5 +9,6 @@ export default class UserRouters {
   constructor() {
     createUser(this.router);
     verifyUser(this.router);
+    getUserInfor(this.router);
   }
 }

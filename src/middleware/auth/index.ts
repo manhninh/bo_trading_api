@@ -62,7 +62,7 @@ export default () => {
             userRes
               .findById(accessToken.user_id)
               .then((user) => {
-                if (!user) return done(null, false, {message: 'Unknown account', scope: '*'});
+                if (!user) return done(null, false, {message: 'Your account does not exist', scope: '*'});
                 done(null, user, {scope: '*'});
               })
               .catch((err) => done(err));

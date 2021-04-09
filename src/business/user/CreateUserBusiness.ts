@@ -1,11 +1,11 @@
-import config, { configSendEmail } from '@src/config';
+import config, {configSendEmail} from '@src/config';
 import UserRepository from '@src/repository/UserRepository';
 import UserWalletRepository from '@src/repository/UserWalletRepository';
-import { CreateUserValidator } from '@src/validator/users/CreateUser';
-import { IUserModel } from 'bo-trading-common/lib/models/users';
-import { IUserWalletModel } from 'bo-trading-common/lib/models/userWallets';
-import { EmailConfig } from 'bo-trading-common/lib/utils';
-import { validate } from 'class-validator';
+import {CreateUserValidator} from '@src/validator/users/CreateUser';
+import {IUserModel} from 'bo-trading-common/lib/models/users';
+import {IUserWalletModel} from 'bo-trading-common/lib/models/userWallets';
+import {EmailConfig} from 'bo-trading-common/lib/utils';
+import {validate} from 'class-validator';
 import handlebars from 'handlebars';
 
 export const createUserBusiness = async (account: CreateUserValidator): Promise<Boolean> => {
@@ -24,7 +24,6 @@ export const createUserBusiness = async (account: CreateUserValidator): Promise<
         username: account.username.toLowerCase(),
         email: account.email,
         password: account.password,
-        ref_code: faker.vehicle.vrm(),
         verify_code: uuid,
       });
       if (!user) throw new Error('Create user fail!');
@@ -40,7 +39,7 @@ export const createUserBusiness = async (account: CreateUserValidator): Promise<
       });
 
       /** thêm phân cấp hoa hồng */
-      userRes.findOne({ ref_code: account.referralUser, type_user: 0 }).then((userParent) => {
+      userRes.findOne({ref_code: account.referralUser, type_user: 0}).then((userParent) => {
         if (!userParent) return;
         let commissionLevel = [];
         /** nếu đã có danh sách level thì lấy ra 7 level cuối cùng, nếu không thêm referral hiện tại làm level 1 */
@@ -50,14 +49,14 @@ export const createUserBusiness = async (account: CreateUserValidator): Promise<
         } else {
           commissionLevel.push(userParent.id);
         }
-        userRes.updateById(user.id, { commission_level: commissionLevel });
+        userRes.updateById(user.id, {commission_level: commissionLevel});
       });
 
       /** tạo wallets cho tài khoản */
       // TODO: Tạo ví người dùng
       const userWalletRes = new UserWalletRepository();
       userWalletRes.create(<IUserWalletModel>{
-        user_id: user.id
+        user_id: user.id,
       });
 
       /** gửi email verification */
