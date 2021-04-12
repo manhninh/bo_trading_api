@@ -18,7 +18,7 @@ export default class AccessTokenRepository extends RepositoryBase<IAccessTokenMo
 
   public async removeToken(token: string): Promise<void> {
     try {
-      await AccessTokenSchema.deleteMany({token});
+      await AccessTokenSchema.findOneAndRemove({token});
     } catch (err) {
       throw err;
     }
