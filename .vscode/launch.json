@@ -28,7 +28,7 @@
         "NODEMAILER_SECURE": "1",
         "NODEMAILER_USER": "AKIA5BXFWY3BLIM254FJ",
         "NODEMAILER_PASS": "BGuzxl3Ds1gLi4bWkLIHS+vySdj9z28YlCmSd+y+YsY4",
-        "EMAIL_ROOT": "no_reply@finimix.com",
+        "EMAIL_ROOT": "Finimix no_reply@finimix.com",
         "PATH_TEMPLATE_EMAIL": "D:\\Freelancer\\BOTrading\\bo_trading_api\\email_template",
         "REDIS_PORT": "11663",
         "REDIS_HOST": "redis-11663.c264.ap-south-1-1.ec2.cloud.redislabs.com",
