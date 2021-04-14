@@ -1,7 +1,6 @@
 import config, { configSendEmail } from '@src/config';
 import UserRepository from '@src/repository/UserRepository';
 import UserWalletRepository from '@src/repository/UserWalletRepository';
-import UserRepository from '@src/repository/UserRepository';
 import { CreateUserValidator } from '@src/validator/users/CreateUser';
 import { IUserModel } from 'bo-trading-common/lib/models/users';
 import { IUserWalletModel } from 'bo-trading-common/lib/models/userWallets';
