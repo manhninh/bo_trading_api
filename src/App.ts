@@ -2,7 +2,7 @@ import { errorMiddleware, logger, notFoundMiddleware } from 'bo-trading-common/l
 import { json, urlencoded } from 'body-parser';
 import compression from 'compression';
 import cors from 'cors';
-import express from 'express';
+import express, { NextFunction, Request, Response } from 'express';
 import kue from 'kue';
 import passport from 'passport';
 import config from './config';
@@ -74,6 +74,7 @@ class App {
     /** middle-ware that initialises Passport */
     this.app.use(passport.initialize());
     auth();
+    this.app.get('/', (req: Request, res: Response, next: NextFunction) => res.status(200).send());
     this.app.post('/api/v1/oauth/token', token);
 
     /** add routes */
