@@ -1,5 +1,5 @@
-import {errorMiddleware, logger, notFoundMiddleware} from 'bo-trading-common/lib/utils';
-import {json, urlencoded} from 'body-parser';
+import { errorMiddleware, logger, notFoundMiddleware } from 'bo-trading-common/lib/utils';
+import { json, urlencoded } from 'body-parser';
 import compression from 'compression';
 import cors from 'cors';
 import express from 'express';
@@ -7,7 +7,7 @@ import kue from 'kue';
 import passport from 'passport';
 import config from './config';
 import auth from './middleware/auth';
-import {token} from './middleware/auth/Oauth2';
+import { token } from './middleware/auth/Oauth2';
 import v1Routes from './routes/v1';
 import Scheduler from './schedulers';
 
@@ -64,12 +64,12 @@ class App {
 
   private config() {
     this.app.use(express.static(`${__dirname}/wwwroot`));
-    this.app.use(cors({origin: '*', methods: ['PUT', 'POST', 'GET', 'DELETE', 'OPTIONS']}));
+    this.app.use(cors({ origin: '*', methods: ['PUT', 'POST', 'GET', 'DELETE', 'OPTIONS'] }));
     this.app.use(compression());
 
     /** support application/json type post data */
-    this.app.use(json({limit: '10MB'}));
-    this.app.use(urlencoded({extended: true}));
+    this.app.use(json({ limit: '10MB' }));
+    this.app.use(urlencoded({ extended: true }));
 
     /** middle-ware that initialises Passport */
     this.app.use(passport.initialize());
