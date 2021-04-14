@@ -19,15 +19,20 @@
       "outputCapture": "std",
       "env": {
         "NODE_ENV": "development",
-        "PORT": "5000",
+        "PORT": "5002",
         "MONGODB_URI": "mongodb+srv://ninhpm:ninhpm123@cluster0.ofmu5.mongodb.net/bo_trading_new",
-        "BINANCE_BASE_ENDPOINT": "wss://stream.binance.com:9443",
         "TOKEN_LIFE": "3600",
         "URL_WEB_VERIFICATION_EMAIL": "http://localhost:3000/verification/email/",
-        "NODEMAILER_USER": "AKIA2I73P5OFTY6N3I4W",
-        "NODEMAILER_PASS": "BInTABM7ZU13B9zdG/p5ZmDgHRuq0w5e64ZRppAFxcj1",
-        "EMAIL_ROOT": "IOGOETH manhninh91@gmail.com",
-        "PATH_TEMPLATE_EMAIL": "D:\\Freelancer\\BOTrading\\bo_trading_api\\email_template"
+        "NODEMAILER_HOST": "email-smtp.ap-southeast-1.amazonaws.com",
+        "NODEMAILER_PORT": "587",
+        "NODEMAILER_SECURE": "1",
+        "NODEMAILER_USER": "AKIA5BXFWY3BLIM254FJ",
+        "NODEMAILER_PASS": "BGuzxl3Ds1gLi4bWkLIHS+vySdj9z28YlCmSd+y+YsY4",
+        "EMAIL_ROOT": "no_reply@finimix.com",
+        "PATH_TEMPLATE_EMAIL": "D:\\Freelancer\\BOTrading\\bo_trading_api\\email_template",
+        "REDIS_PORT": "11663",
+        "REDIS_HOST": "redis-11663.c264.ap-south-1-1.ec2.cloud.redislabs.com",
+        "REDIS_AUTH": "q0h3eJRjjqQ4BotP73QG23ynzUmIi3C6"
       }
     }
   ]

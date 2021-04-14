@@ -13,8 +13,13 @@ const server = http.createServer(app);
 server.listen(config.port);
 
 server.on('listening', () => {
-  // if (process.env.NODE_ENV !== 'production') mongoose.set('debug', true);
-  mongoose.connect(config.MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true, useCreateIndex: true });
+  if (process.env.NODE_ENV !== 'production') mongoose.set('debug', true);
+  mongoose.connect(config.MONGODB_URI, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+    useCreateIndex: true,
+    useFindAndModify: false
+  });
   mongoose.connection.once('open', () => {
     console.info('\n🚀Connected to Mongo via Mongoose');
     console.info(
