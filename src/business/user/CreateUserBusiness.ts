@@ -1,11 +1,11 @@
-import config, {configSendEmail} from '@src/config';
+import config, { configSendEmail } from '@src/config';
 import UserRepository from '@src/repository/UserRepository';
 import UserWalletRepository from '@src/repository/UserWalletRepository';
-import {CreateUserValidator} from '@src/validator/users/CreateUser';
-import {IUserModel} from 'bo-trading-common/lib/models/users';
-import {IUserWalletModel} from 'bo-trading-common/lib/models/userWallets';
-import {EmailConfig} from 'bo-trading-common/lib/utils';
-import {validate} from 'class-validator';
+import { CreateUserValidator } from '@src/validator/users/CreateUser';
+import { IUserModel } from 'bo-trading-common/lib/models/users';
+import { IUserWalletModel } from 'bo-trading-common/lib/models/userWallets';
+import { EmailConfig } from 'bo-trading-common/lib/utils';
+import { validate } from 'class-validator';
 import handlebars from 'handlebars';
 
 export const createUserBusiness = async (account: CreateUserValidator): Promise<Boolean> => {
@@ -39,7 +39,7 @@ export const createUserBusiness = async (account: CreateUserValidator): Promise<
       });
 
       /** thêm phân cấp hoa hồng */
-      userRes.findOne({ref_code: account.referralUser, type_user: 0}).then((userParent) => {
+      userRes.findOne({ ref_code: account.referralUser, type_user: 0 }).then((userParent) => {
         if (!userParent) return;
         let commissionLevel = [];
         /** nếu đã có danh sách level thì lấy ra 7 level cuối cùng, nếu không thêm referral hiện tại làm level 1 */
@@ -49,7 +49,7 @@ export const createUserBusiness = async (account: CreateUserValidator): Promise<
         } else {
           commissionLevel.push(userParent.id);
         }
-        userRes.updateById(user.id, {commission_level: commissionLevel});
+        userRes.updateById(user.id, { commission_level: commissionLevel });
       });
 
       /** tạo wallets cho tài khoản */
@@ -72,6 +72,11 @@ export const createUserBusiness = async (account: CreateUserValidator): Promise<
       return true;
     }
   } catch (err) {
-    throw err;
+    if (err.name === 'MongoError' && err.code === 11000 && err.keyValue.username != null) {
+      throw new Error('Username already exists!');
+    } else if (err.name === 'MongoError' && err.code === 11000 && err.keyValue.email != null) {
+      throw new Error('Email already exists!');
+    } else
+      throw err;
   }
 };
