@@ -69,6 +69,11 @@ export const createUserBusiness = async (account: CreateUserValidator): Promise<
       return true;
     }
   } catch (err) {
-    throw err;
+    if (err.name === 'MongoError' && err.code === 11000 && err.keyValue.username != null) {
+      throw new Error('Username already exists!');
+    } else if (err.name === 'MongoError' && err.code === 11000 && err.keyValue.email != null) {
+      throw new Error('Email already exists!');
+    } else
+      throw err;
   }
 };

@@ -1,4 +1,4 @@
-import { SendMailOptions } from "bo-trading-common/lib/utils";
+import { SendMailOptions } from 'bo-trading-common/lib/utils';
 import { config } from 'dotenv';
 
 const envFound = config({ path: `./.env.${process.env.NODE_ENV || 'development'}` });
@@ -35,6 +35,11 @@ export default {
   TRON_TRC20_DEPOSIT_MIN_AMOUNT: process.env.TRON_TRC20_DEPOSIT_MIN_AMOUNT,
   TRON_TRC20_TRANSACTION_FEE: process.env.TRON_TRC20_TRANSACTION_FEE,
   TRON_TRC20_SYMBOL: process.env.TRON_TRC20_SYMBOL,
+
+  // REDIS CONFIG
+  REDIS_PORT: process.env.REDIS_PORT,
+  REDIS_HOST: process.env.REDIS_HOST,
+  REDIS_AUTH: process.env.REDIS_AUTH,
 };
 
 export const configSendEmail: SendMailOptions = {

@@ -1,4 +1,4 @@
-import { IUserWalletModel } from 'bo-trading-common/lib/models/UserWallets';
+import { IUserWalletModel } from 'bo-trading-common/lib/models/userWallets';
 import { UserWalletSchema } from 'bo-trading-common/lib/schemas';
 import { UpdateQuery } from 'mongoose';
 import { RepositoryBase } from './base';

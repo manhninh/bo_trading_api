@@ -1,4 +1,4 @@
-import { IOrderModel } from 'bo-trading-common/lib/models/Orders';
+import { IOrderModel } from 'bo-trading-common/lib/models/orders';
 import { OrderSchema } from 'bo-trading-common/lib/schemas';
 import { RepositoryBase } from './base';
 
