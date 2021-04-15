@@ -1,12 +1,11 @@
-import config, {configSendEmail} from '@src/config';
+import config, { configSendEmail } from '@src/config';
 import UserRepository from '@src/repository/UserRepository';
-import UserWalletRepository from '@src/repository/UserWalletRepository';
-import {CreateUserValidator} from '@src/validator/users/CreateUser';
-import {IUserModel} from 'bo-trading-common/lib/models/users';
-import {IUserWalletModel} from 'bo-trading-common/lib/models/userWallets';
-import {EmailConfig} from 'bo-trading-common/lib/utils';
-import {validate} from 'class-validator';
+import { CreateUserValidator } from '@src/validator/users/CreateUser';
+import { IUserModel } from 'bo-trading-common/lib/models/users';
+import { EmailConfig } from 'bo-trading-common/lib/utils';
+import { validate } from 'class-validator';
 import handlebars from 'handlebars';
+import { createUSDTTRC20 } from './CreateWalletBusiness';
 
 export const createUserBusiness = async (account: CreateUserValidator): Promise<Boolean> => {
   try {
@@ -39,7 +38,7 @@ export const createUserBusiness = async (account: CreateUserValidator): Promise<
       });
 
       /** thêm phân cấp hoa hồng */
-      userRes.findOne({ref_code: account.referralUser, type_user: 0}).then((userParent) => {
+      userRes.findOne({ ref_code: account.referralUser, type_user: 0 }).then((userParent) => {
         if (!userParent) return;
         let commissionLevel = [];
         /** nếu đã có danh sách level thì lấy ra 7 level cuối cùng, nếu không thêm referral hiện tại làm level 1 */
@@ -49,15 +48,13 @@ export const createUserBusiness = async (account: CreateUserValidator): Promise<
         } else {
           commissionLevel.push(userParent.id);
         }
-        userRes.updateById(user.id, {commission_level: commissionLevel});
+        userRes.updateById(user.id, { commission_level: commissionLevel });
       });
 
       /** tạo wallets cho tài khoản */
-      // TODO: Tạo ví người dùng
-      const userWalletRes = new UserWalletRepository();
-      userWalletRes.create(<IUserWalletModel>{
-        user_id: user.id,
-      });
+      // TODO: Tạo ví người dùng - TRC20
+      createUSDTTRC20(user);
+      // TODO: Tạo ví người dùng - ERC20
 
       /** gửi email verification */
       const emailConfig = new EmailConfig(configSendEmail);

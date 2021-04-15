@@ -4,9 +4,9 @@ import ClientRepository from '@src/repository/ClientRepository';
 import UserRepository from '@src/repository/UserRepository';
 import moment from 'moment';
 import passport from 'passport';
-import {BasicStrategy} from 'passport-http';
-import {Strategy as BearerStrategy} from 'passport-http-bearer';
-import {Strategy as ClientPasswordStrategy} from 'passport-oauth2-client-password';
+import { BasicStrategy } from 'passport-http';
+import { Strategy as BearerStrategy } from 'passport-http-bearer';
+import { Strategy as ClientPasswordStrategy } from 'passport-oauth2-client-password';
 
 export default () => {
   passport.use(
