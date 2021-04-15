@@ -25,7 +25,6 @@ export const importDepositsSystem = async (): Promise<any> => {
           // FOR TRC20 - USDT
           if (row.symbol == config.TRON_TRC20_SYMBOL) {
             tronWeb.trx.getTransaction(row.tx).then((result) => {
-              console.log(result);
               if (result && result.ret !== undefined && result.ret[0] !== undefined) {
                 if (result.ret[0].contractRet == 'SUCCESS') {
                   // Them tien vao tai khoan
