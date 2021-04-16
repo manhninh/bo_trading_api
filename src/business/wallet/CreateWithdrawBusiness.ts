@@ -37,7 +37,6 @@ export const CreateWithdrawBusiness = async (transaction: CreateWithdrawValidato
             // Check auto withdraw for this user & system
             const configModel = new SystemConfigRepository();
             const enableWithdraw = await configModel.findOne({ key: config.SYSTEM_ENABLE_AUTO_WITHDRAW_KEY });
-            console.log(enableWithdraw);
             if (enableWithdraw && Boolean(enableWithdraw.value)) {
               createTRC20transfer(transaction, trx);
             }
