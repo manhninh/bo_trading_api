@@ -17,7 +17,7 @@ export const CreateTransferBusiness = async (transaction: CreateTransferValidato
       // Check user is real user && balance of user
       const userModel = new UserRepository();
       const receiver = await userModel.findOne({ username: transaction.username, type_user: 0 });
-      const canTransfer = await userModel.readyTransfer(transaction.user_id, transaction.amount, transaction.password);
+      const canTransfer = await userModel.readyTransfer(transaction.user_id, transaction.amount, transaction.password, transaction.tfa);
 
       if (!receiver) {
         throw new Error('Can not find the receiver by username, please try again later!');
@@ -45,9 +45,9 @@ export const CreateTransferBusiness = async (transaction: CreateTransferValidato
         });
 
         // Update amount for Sender & Receiver (No fee)
-        const walletModel = new UserWalletRepository;
-        walletModel.updateByUserId(transaction.user_id, { $inc: { amount: (-1 * transaction.amount) } });
-        walletModel.updateByUserId(receiver._id, { $inc: { amount: transaction.amount } });
+        const txModel = new UserWalletRepository();
+        txModel.updateByUserId(transaction.user_id, { $inc: { amount: (-1 * transaction.amount) } });
+        txModel.updateByUserId(receiver._id, { $inc: { amount: transaction.amount } });
 
         return result;
 

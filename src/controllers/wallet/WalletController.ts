@@ -1,4 +1,5 @@
 import { CreateTransferBusiness } from '@src/business/wallet/CreateTransferBusiness';
+import { CreateWithdrawBusiness } from '@src/business/wallet/CreateWithdrawBusiness';
 import { getTransactionsHistory } from '@src/business/wallet/GetTransactionsHistory';
 import { NextFunction, Request, Response } from 'express';
 
@@ -38,7 +39,16 @@ export const CreateTransferController = async (req: Request, res: Response, next
 export const CreateWithdrawController = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   try {
     const params = req.body;
-    res.status(200).send({ data: [] });
+    const data = {
+      user_id: req.user["id"],
+      password: params.password,
+      amount: Number(params.amount),
+      address: params.address,
+      tfa: params.tfa,
+      symbol: params.symbol
+    };
+    const result = await CreateWithdrawBusiness(data);
+    res.status(200).send({ data: result });
   } catch (err) {
     next(err);
   }

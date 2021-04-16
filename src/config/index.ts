@@ -42,7 +42,10 @@ export default {
   REDIS_AUTH: process.env.REDIS_AUTH,
 
   //
-  TRANSFER_SYMBOL: process.env.TRANSFER
+  TRANSFER_SYMBOL: process.env.TRANSFER,
+
+  // SYSTEM CONFIG
+  SYSTEM_ENABLE_AUTO_WITHDRAW_KEY: process.env.SYSTEM_ENABLE_AUTO_WITHDRAW_KEY,
 };
 
 export const configSendEmail: SendMailOptions = {

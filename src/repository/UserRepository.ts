@@ -124,12 +124,13 @@ export default class UserRepository extends RepositoryBase<IUserModel> {
     }
   }
 
-  public async readyTransfer(user_id: string, amount: number, password: string): Promise<Boolean> {
+  public async readyTransfer(user_id: string, amount: number, password: string, tfa: string): Promise<Boolean> {
     try {
       const row = await UserSchema.findById(user_id);
       if (!row) {
         return false;
       } else {
+        // TODO: Need to check TFA code
         const wallet = await UserWalletSchema.findOne({ user_id: row._id });
         if (row.type_user == 0 && row.checkPassword(password) && wallet && wallet.amount >= amount) {
           return true;

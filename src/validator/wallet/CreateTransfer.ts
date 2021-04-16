@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsNumber } from 'class-validator';
+import { IsNotEmpty, IsNumber, IsOptional } from 'class-validator';
 
 export class CreateTransferValidator {
   @IsNotEmpty({ message: 'User id is required' })
@@ -15,4 +15,7 @@ export class CreateTransferValidator {
     message: 'Amount is number',
   })
   amount: number;
+
+  @IsOptional({})
+  tfa: string;
 }

@@ -1914,10 +1914,10 @@ bn.js@^5.0.0, bn.js@^5.1.1:
   resolved "https://registry.yarnpkg.com/bn.js/-/bn.js-5.2.0.tgz#358860674396c6997771a9d051fcc1b57d4ae002"
   integrity sha512-D7iWRBvnZE8ecXiLj/9wbxH7Tk79fAh8IHaTNq1RWRixsS02W+5qS+iE9yq6RYl0asXx5tw0bLhmT5pIfbSquw==
 
-bo-trading-common@^1.2.1:
-  version "1.2.1"
-  resolved "https://registry.yarnpkg.com/bo-trading-common/-/bo-trading-common-1.2.1.tgz#a84a21301558f20d9a02adef5c177a44771a8104"
-  integrity sha512-0gpZL5rSmtR3+2xDqvYw8dKDllTZcG77RjByFYA+rYVssYwIDgY+I0kuqO4pmr8kJ3y6gDtafQUXj+TpU39b4Q==
+bo-trading-common@^1.2.4:
+  version "1.2.4"
+  resolved "https://registry.yarnpkg.com/bo-trading-common/-/bo-trading-common-1.2.4.tgz#ae68261385864196809e6a14372380ebac86cd5b"
+  integrity sha512-OeYCEIu1Ncrm1lWmVStLMasfRcYNKSAdOEjU4Z9J36ew1VaDGz/AWokXT+Xy2d7LbJD5Jjtr90caD/BP7beVjg==
   dependencies:
     "@types/mongoose-paginate" "^5.0.8"
     express "^4.16.3"
