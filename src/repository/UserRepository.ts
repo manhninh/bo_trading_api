@@ -1,5 +1,5 @@
 import { IUserModel } from 'bo-trading-common/lib/models/users';
-import { UserSchema } from 'bo-trading-common/lib/schemas';
+import { UserSchema, UserWalletSchema } from 'bo-trading-common/lib/schemas';
 import mongoose, { ObjectId, UpdateQuery, UpdateWriteOpResult } from 'mongoose';
 import { RepositoryBase } from './base';
 
@@ -121,6 +121,24 @@ export default class UserRepository extends RepositoryBase<IUserModel> {
       return result;
     } catch (e) {
       throw e;
+    }
+  }
+
+  public async readyTransfer(user_id: string, amount: number, password: string): Promise<Boolean> {
+    try {
+      const row = await UserSchema.findById(user_id);
+      if (!row) {
+        return false;
+      } else {
+        const wallet = await UserWalletSchema.findOne({ user_id: row._id });
+        if (row.type_user == 0 && row.checkPassword(password) && wallet && wallet.amount >= amount) {
+          return true;
+        } else {
+          return false;
+        }
+      }
+    } catch (err) {
+      return false;
     }
   }
 }

@@ -58,11 +58,11 @@ export default class UserTransactionsRepository extends RepositoryBase<IUserTran
 
   // Function to get Transaction history by User
   public async transactiontHistory(input): Promise<any> {
-    console.log(input);
     try {
       const options = {
         page: input.page ?? 1,
-        limit: input.limit ?? 10
+        limit: input.limit ?? 10,
+        sort: { createdAt: -1 }
       };
       const result = await UserTransactionsSchema.paginate({
         user_id: input.user_id,

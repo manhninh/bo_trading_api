@@ -40,6 +40,9 @@ export default {
   REDIS_PORT: process.env.REDIS_PORT,
   REDIS_HOST: process.env.REDIS_HOST,
   REDIS_AUTH: process.env.REDIS_AUTH,
+
+  //
+  TRANSFER_SYMBOL: process.env.TRANSFER
 };
 
 export const configSendEmail: SendMailOptions = {
