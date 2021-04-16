@@ -4,7 +4,7 @@ import { IUserWalletModel } from 'bo-trading-common/lib/models/userWallets';
 
 export const createUSDTTRC20 = async (user: any): Promise<any> => {
   try {
-    const TronWeb = require('TronWeb');
+    const TronWeb = require('tronweb');
     const privateKey = config.CRYPTO_PRIVATE_KEY;
     const tronWeb = new TronWeb({
       fullHost: config.TRON_FULL_NODE,
