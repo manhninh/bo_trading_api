@@ -5,3 +5,10 @@ dist
 .env.development
 .env.test
 .env.production
+/.idea/bo_trading_api.iml
+/.idea/encodings.xml
+/.idea/inspectionProfiles/Project_Default.xml
+/.idea/misc.xml
+/.idea/modules.xml
+/.idea/vcs.xml
+/.idea/workspace.xml

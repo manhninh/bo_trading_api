@@ -1,5 +1,5 @@
 import { IUserModel } from 'bo-trading-common/lib/models/users';
-import { UserSchema } from 'bo-trading-common/lib/schemas';
+import { UserSchema, UserWalletSchema } from 'bo-trading-common/lib/schemas';
 import mongoose, { ObjectId, UpdateQuery, UpdateWriteOpResult } from 'mongoose';
 import { RepositoryBase } from './base';
 
@@ -77,13 +77,69 @@ export default class UserRepository extends RepositoryBase<IUserModel> {
             "amount_trade": "$user_wallets.amount_trade",
             "amount_demo": "$user_wallets.amount_demo",
             "amount_expert": "$user_wallets.amount_expert",
-            "amount_copytrade": "$user_wallets.amount_copytrade"
+            "amount_copytrade": "$user_wallets.amount_copytrade",
+            "trc20": "$user_wallets.trc20",
+            "erc20": "$user_wallets.erc20"
           }
         }
       ]);
       return result;
     } catch (err) {
       throw err;
+    }
+  }
+
+  public async getAllWallets(): Promise<any> {
+    try {
+      const result = await UserSchema.aggregate([
+        {
+          "$match": {
+            "status": 1
+          }
+        },
+        {
+          "$lookup": {
+            "from": "user_wallets",
+            "localField": "_id",
+            "foreignField": "user_id",
+            "as": "user_wallets"
+          }
+        },
+        {
+          "$unwind": "$user_wallets"
+        },
+        {
+          "$project": {
+            "_id": "$_id",
+            "username": "$username",
+            "email": "$email",
+            "trc20": "$user_wallets.trc20",
+            "erc20": "$user_wallets.erc20"
+          }
+        }
+      ]);
+      return result;
+    } catch (e) {
+      throw e;
+    }
+  }
+
+  public async readyTransfer(user_id: string, amount: number, password: string, tfa: string): Promise<Boolean> {
+    try {
+      const row = await UserSchema.findById(user_id);
+      if (!row) {
+        return false;
+      } else {
+        // TODO: Need to check TFA code
+        const wallet = await UserWalletSchema.findOne({ user_id: row._id });
+        if (row.type_user == 0 && row.checkPassword(password) && wallet && wallet.amount >= amount) {
+          return true;
+        } else {
+          return false;
+        }
+      }
+    } catch (err) {
+      return false;
     }
   }
 }
