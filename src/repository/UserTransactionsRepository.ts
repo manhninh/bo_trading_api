@@ -55,4 +55,22 @@ export default class UserTransactionsRepository extends RepositoryBase<IUserTran
       throw err;
     }
   }
+
+  // Function to get Transaction history by User
+  public async transactiontHistory(input): Promise<any> {
+    console.log(input);
+    try {
+      const options = {
+        page: input.page ?? 1,
+        limit: input.limit ?? 10
+      };
+      const result = await UserTransactionsSchema.paginate({
+        user_id: input.user_id,
+        type: input.type ?? Constants.TRANSACTION_TYPE_DEPOSIT
+      }, options);
+      return result;
+    } catch (err) {
+      throw err;
+    }
+  }
 }

@@ -1376,6 +1376,11 @@
     "@types/bson" "*"
     "@types/node" "*"
 
+"@types/mongoose-paginate@^5.0.8":
+  version "5.0.8"
+  resolved "https://registry.yarnpkg.com/@types/mongoose-paginate/-/mongoose-paginate-5.0.8.tgz#6b925c3ccf1c45bfb116830c77471cc1ba045308"
+  integrity sha512-6Ybb8X+iBB1/CeScDhzn0q5ZXljHu2Zzg9Wp4nYI5V3Pjc02YuLq6GHHLQrljsA/hMytULnbwQovUYWeI3IxWA==
+
 "@types/node-schedule@^1.3.0":
   version "1.3.1"
   resolved "https://registry.yarnpkg.com/@types/node-schedule/-/node-schedule-1.3.1.tgz#6785ea71b12b0b8899c3fce0650b2ef5a7ea9d1e"
@@ -1879,6 +1884,11 @@ blakejs@^1.1.0:
   resolved "https://registry.yarnpkg.com/blakejs/-/blakejs-1.1.0.tgz#69df92ef953aa88ca51a32df6ab1c54a155fc7a5"
   integrity sha1-ad+S75U6qIylGjLfarHFShVfx6U=
 
+bluebird@3.0.5:
+  version "3.0.5"
+  resolved "https://registry.yarnpkg.com/bluebird/-/bluebird-3.0.5.tgz#2ff9d07c9b3edb29d6d280fe07528365e7ecd392"
+  integrity sha1-L/nQfJs+2ynW0oD+B1KDZefs05I=
+
 bluebird@3.5.1:
   version "3.5.1"
   resolved "https://registry.yarnpkg.com/bluebird/-/bluebird-3.5.1.tgz#d9551f9de98f1fcda1e683d17ee91a0602ee2eb9"
@@ -1904,14 +1914,16 @@ bn.js@^5.0.0, bn.js@^5.1.1:
   resolved "https://registry.yarnpkg.com/bn.js/-/bn.js-5.2.0.tgz#358860674396c6997771a9d051fcc1b57d4ae002"
   integrity sha512-D7iWRBvnZE8ecXiLj/9wbxH7Tk79fAh8IHaTNq1RWRixsS02W+5qS+iE9yq6RYl0asXx5tw0bLhmT5pIfbSquw==
 
-bo-trading-common@^1.1.9:
-  version "1.1.9"
-  resolved "https://registry.yarnpkg.com/bo-trading-common/-/bo-trading-common-1.1.9.tgz#74be80715cf04177ed05cf6e887cdea57c8166d7"
-  integrity sha512-zVQYdsY73Psuc/XiUDP2Pf6ucyaUgn8Tc/g4UtFtoXmc87P8G678W0Bea/nF6uyvhQsf4Ybr0cSlaGUwLMaPJw==
+bo-trading-common@^1.2.1:
+  version "1.2.1"
+  resolved "https://registry.yarnpkg.com/bo-trading-common/-/bo-trading-common-1.2.1.tgz#a84a21301558f20d9a02adef5c177a44771a8104"
+  integrity sha512-0gpZL5rSmtR3+2xDqvYw8dKDllTZcG77RjByFYA+rYVssYwIDgY+I0kuqO4pmr8kJ3y6gDtafQUXj+TpU39b4Q==
   dependencies:
+    "@types/mongoose-paginate" "^5.0.8"
     express "^4.16.3"
     moment "^2.22.2"
     mongoose "^5.12.3"
+    mongoose-paginate "^5.0.3"
     nodemailer "^6.5.0"
     rimraf "^3.0.2"
     typescript "^4.1.2"
@@ -4676,6 +4688,13 @@ mongoose-legacy-pluralize@1.0.2:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/mongoose-legacy-pluralize/-/mongoose-legacy-pluralize-1.0.2.tgz#3ba9f91fa507b5186d399fb40854bff18fb563e4"
   integrity sha512-Yo/7qQU4/EyIS8YDFSeenIvXxZN+ld7YdV9LqFVQJzTLye8unujAWPZ4NWKfFA+RNjh+wvTWKY9Z3E5XM6ZZiQ==
+
+mongoose-paginate@^5.0.3:
+  version "5.0.3"
+  resolved "https://registry.yarnpkg.com/mongoose-paginate/-/mongoose-paginate-5.0.3.tgz#d7ae49ed5bf64f1f7af7620ea865b67058c55371"
+  integrity sha1-165J7Vv2Tx9692IOqGW2cFjFU3E=
+  dependencies:
+    bluebird "3.0.5"
 
 mongoose@^5.12.3:
   version "5.12.3"
