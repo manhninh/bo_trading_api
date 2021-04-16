@@ -12,7 +12,7 @@ export const importDeposits = async (): Promise<any> => {
 
     if (rows !== undefined && rows.length) {
       // First contstruct a tronWeb object with a private key
-      const TronWeb = require('TronWeb');
+      const TronWeb = require('tronweb');
       const trc20ContractAddress = config.TRON_USDT_TRC20_CONTRACT_ADDRESS;
 
       rows.forEach(async row => {
