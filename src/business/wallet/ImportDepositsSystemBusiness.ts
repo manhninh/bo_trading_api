@@ -12,7 +12,7 @@ export const importDepositsSystem = async (): Promise<any> => {
     const rows = await transaction.getAllPendingDepositTransactions();
     if (rows !== undefined && rows.length) {
       // First contstruct a tronWeb object with a private key
-      const TronWeb = require('TronWeb');
+      const TronWeb = require('tronweb');
       const tronWeb = new TronWeb({
         fullHost: config.TRON_FULL_NODE,
         headers: { "TRON-PRO-API-KEY": config.TRON_API_KEY }

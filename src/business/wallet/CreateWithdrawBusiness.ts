@@ -61,7 +61,7 @@ async function createTRC20transfer(transaction, trx) {
     throw new Error('Can not withdraw, the amount at least ' + config.TRON_TRC20_DEPOSIT_MIN_AMOUNT + '!');
   }
 
-  const TronWeb = require('TronWeb');
+  const TronWeb = require('tronweb');
   const trc20ContractAddress = config.TRON_USDT_TRC20_CONTRACT_ADDRESS;
   const tronWeb = new TronWeb({
     fullHost: config.TRON_FULL_NODE,
