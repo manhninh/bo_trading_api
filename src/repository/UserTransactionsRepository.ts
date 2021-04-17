@@ -9,13 +9,13 @@ export default class UserTransactionsRepository extends RepositoryBase<IUserTran
     super(UserTransactionsSchema);
   }
 
-  public async getAllPendingDepositTransactions(): Promise<any> {
+  public async getAllPendingTransactions(type: number = 0): Promise<any> {
     try {
       const result = await UserTransactionsSchema.aggregate([
         {
           "$match": {
             "status": Constants.TRANSACTION_STATUS_PENDING,
-            "type": Constants.TRANSACTION_TYPE_DEPOSIT
+            "type": type ?? Constants.TRANSACTION_TYPE_DEPOSIT
           }
         },
         {
