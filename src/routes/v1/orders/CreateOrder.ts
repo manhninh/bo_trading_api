@@ -1,5 +1,5 @@
-import { CreateOrderController } from '@src/controllers/orders/CreateOrderController';
-import { Router } from 'express';
+import {CreateOrderController} from '@src/controllers/orders/CreateOrderController';
+import {Router} from 'express';
 
 /**
  * @api {post} /orders Create order
@@ -14,7 +14,7 @@ import { Router } from 'express';
  *    "Accept": "application/json"
  *
  * @apiParam {String} typeUser Loại user đặt lệnh (real account, demo account, expert account)
- * @apiParam {String} typeOrder Loại lệnh (buy, sell)
+ * @apiParam {Number} typeOrder Loại lệnh (buy, sell) BUY: 1 - SELL: 2
  * @apiParam {String} amount Số tiền đặt lệnh
  *
  * @apiSuccess {Object} data

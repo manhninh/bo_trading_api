@@ -1,13 +1,13 @@
-import { errorMiddleware, logger, notFoundMiddleware } from 'bo-trading-common/lib/utils';
-import { json, urlencoded } from 'body-parser';
+import {errorMiddleware, logger, notFoundMiddleware} from 'bo-trading-common/lib/utils';
+import {json, urlencoded} from 'body-parser';
 import compression from 'compression';
 import cors from 'cors';
-import express, { NextFunction, Request, Response } from 'express';
+import express, {Request, Response} from 'express';
 import kue from 'kue';
 import passport from 'passport';
 import config from './config';
 import auth from './middleware/auth';
-import { token } from './middleware/auth/Oauth2';
+import {token} from './middleware/auth/Oauth2';
 import v1Routes from './routes/v1';
 import Scheduler from './schedulers';
 
@@ -48,6 +48,10 @@ class App {
             logger.info('Removed job complete #%d', job.id);
           });
         });
+      })
+      // log when job fail
+      .on('job failed', (id: number, errorMessage: string) => {
+        return `${id}: ${errorMessage}`;
       });
 
     // renmove 100 job fail first - Release memory
@@ -64,23 +68,24 @@ class App {
 
   private config() {
     this.app.use(express.static(`${__dirname}/wwwroot`));
-    this.app.use(cors({ origin: '*', methods: ['PUT', 'POST', 'GET', 'DELETE', 'OPTIONS'] }));
+    this.app.use(cors({origin: '*', methods: ['PUT', 'POST', 'GET', 'DELETE', 'OPTIONS']}));
     this.app.use(compression());
 
     /** support application/json type post data */
-    this.app.use(json({ limit: '10MB' }));
-    this.app.use(urlencoded({ extended: true }));
+    this.app.use(json({limit: '10MB'}));
+    this.app.use(urlencoded({extended: true}));
 
     /** middle-ware that initialises Passport */
     this.app.use(passport.initialize());
     auth();
-    this.app.get('/', (req: Request, res: Response, next: NextFunction) => res.status(200).send());
+    this.app.get('/', (_req: Request, res: Response) => res.status(200).send());
     this.app.post('/api/v1/oauth/token', token);
 
     /** add routes */
     this.app.use('/api/v1', v1Routes);
 
-    this.app.use('/kue-api/', kue.app);
+    /** queue interface user */
+    if (process.env.NODE_ENV !== 'production') this.app.use('/kue-api/', kue.app);
 
     /** not found error */
     this.app.use(notFoundMiddleware);
