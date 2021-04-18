@@ -1,3 +1,4 @@
+import {IQueueLogModel} from 'bo-trading-common/lib/models/queueLogs';
 import {errorMiddleware, logger, notFoundMiddleware} from 'bo-trading-common/lib/utils';
 import {json, urlencoded} from 'body-parser';
 import compression from 'compression';
@@ -8,6 +9,7 @@ import passport from 'passport';
 import config from './config';
 import auth from './middleware/auth';
 import {token} from './middleware/auth/Oauth2';
+import QueueLogRepository from './repository/QueueLogRepository';
 import v1Routes from './routes/v1';
 import Scheduler from './schedulers';
 
@@ -39,31 +41,20 @@ class App {
       .on('error', (err: any) => {
         logger.error('QUEUE EROR: ', err);
       })
-      // renmove when job complete - Release memory
+      // when job complete
       .on('job complete', (id: number) => {
         kue.Job.get(id, (err: any, job: any) => {
           if (err) return;
-          job.remove((err: any) => {
-            if (err) throw err;
-            logger.info('Removed job complete #%d', job.id);
-          });
+          this._logQueue(job);
         });
       })
-      // log when job fail
+      // when job fail
       .on('job failed', (id: number, errorMessage: string) => {
-        return `${id}: ${errorMessage}`;
-      });
-
-    // renmove 100 job fail first - Release memory
-    kue.Job.rangeByState('failed', 0, 100, 'asc', (err: any, jobs: any) => {
-      if (err) return;
-      jobs.forEach((job: any) => {
-        job.remove((err: any) => {
-          if (err) throw err;
-          logger.info('Removed job fail #%d', job.id);
+        kue.Job.get(id, (err: any, job: any) => {
+          if (err) return;
+          this._logQueue(job, errorMessage);
         });
       });
-    });
   }
 
   private config() {
@@ -93,6 +84,23 @@ class App {
     /** internal server Error  */
     this.app.use(errorMiddleware);
   }
+
+  private _logQueue = (job: any, errMess?: string) => {
+    const queueLogRes = new QueueLogRepository();
+    queueLogRes.create(<IQueueLogModel>{
+      logs: JSON.stringify({
+        id: job.id,
+        created_at: job.created_at,
+        data: job.data,
+        type: job.type,
+        workerId: job.workerId,
+        errorMessage: errMess,
+      }),
+    });
+    job.remove((err: any) => {
+      if (err) throw err;
+    });
+  };
 }
 
 export default new App().app;

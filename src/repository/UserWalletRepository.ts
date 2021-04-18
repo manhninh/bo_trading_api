@@ -1,7 +1,7 @@
-import { IUserWalletModel } from 'bo-trading-common/lib/models/userWallets';
-import { UserWalletSchema } from 'bo-trading-common/lib/schemas';
-import { UpdateQuery } from 'mongoose';
-import { RepositoryBase } from './base';
+import {IUserWalletModel} from 'bo-trading-common/lib/models/userWallets';
+import {UserWalletSchema} from 'bo-trading-common/lib/schemas';
+import {UpdateQuery} from 'mongoose';
+import {RepositoryBase} from './base';
 
 export default class UserWalletRepository extends RepositoryBase<IUserWalletModel> {
   constructor() {
@@ -10,7 +10,7 @@ export default class UserWalletRepository extends RepositoryBase<IUserWalletMode
 
   public async updateByUserId(user_id: string, update: UpdateQuery<IUserWalletModel>): Promise<IUserWalletModel> {
     try {
-      const result = await UserWalletSchema.findOneAndUpdate({ user_id: user_id }, update);
+      const result = await UserWalletSchema.findOneAndUpdate({user_id: user_id}, update);
       return result;
     } catch (err) {
       throw err;
