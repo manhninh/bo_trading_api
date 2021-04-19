@@ -1,10 +1,10 @@
 import http from 'http';
 import 'module-alias/register';
 import mongoose from 'mongoose';
-import { Server } from 'socket.io';
+import IOClient from 'socket.io-client';
 import app from './App';
 import config from './config';
-import IOHandlers from './socketHandlers/EventHandlers';
+import CandlestickSocket from './socketHandlers/candlestick';
 
 app.set('port', config.port);
 
@@ -18,7 +18,7 @@ server.on('listening', () => {
     useNewUrlParser: true,
     useUnifiedTopology: true,
     useCreateIndex: true,
-    useFindAndModify: false
+    useFindAndModify: false,
   });
   mongoose.connection.once('open', () => {
     console.info('\n🚀Connected to Mongo via Mongoose');
@@ -27,9 +27,9 @@ server.on('listening', () => {
       \n🚀API Document on http://localhost:${config.port}/apidoc/index.html\n`,
     );
 
-    /** tạo socket server của hệ thống */
-    const io: Server = new Server(server, { path: '/bo_trading_stream' });
-    IOHandlers(io);
+    /** kết nối socket nến để lấy dữ liệu cần thiết */
+    const socket = IOClient(config.WS_CANDLESTICK);
+    CandlestickSocket(socket);
   });
   mongoose.connection.on('error', (err) => {
     console.error('\n🚀Unable to connect to Mongo via Mongoose', err);

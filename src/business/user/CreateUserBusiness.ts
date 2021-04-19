@@ -1,11 +1,11 @@
-import config, { configSendEmail } from '@src/config';
+import config, {configSendEmail} from '@src/config';
 import UserRepository from '@src/repository/UserRepository';
-import { CreateUserValidator } from '@src/validator/users/CreateUser';
-import { IUserModel } from 'bo-trading-common/lib/models/users';
-import { EmailConfig } from 'bo-trading-common/lib/utils';
-import { validate } from 'class-validator';
+import {CreateUserValidator} from '@src/validator/users/CreateUser';
+import {IUserModel} from 'bo-trading-common/lib/models/users';
+import {EmailConfig} from 'bo-trading-common/lib/utils';
+import {validate} from 'class-validator';
 import handlebars from 'handlebars';
-import { createUSDTTRC20 } from './CreateWalletBusiness';
+import {createUSDTTRC20} from './CreateWalletBusiness';
 
 export const createUserBusiness = async (account: CreateUserValidator): Promise<Boolean> => {
   try {
@@ -28,17 +28,17 @@ export const createUserBusiness = async (account: CreateUserValidator): Promise<
       if (!user) throw new Error('Create user fail!');
 
       /** tạo tài khoản demo */
-      userRes.create(<IUserModel>{
-        username: `${user.username}_demo`,
-        full_name: `${user.username} Demo`,
-        email: faker.internet.email(),
-        password: account.password,
-        type_user: 1,
-        user_parent_id: user.id,
-      });
+      // userRes.create(<IUserModel>{
+      //   username: `${user.username}_demo`,
+      //   full_name: `${user.username} Demo`,
+      //   email: faker.internet.email(),
+      //   password: account.password,
+      //   type_user: 1,
+      //   user_parent_id: user.id,
+      // });
 
       /** thêm phân cấp hoa hồng */
-      userRes.findOne({ ref_code: account.referralUser, type_user: 0 }).then((userParent) => {
+      userRes.findOne({ref_code: account.referralUser, type_user: 0}).then((userParent) => {
         if (!userParent) return;
         let commissionLevel = [];
         /** nếu đã có danh sách level thì lấy ra 7 level cuối cùng, nếu không thêm referral hiện tại làm level 1 */
@@ -48,7 +48,7 @@ export const createUserBusiness = async (account: CreateUserValidator): Promise<
         } else {
           commissionLevel.push(userParent.id);
         }
-        userRes.updateById(user.id, { commission_level: commissionLevel });
+        userRes.updateById(user.id, {commission_level: commissionLevel});
       });
 
       /** tạo wallets cho tài khoản */
@@ -73,7 +73,6 @@ export const createUserBusiness = async (account: CreateUserValidator): Promise<
       throw new Error('Username already exists!');
     } else if (err.name === 'MongoError' && err.code === 11000 && err.keyValue.email != null) {
       throw new Error('Email already exists!');
-    } else
-      throw err;
+    } else throw err;
   }
 };

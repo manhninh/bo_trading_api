@@ -1,13 +1,15 @@
-import { errorMiddleware, logger, notFoundMiddleware } from 'bo-trading-common/lib/utils';
-import { json, urlencoded } from 'body-parser';
+import {IQueueLogModel} from 'bo-trading-common/lib/models/queueLogs';
+import {errorMiddleware, logger, notFoundMiddleware} from 'bo-trading-common/lib/utils';
+import {json, urlencoded} from 'body-parser';
 import compression from 'compression';
 import cors from 'cors';
-import express, { NextFunction, Request, Response } from 'express';
+import express, {Request, Response} from 'express';
 import kue from 'kue';
 import passport from 'passport';
 import config from './config';
 import auth from './middleware/auth';
-import { token } from './middleware/auth/Oauth2';
+import {token} from './middleware/auth/Oauth2';
+import QueueLogRepository from './repository/QueueLogRepository';
 import v1Routes from './routes/v1';
 import Scheduler from './schedulers';
 
@@ -39,48 +41,42 @@ class App {
       .on('error', (err: any) => {
         logger.error('QUEUE EROR: ', err);
       })
-      // renmove when job complete - Release memory
+      // when job complete
       .on('job complete', (id: number) => {
         kue.Job.get(id, (err: any, job: any) => {
           if (err) return;
-          job.remove((err: any) => {
-            if (err) throw err;
-            logger.info('Removed job complete #%d', job.id);
-          });
+          this._logQueue(job);
+        });
+      })
+      // when job fail
+      .on('job failed', (id: number, errorMessage: string) => {
+        kue.Job.get(id, (err: any, job: any) => {
+          if (err) return;
+          this._logQueue(job, errorMessage);
         });
       });
-
-    // renmove 100 job fail first - Release memory
-    kue.Job.rangeByState('failed', 0, 100, 'asc', (err: any, jobs: any) => {
-      if (err) return;
-      jobs.forEach((job: any) => {
-        job.remove((err: any) => {
-          if (err) throw err;
-          logger.info('Removed job fail #%d', job.id);
-        });
-      });
-    });
   }
 
   private config() {
     this.app.use(express.static(`${__dirname}/wwwroot`));
-    this.app.use(cors({ origin: '*', methods: ['PUT', 'POST', 'GET', 'DELETE', 'OPTIONS'] }));
+    this.app.use(cors({origin: '*', methods: ['PUT', 'POST', 'GET', 'DELETE', 'OPTIONS']}));
     this.app.use(compression());
 
     /** support application/json type post data */
-    this.app.use(json({ limit: '10MB' }));
-    this.app.use(urlencoded({ extended: true }));
+    this.app.use(json({limit: '10MB'}));
+    this.app.use(urlencoded({extended: true}));
 
     /** middle-ware that initialises Passport */
     this.app.use(passport.initialize());
     auth();
-    this.app.get('/', (req: Request, res: Response, next: NextFunction) => res.status(200).send());
+    this.app.get('/', (_req: Request, res: Response) => res.status(200).send());
     this.app.post('/api/v1/oauth/token', token);
 
     /** add routes */
     this.app.use('/api/v1', v1Routes);
 
-    this.app.use('/kue-api/', kue.app);
+    /** queue interface user */
+    if (process.env.NODE_ENV !== 'production') this.app.use('/kue-api/', kue.app);
 
     /** not found error */
     this.app.use(notFoundMiddleware);
@@ -88,6 +84,23 @@ class App {
     /** internal server Error  */
     this.app.use(errorMiddleware);
   }
+
+  private _logQueue = (job: any, errMess?: string) => {
+    const queueLogRes = new QueueLogRepository();
+    queueLogRes.create(<IQueueLogModel>{
+      logs: JSON.stringify({
+        id: job.id,
+        created_at: job.created_at,
+        data: job.data,
+        type: job.type,
+        workerId: job.workerId,
+        errorMessage: errMess,
+      }),
+    });
+    job.remove((err: any) => {
+      if (err) throw err;
+    });
+  };
 }
 
 export default new App().app;

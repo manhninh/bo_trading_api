@@ -1,7 +1,7 @@
 {
   // Use IntelliSense to learn about possible attributes.
   // Hover to view descriptions of existing attributes.
-  // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+  // For more information, visit: https://go.microsoft.com/fwlink/?linkid:830387
   "version": "0.2.0",
   "configurations": [
     {
@@ -22,6 +22,7 @@
         "PORT": "5002",
         "MONGODB_URI": "mongodb+srv://ninhpm:ninhpm123@cluster0.ofmu5.mongodb.net/bo_trading_new",
         "TOKEN_LIFE": "3600",
+        "WS_CANDLESTICK": "http://localhost:5000",
         "URL_WEB_VERIFICATION_EMAIL": "http://localhost:3000/verification/email/",
         "NODEMAILER_HOST": "email-smtp.ap-southeast-1.amazonaws.com",
         "NODEMAILER_PORT": "587",
@@ -32,7 +33,19 @@
         "PATH_TEMPLATE_EMAIL": "D:\\Freelancer\\BOTrading\\bo_trading_api\\email_template",
         "REDIS_PORT": "11663",
         "REDIS_HOST": "redis-11663.c264.ap-south-1-1.ec2.cloud.redislabs.com",
-        "REDIS_AUTH": "q0h3eJRjjqQ4BotP73QG23ynzUmIi3C6"
+        "REDIS_AUTH": "q0h3eJRjjqQ4BotP73QG23ynzUmIi3C6",
+        "CRYPTO_PRIVATE_KEY": "57c2ae6e54b842e897dfae138945acffd6152fd17f5bad35d5664cf30334fe60",
+        "TRON_FULL_NODE": "https://api.nileex.io",
+        "TRON_EVENT_NODE": "https://event.nileex.io",
+        "TRON_SOLIDITY_NODE": "https://api.nileex.io",
+        "TRON_API_KEY": "e293c752-3e27-4a18-8afb-ba1c4c31bcba",
+        "TRON_USDT_TRC20_CONTRACT_ADDRESS": "TLBaRhANQoJFTqre9Nf1mjuwNWjCJeYqUL",
+        "TRON_COOL_WALLET_ADDRESS": "TKRH3D8AW3YWviQfzzWr6LRQSSrgr3DQ93",
+        "TRON_HOT_WALLET_ADDRESS": "TWcRzeiCZufa2sEsuUvvZA1hCGGTJhpoLD",
+        "TRON_HOT_WALLET_PRIVATE_KEY": "57c2ae6e54b842e897dfae138945acffd6152fd17f5bad35d5664cf30334fe60",
+        "TRON_TRC20_DEPOSIT_MIN_AMOUNT": "20",
+        "TRON_TRC20_TRANSACTION_FEE": "3",
+        "TRON_TRC20_SYMBOL": "USDT-TRC20"
       }
     }
   ]
