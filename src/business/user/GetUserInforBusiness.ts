@@ -12,6 +12,13 @@ export const getUserInforBusiness = async (id: string): Promise<Number> => {
         if (tronWallet !== undefined && typeof tronWallet == 'object')
           user[0].trc20 = tronWallet.address.base58;
       }
+
+      if (user[0].tfa !== undefined && user[0].tfa) {
+        user[0].isEnabledTFA = true;
+        delete user[0].tfa;
+      } else {
+        user[0].isEnabledTFA = false;
+      }
     }
 
     return user;

@@ -74,6 +74,7 @@ export default class UserRepository extends RepositoryBase<IUserModel> {
             "username": "$username",
             "email": "$email",
             "ref_code": "$ref_code",
+            "tfa": "$tfa",
             "amount_trade": "$user_wallets.amount_trade",
             "amount_demo": "$user_wallets.amount_demo",
             "amount_expert": "$user_wallets.amount_expert",
