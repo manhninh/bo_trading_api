@@ -1,15 +1,13 @@
-import {IQueueLogModel} from 'bo-trading-common/lib/models/queueLogs';
-import {errorMiddleware, logger, notFoundMiddleware} from 'bo-trading-common/lib/utils';
+import {errorMiddleware, notFoundMiddleware} from 'bo-trading-common/lib/utils';
 import {json, urlencoded} from 'body-parser';
 import compression from 'compression';
 import cors from 'cors';
 import express, {Request, Response} from 'express';
 import kue from 'kue';
 import passport from 'passport';
-import config from './config';
 import auth from './middleware/auth';
 import {token} from './middleware/auth/Oauth2';
-import QueueLogRepository from './repository/QueueLogRepository';
+import QueueKue from './queue';
 import v1Routes from './routes/v1';
 import Scheduler from './schedulers';
 
@@ -20,41 +18,10 @@ class App {
   constructor() {
     this.app = express();
     // config queue
-    this.configQueue();
+    new QueueKue();
     this.config();
     /** cronjob */
     new Scheduler().config();
-  }
-
-  private configQueue() {
-    global.queue = kue.createQueue({
-      redis: {
-        port: config.REDIS_PORT,
-        host: config.REDIS_HOST,
-        auth: config.REDIS_AUTH,
-      },
-      jobEvents: false,
-    });
-
-    global.queue
-      // error handling
-      .on('error', (err: any) => {
-        logger.error('QUEUE EROR: ', err);
-      })
-      // when job complete
-      .on('job complete', (id: number) => {
-        kue.Job.get(id, (err: any, job: any) => {
-          if (err) return;
-          this._logQueue(job);
-        });
-      })
-      // when job fail
-      .on('job failed', (id: number, errorMessage: string) => {
-        kue.Job.get(id, (err: any, job: any) => {
-          if (err) return;
-          this._logQueue(job, errorMessage);
-        });
-      });
   }
 
   private config() {
@@ -84,23 +51,6 @@ class App {
     /** internal server Error  */
     this.app.use(errorMiddleware);
   }
-
-  private _logQueue = (job: any, errMess?: string) => {
-    const queueLogRes = new QueueLogRepository();
-    queueLogRes.create(<IQueueLogModel>{
-      logs: JSON.stringify({
-        id: job.id,
-        created_at: job.created_at,
-        data: job.data,
-        type: job.type,
-        workerId: job.workerId,
-        errorMessage: errMess,
-      }),
-    });
-    job.remove((err: any) => {
-      if (err) throw err;
-    });
-  };
 }
 
 export default new App().app;
