@@ -16,7 +16,7 @@ export const CreateOrderController = async (req: Request, res: Response, next: N
       const result = await CreateOrderBusiness(data, username);
       res.status(200).send({data: result});
     } else {
-      res.status(200).send({data: true});
+      next(new Error('Your order is not accepted due to time out'));
     }
   } catch (err) {
     next(err);
