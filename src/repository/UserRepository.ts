@@ -1,7 +1,7 @@
-import { IUserModel } from 'bo-trading-common/lib/models/users';
-import { UserSchema, UserWalletSchema } from 'bo-trading-common/lib/schemas';
-import mongoose, { ObjectId, UpdateQuery, UpdateWriteOpResult } from 'mongoose';
-import { RepositoryBase } from './base';
+import {IUserModel} from 'bo-trading-common/lib/models/users';
+import {UserSchema, UserWalletSchema} from 'bo-trading-common/lib/schemas';
+import mongoose, {ObjectId, UpdateQuery, UpdateWriteOpResult} from 'mongoose';
+import {RepositoryBase} from './base';
 
 export default class UserRepository extends RepositoryBase<IUserModel> {
   constructor() {
@@ -11,7 +11,7 @@ export default class UserRepository extends RepositoryBase<IUserModel> {
   public async checkUserOrEmail(userOrEmail: string): Promise<IUserModel> {
     try {
       const result = await UserSchema.findOne({
-        $or: [{ username: userOrEmail }, { email: userOrEmail }],
+        $or: [{username: userOrEmail}, {email: userOrEmail}],
         type_user: 0,
       });
       return result;
@@ -33,7 +33,7 @@ export default class UserRepository extends RepositoryBase<IUserModel> {
     try {
       const faker = require('faker');
       const ref_code = faker.vehicle.vrm();
-      await UserSchema.findByIdAndUpdate(id, { ref_code }, { new: true, upsert: true });
+      await UserSchema.findByIdAndUpdate(id, {ref_code}, {new: true, upsert: true});
     } catch (err) {
       throw err;
     }
@@ -41,7 +41,7 @@ export default class UserRepository extends RepositoryBase<IUserModel> {
 
   public async activeManyUsers(ids: mongoose.Types.ObjectId[]): Promise<UpdateWriteOpResult> {
     try {
-      const result = await UserSchema.updateMany({ _id: { $in: ids } }, { status: 1 });
+      const result = await UserSchema.updateMany({_id: {$in: ids}}, {status: 1});
       return result;
     } catch (err) {
       throw err;
@@ -52,37 +52,35 @@ export default class UserRepository extends RepositoryBase<IUserModel> {
     try {
       const result = await UserSchema.aggregate([
         {
-          "$match": {
-            "_id": this.toObjectId(id),
-            "status": 1
-          }
+          $match: {
+            _id: this.toObjectId(id),
+            status: 1,
+          },
         },
         {
-          "$lookup": {
-            "from": "user_wallets",
-            "localField": "_id",
-            "foreignField": "user_id",
-            "as": "user_wallets"
-          }
+          $lookup: {
+            from: 'user_wallets',
+            localField: '_id',
+            foreignField: 'user_id',
+            as: 'user_wallets',
+          },
         },
         {
-          "$unwind": "$user_wallets"
+          $unwind: '$user_wallets',
         },
         {
-          "$project": {
-            "_id": "$_id",
-            "username": "$username",
-            "email": "$email",
-            "ref_code": "$ref_code",
-            "tfa": "$tfa",
-            "amount_trade": "$user_wallets.amount_trade",
-            "amount_demo": "$user_wallets.amount_demo",
-            "amount_expert": "$user_wallets.amount_expert",
-            "amount_copytrade": "$user_wallets.amount_copytrade",
-            "trc20": "$user_wallets.trc20",
-            "erc20": "$user_wallets.erc20"
-          }
-        }
+          $project: {
+            _id: '$_id',
+            username: '$username',
+            email: '$email',
+            ref_code: '$ref_code',
+            tfa: '$tfa',
+            amount_trade: '$user_wallets.amount_trade',
+            amount_demo: '$user_wallets.amount_demo',
+            amount_expert: '$user_wallets.amount_expert',
+            amount_copytrade: '$user_wallets.amount_copytrade',
+          },
+        },
       ]);
       return result;
     } catch (err) {
@@ -94,30 +92,30 @@ export default class UserRepository extends RepositoryBase<IUserModel> {
     try {
       const result = await UserSchema.aggregate([
         {
-          "$match": {
-            "status": 1
-          }
+          $match: {
+            status: 1,
+          },
         },
         {
-          "$lookup": {
-            "from": "user_wallets",
-            "localField": "_id",
-            "foreignField": "user_id",
-            "as": "user_wallets"
-          }
+          $lookup: {
+            from: 'user_wallets',
+            localField: '_id',
+            foreignField: 'user_id',
+            as: 'user_wallets',
+          },
         },
         {
-          "$unwind": "$user_wallets"
+          $unwind: '$user_wallets',
         },
         {
-          "$project": {
-            "_id": "$_id",
-            "username": "$username",
-            "email": "$email",
-            "trc20": "$user_wallets.trc20",
-            "erc20": "$user_wallets.erc20"
-          }
-        }
+          $project: {
+            _id: '$_id',
+            username: '$username',
+            email: '$email',
+            trc20: '$user_wallets.trc20',
+            erc20: '$user_wallets.erc20',
+          },
+        },
       ]);
       return result;
     } catch (e) {
@@ -132,7 +130,7 @@ export default class UserRepository extends RepositoryBase<IUserModel> {
         return false;
       } else {
         // TODO: Need to check TFA code
-        const wallet = await UserWalletSchema.findOne({ user_id: row._id });
+        const wallet = await UserWalletSchema.findOne({user_id: row._id});
         if (row.type_user == 0 && row.checkPassword(password) && wallet && wallet.amount >= amount) {
           return true;
         } else {

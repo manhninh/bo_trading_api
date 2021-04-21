@@ -15,11 +15,8 @@ export const CreateOrderBusiness = async (order: CreateOrderValidator, username:
         })
         .priority('high')
         .save();
-
-      // queue handling order
-      // global.queue;
+      return true;
     }
-    return true;
   } catch (err) {
     throw err;
   }
