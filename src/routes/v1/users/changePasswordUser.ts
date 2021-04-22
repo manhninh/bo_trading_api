@@ -1,9 +1,9 @@
-import { createMfaQrCodeController } from '@src/controllers/users/CreateMfaQrCodeController';
+import { changePasswordUserController } from '@src/controllers/users/ChangePasswordUserController';
 import { isAuthenticated } from '@src/middleware/auth/Oauth2';
 import { Router } from 'express';
 
 /**
- * @api {get} /users/create_mfa_qrcode Create mfa QR code
+ * @api {post} /users/change_password Update password
  * @apiVersion 1.0.0
  * @apiGroup I. Users
  *
@@ -14,12 +14,15 @@ import { Router } from 'express';
  *    "Content-Type": "application/json"
  *    "Accept": "application/json"
  *
+ * @apiParam {String} current_password
+ * @apiParam {String} new_password
+ *
  * @apiSuccess {Object} data
  *
  * @apiSuccessExample {json} Success
  *    HTTP/1.1 200 OK
  *    {
- *        "data": { "url" : "otpauth://totp/Finimix:vietibeer@gmail.com?algorithm=SHA1&digits=6&period=30&issuer=Finimix&secret=LKZLFWZ77ZIWTPDQ2YSG5AQ", "secret": "LKZLFWZ77ZIWTPDQ2YSG5AQ" }
+ *        "data": true
  *    }
  *
  * @apiError (404 Not Found) NotFound API not found
@@ -33,4 +36,4 @@ import { Router } from 'express';
  *       "message": "error message"
  *    }
  */
-export default (route: Router) => route.get('/create_mfa_qrcode', isAuthenticated, createMfaQrCodeController);
+export default (route: Router) => route.post('/change_password', isAuthenticated, changePasswordUserController);

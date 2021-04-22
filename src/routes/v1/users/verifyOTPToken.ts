@@ -1,4 +1,4 @@
-import { VerifyOTPTokenController } from '@src/controllers/users/VerifyOTPTokenController';
+import { verifyOTPTokenController } from '@src/controllers/users/VerifyOTPTokenController';
 import { isAuthenticated } from '@src/middleware/auth/Oauth2';
 import { Router } from 'express';
 
@@ -36,4 +36,4 @@ import { Router } from 'express';
  *       "message": "error message"
  *    }
  */
-export default (route: Router) => route.post('/verify_otp', isAuthenticated, VerifyOTPTokenController);
+export default (route: Router) => route.post('/verify_otp', isAuthenticated, verifyOTPTokenController);
