@@ -24,7 +24,8 @@ export default class TradeHistoryRepository extends RepositoryBase<ITradeHistory
         createdAt: {
           $gte: from,
           $lte: to // endOf('day') To prevent actual results from the next day being included.
-        }
+        },
+        user_id: id
       }, options);
       return result;
     } catch (err) {
