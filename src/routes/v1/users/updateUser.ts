@@ -1,25 +1,31 @@
-import { createMfaQrCodeController } from '@src/controllers/users/CreateMfaQrCodeController';
+import { updateUserController } from '@src/controllers/users/UpdateUserController';
 import { isAuthenticated } from '@src/middleware/auth/Oauth2';
 import { Router } from 'express';
+import multer from "multer";
+const upload = multer({ dest: 'uploads/' });
 
 /**
- * @api {get} /users/create_mfa_qrcode Create mfa QR code
+ * @api {post} /users/update Create new user
  * @apiVersion 1.0.0
  * @apiGroup I. Users
  *
- * @apiHeader {String} Content-Type application/json.
- * @apiHeader {String} Accept application/json.
- *
+ * @apiHeader {String} Content-Type multipart/form-data.
+ * 
  * @apiHeaderExample {Header} Header-Example
- *    "Content-Type": "application/json"
- *    "Accept": "application/json"
+ *    "Content-Type": "multipart/form-data"
+ *
+ * @apiParam {String} email
+ * @apiParam {String} username
+ * @apiParam {String} full_name
+ * @apiParam {String} phone
+ * @apiParam {object} avatar
  *
  * @apiSuccess {Object} data
  *
  * @apiSuccessExample {json} Success
  *    HTTP/1.1 200 OK
  *    {
- *        "data": { "url" : "otpauth://totp/Finimix:vietibeer@gmail.com?algorithm=SHA1&digits=6&period=30&issuer=Finimix&secret=LKZLFWZ77ZIWTPDQ2YSG5AQ", "secret": "LKZLFWZ77ZIWTPDQ2YSG5AQ" }
+ *        "data": true
  *    }
  *
  * @apiError (404 Not Found) NotFound API not found
@@ -33,4 +39,5 @@ import { Router } from 'express';
  *       "message": "error message"
  *    }
  */
-export default (route: Router) => route.get('/create_mfa_qrcode', isAuthenticated, createMfaQrCodeController);
+
+export default (route: Router) => route.post('/update', upload.single('avatar'), isAuthenticated, updateUserController);

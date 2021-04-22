@@ -20,9 +20,9 @@ export default class UserRepository extends RepositoryBase<IUserModel> {
     }
   }
 
-  public async updateById(id: ObjectId, update: UpdateQuery<IUserModel>): Promise<IUserModel> {
+  public async updateById(id: ObjectId, update: UpdateQuery<IUserModel>, options?: mongoose.QueryOptions): Promise<IUserModel> {
     try {
-      const result = await UserSchema.findByIdAndUpdate(id, update);
+      const result = await UserSchema.findByIdAndUpdate(id, update, options);
       return result;
     } catch (err) {
       throw err;
@@ -73,6 +73,8 @@ export default class UserRepository extends RepositoryBase<IUserModel> {
             "_id": "$_id",
             "username": "$username",
             "email": "$email",
+            "full_name": "$full_name",
+            "phone": "$phone",
             "ref_code": "$ref_code",
             "tfa": "$tfa",
             "amount_trade": "$user_wallets.amount_trade",
