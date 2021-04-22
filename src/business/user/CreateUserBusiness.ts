@@ -2,7 +2,7 @@ import config, {configSendEmail} from '@src/config';
 import UserRepository from '@src/repository/UserRepository';
 import {CreateUserValidator} from '@src/validator/users/CreateUser';
 import {IUserModel} from 'bo-trading-common/lib/models/users';
-import {EmailConfig} from 'bo-trading-common/lib/utils';
+import {EmailConfig, logger} from 'bo-trading-common/lib/utils';
 import {validate} from 'class-validator';
 import handlebars from 'handlebars';
 import {createUSDTTRC20} from './CreateWalletBusiness';
@@ -64,7 +64,9 @@ export const createUserBusiness = async (account: CreateUserValidator): Promise<
           linkVerification: config.URL_WEB_VERIFICATION_EMAIL + uuid,
         };
         const htmlToSend = template(replacements);
-        emailConfig.send(config.EMAIL_ROOT, user.email, 'Verify your account', htmlToSend);
+        emailConfig
+          .send(config.EMAIL_ROOT, user.email, 'Verify your account', htmlToSend)
+          .catch((err) => logger.error(err.message));
       });
       return true;
     }
