@@ -20,7 +20,11 @@ export default class UserRepository extends RepositoryBase<IUserModel> {
     }
   }
 
-  public async updateById(id: ObjectId, update: UpdateQuery<IUserModel>, options?: mongoose.QueryOptions): Promise<IUserModel> {
+  public async updateById(
+    id: ObjectId,
+    update: UpdateQuery<IUserModel>,
+    options?: mongoose.QueryOptions,
+  ): Promise<IUserModel> {
     try {
       const result = await UserSchema.findByIdAndUpdate(id, update, options);
       return result;
@@ -74,7 +78,9 @@ export default class UserRepository extends RepositoryBase<IUserModel> {
             username: '$username',
             email: '$email',
             ref_code: '$ref_code',
-            tfa: '$tfa',
+            isEnabledTFA: {
+              $cond: {if: {$ne: ['$tfa', null]}, then: true, else: false},
+            },
             amount_trade: '$user_wallets.amount_trade',
             amount_demo: '$user_wallets.amount_demo',
             amount_expert: '$user_wallets.amount_expert',
