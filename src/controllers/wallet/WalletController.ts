@@ -7,11 +7,11 @@ import { NextFunction, Request, Response } from 'express';
 
 export const GetTransactionsHistory = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   try {
-    const params = req.body;
+    const params = Object.assign({} as object, req.query);
     const data = {
       user_id: req.user["id"],
-      page: params.page,
-      limit: params.limit,
+      page: params?.page ?? 1,
+      limit: params?.limit ?? 10,
       type: params.type
     };
     const result = await getTransactionsHistory(data);
