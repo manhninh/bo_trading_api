@@ -4,9 +4,9 @@ import ClientRepository from '@src/repository/ClientRepository';
 import UserRepository from '@src/repository/UserRepository';
 import moment from 'moment';
 import passport from 'passport';
-import { BasicStrategy } from 'passport-http';
-import { Strategy as BearerStrategy } from 'passport-http-bearer';
-import { Strategy as ClientPasswordStrategy } from 'passport-oauth2-client-password';
+import {BasicStrategy} from 'passport-http';
+import {Strategy as BearerStrategy} from 'passport-http-bearer';
+import {Strategy as ClientPasswordStrategy} from 'passport-oauth2-client-password';
 
 export default () => {
   passport.use(
@@ -53,7 +53,7 @@ export default () => {
           .findByToken(token)
           .then((accessToken) => {
             if (!accessToken) return done({code: 403, type: 'INVALID_TOKEN'});
-            const diffSeconds = moment.duration(moment().diff(moment(accessToken.createdAt))).asSeconds();
+            const diffSeconds = moment.duration(moment().diff(moment(accessToken.createdAt))).asHours();
             if (diffSeconds > Number(config.TOKEN_LIFE)) {
               accessTokenRes.removeToken(token);
               return done({code: 403, type: 'TOKEN_EXPRIED'});
