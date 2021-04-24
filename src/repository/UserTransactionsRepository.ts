@@ -1,6 +1,7 @@
 import { IUserTransactionsModel } from 'bo-trading-common/lib/models/userTransactions';
 import { UserTransactionsSchema } from 'bo-trading-common/lib/schemas';
 import { Constants } from 'bo-trading-common/lib/utils';
+import moment from 'moment';
 import { ObjectId, UpdateQuery } from 'mongoose';
 import { RepositoryBase } from './base';
 
@@ -64,7 +65,15 @@ export default class UserTransactionsRepository extends RepositoryBase<IUserTran
         limit: input.limit ?? 10,
         sort: { createdAt: -1 }
       };
+
+      const from = moment(input.from).startOf('day').toDate();
+      const to = moment(input.to).endOf('day').toDate();
+
       const result = await UserTransactionsSchema.paginate({
+        createdAt: {
+          $gte: from,
+          $lte: to // endOf('day') To prevent actual results from the next day being included.
+        },
         user_id: input.user_id,
         type: input.type ?? Constants.TRANSACTION_TYPE_DEPOSIT
       }, options);

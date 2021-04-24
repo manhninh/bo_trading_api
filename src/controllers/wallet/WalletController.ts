@@ -3,17 +3,19 @@ import { CreateWithdrawBusiness } from '@src/business/wallet/CreateWithdrawBusin
 import { getTransactionsHistory } from '@src/business/wallet/GetTransactionsHistory';
 import { CreateTransferValidator } from '@src/validator/wallet/CreateTransfer';
 import { CreateWithdrawValidator } from '@src/validator/wallet/CreateWithdraw';
+import { GetTransactionsHistoryValidator } from '@src/validator/wallet/GetTransactionsHistory';
 import { NextFunction, Request, Response } from 'express';
 
 export const GetTransactionsHistory = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   try {
-    const params = req.body;
-    const data = {
-      user_id: req.user["id"],
-      page: params.page,
-      limit: params.limit,
-      type: params.type
-    };
+    const params = Object.assign({} as object, req.query);
+    const data = new GetTransactionsHistoryValidator();
+    data.user_id = req.user["id"];
+    data.page = Number(params?.page) ?? 1;
+    data.limit = Number(params?.limit) ?? 10;
+    data.type = params?.type ? Number(params?.type) : 0;
+    data.from = params?.from ? new Date(params.from as any) : new Date();
+    data.to = params?.to ? new Date(params.to as any) : new Date();
     const result = await getTransactionsHistory(data);
     res.status(200).send({ data: result });
   } catch (err) {
