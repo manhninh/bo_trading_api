@@ -10,9 +10,9 @@ export const GetTransactionsHistory = async (req: Request, res: Response, next: 
     const params = Object.assign({} as object, req.query);
     const data = {
       user_id: req.user["id"],
-      page: params?.page ?? 1,
-      limit: params?.limit ?? 10,
-      type: params.type
+      page: Number(params?.page) ?? 1,
+      limit: Number(params?.limit) ?? 10,
+      type: Number(params.type)
     };
     const result = await getTransactionsHistory(data);
     res.status(200).send({ data: result });
