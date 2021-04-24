@@ -11,6 +11,7 @@ export const GetTransactionsHistory = async (req: Request, res: Response, next: 
     const params = Object.assign({} as object, req.query);
     const data = new GetTransactionsHistoryValidator();
     data.user_id = req.user["id"];
+    data.username = req.user["username"];
     data.page = Number(params?.page) ?? 1;
     data.limit = Number(params?.limit) ?? 10;
     data.type = params?.type ? Number(params?.type) : 0;
