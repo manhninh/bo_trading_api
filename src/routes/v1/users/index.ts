@@ -1,12 +1,13 @@
-import { Router } from 'express';
-import changePasswordUser from "./changePasswordUser";
-import createMfaQrCode from "./createMfaQrCode";
+import {Router} from 'express';
+import buySponsor from './buySponsor';
+import changePasswordUser from './changePasswordUser';
+import createMfaQrCode from './createMfaQrCode';
 import createUser from './createUser';
-import disableMfaUser from "./disableMfaUser";
-import getUserInfor from "./getUserInfor";
-import updateUser from "./updateUser";
-import verifyOTPToken from "./verifyOTPToken";
-import verifyUser from "./verifyUser";
+import disableMfaUser from './disableMfaUser';
+import getUserInfor from './getUserInfor';
+import updateUser from './updateUser';
+import verifyOTPToken from './verifyOTPToken';
+import verifyUser from './verifyUser';
 
 export default class UserRouters {
   public router: Router = Router();
@@ -20,5 +21,6 @@ export default class UserRouters {
     verifyOTPToken(this.router);
     changePasswordUser(this.router);
     disableMfaUser(this.router);
+    buySponsor(this.router);
   }
 }
