@@ -26,7 +26,5 @@ export class UpdateUserValidator {
   @IsNumberString({}, { message: 'Phone number must be number' })
   phone?: string;
 
-  avatar?: object;
-
-
+  avatar?: string;
 }
