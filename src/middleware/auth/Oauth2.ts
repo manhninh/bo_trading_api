@@ -2,12 +2,14 @@ import {STATUS} from '@src/contants/Response';
 import AccessTokenRepository from '@src/repository/AccessTokenRepository';
 import RefreshTokenRepository from '@src/repository/RefreshTokenRepository';
 import UserRepository from '@src/repository/UserRepository';
+import {decrypt} from '@src/utils/helpers';
 import {IAccessTokenModel} from 'bo-trading-common/lib/models/accessTokens';
 import {IClientModel} from 'bo-trading-common/lib/models/clients';
 import {IUserModel} from 'bo-trading-common/lib/models/users';
 import {randomBytes} from 'crypto';
 import {createServer, exchange, ExchangeDoneFunction} from 'oauth2orize';
 import passport from 'passport';
+import {verifyTOTP} from './otp';
 
 // initialization token
 const initToken = async (user: IUserModel, client: IClientModel, done: ExchangeDoneFunction) => {
@@ -40,13 +42,21 @@ const server = createServer();
 // Exchange username & password for an access token.
 server.exchange(
   exchange.password(
-    async (client: IClientModel, username: string, password: string, _scope, done: ExchangeDoneFunction) => {
+    {},
+    async (client: IClientModel, username: string, password: string, _scope, body: any, done: ExchangeDoneFunction) => {
       try {
         const userRes = new UserRepository();
         userRes
           .checkUserOrEmail(username)
           .then((user) => {
             if (!user) return done(new Error('Your account does not exist!'));
+            if (user.tfa) {
+              if (body.tfa) {
+                const secret = decrypt(user.id, user.tfa);
+                const status = verifyTOTP(body.tfa, secret);
+                if (!status) return done(new Error('Invalid authentication code!'));
+              } else return done(new Error('NOT_FOUND_TFA'));
+            }
             if (!user.checkPassword(password)) return done(new Error('Login failed!'));
             if (user.status === STATUS.ACTIVE) {
               initToken(user, client, done);
