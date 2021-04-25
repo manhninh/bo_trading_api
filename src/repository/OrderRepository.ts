@@ -42,7 +42,7 @@ export default class OrderRepository extends RepositoryBase<IOrderModel> {
             type_user: typeUser,
             createdAt: {
               $gte: new Date(moment(date).startOf('minute').toISOString()),
-              $lte: new Date(moment(date).startOf('minute').add(30, 'seconds').toISOString()),
+              $lte: new Date(moment(date).endOf('minute').toISOString()),
             },
           },
         },

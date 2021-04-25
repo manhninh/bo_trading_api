@@ -69,14 +69,70 @@ export default class UserTransactionsRepository extends RepositoryBase<IUserTran
       const from = moment(input.from).startOf('day').toDate();
       const to = moment(input.to).endOf('day').toDate();
 
-      const result = await UserTransactionsSchema.paginate({
-        createdAt: {
-          $gte: from,
-          $lte: to // endOf('day') To prevent actual results from the next day being included.
-        },
-        user_id: input.user_id,
-        type: input.type ?? Constants.TRANSACTION_TYPE_DEPOSIT
-      }, options);
+      let aggregateData = [];
+
+      // Default to search
+      aggregateData.push(
+        {
+          "$match": {
+            "user_id": this.toObjectId(input.user_id),
+            "type": input.type ?? Constants.TRANSACTION_TYPE_DEPOSIT,
+            createdAt: {
+              $gte: from,
+              $lte: to // endOf('day') To prevent actual results from the next day being included.
+            }
+          }
+        }
+      );
+
+      // Add more join
+      if (input?.type == Constants.TRANSACTION_TYPE_TRANSFER) {
+        aggregateData.push({
+          "$lookup": {
+            "from": "users",
+            "localField": "to_user_id",
+            "foreignField": "_id",
+            "as": "userTo"
+          }
+        });
+        aggregateData.push({
+          "$unwind": "$userTo"
+        });
+
+        aggregateData.push({
+          "$lookup": {
+            "from": "users",
+            "localField": "user_id",
+            "foreignField": "_id",
+            "as": "userFrom"
+          }
+        });
+        aggregateData.push({
+          "$unwind": "$userFrom"
+        });
+
+        aggregateData.push({
+          "$project": {
+            "amount": 1,
+            "address": 1,
+            "tx": 1,
+            "user_id": 1,
+            "fee": 1,
+            "symbol": 1,
+            "status": 1,
+            "type": 1,
+            "noted": 1,
+            "to_user_id": 1,
+            "createdAt": 1,
+            "updatedAt": 1,
+            "to_username": "$userTo.username",
+            "from_username": "$userFrom.username",
+          }
+        });
+      }
+
+      const aggregate = UserTransactionsSchema.aggregate(aggregateData);
+      const result = await UserTransactionsSchema.aggregatePaginate(aggregate, options);
       return result;
     } catch (err) {
       throw err;
