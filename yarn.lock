@@ -1382,11 +1382,6 @@
   dependencies:
     "@types/mongoose" "*"
 
-"@types/mongoose-paginate@^5.0.8":
-  version "5.0.8"
-  resolved "https://registry.yarnpkg.com/@types/mongoose-paginate/-/mongoose-paginate-5.0.8.tgz#6b925c3ccf1c45bfb116830c77471cc1ba045308"
-  integrity sha512-6Ybb8X+iBB1/CeScDhzn0q5ZXljHu2Zzg9Wp4nYI5V3Pjc02YuLq6GHHLQrljsA/hMytULnbwQovUYWeI3IxWA==
-
 "@types/mongoose@*":
   version "5.10.5"
   resolved "https://registry.yarnpkg.com/@types/mongoose/-/mongoose-5.10.5.tgz#0f4fb0440e8cf0213caec1e5c7b163dbd9847c56"
@@ -1945,10 +1940,10 @@ bn.js@^5.0.0, bn.js@^5.1.1:
   resolved "https://registry.yarnpkg.com/bn.js/-/bn.js-5.2.0.tgz#358860674396c6997771a9d051fcc1b57d4ae002"
   integrity sha512-D7iWRBvnZE8ecXiLj/9wbxH7Tk79fAh8IHaTNq1RWRixsS02W+5qS+iE9yq6RYl0asXx5tw0bLhmT5pIfbSquw==
 
-bo-trading-common@^1.4.23:
-  version "1.4.2"
-  resolved "https://registry.yarnpkg.com/bo-trading-common/-/bo-trading-common-1.4.2.tgz#b49b0ad017b22551d4795b42cd8428777c38b50c"
-  integrity sha512-bUdYAGlcUMZn/QF/Jb4WNRR6+O/GZu2Wg9hNoYr7SziVV5LbDZAdGrooMOANZBk8X/+sChmvbJ7tztJo8rLtBA==
+bo-trading-common@^1.4.4:
+  version "1.4.4"
+  resolved "https://registry.yarnpkg.com/bo-trading-common/-/bo-trading-common-1.4.4.tgz#462327e8bed940a8a2d8e12fd4293424627ad37e"
+  integrity sha512-IZBn1pfAO8t8K1Q6vS5WffEp/w17V/StWJsHiPXBZTHtTesV+4JPN6gB5VnTRsnUSDp+CIdCTgyUbCN1UcZCcQ==
   dependencies:
     "@types/mongoose-aggregate-paginate-v2" "^1.0.1"
     express "^4.16.3"
@@ -3919,9 +3914,9 @@ is-ci@^2.0.0:
     ci-info "^2.0.0"
 
 is-core-module@^2.2.0:
-  version "2.2.0"
-  resolved "https://registry.yarnpkg.com/is-core-module/-/is-core-module-2.2.0.tgz#97037ef3d52224d85163f5597b2b63d9afed981a"
-  integrity sha512-XRAfAdyyY5F5cOXn7hYQDqh2Xmii+DEfIcQGxK/uNwMHhIkPWO0g8msXcbzLe+MpGoR951MlqM/2iIlU4vKDdQ==
+  version "2.3.0"
+  resolved "https://registry.yarnpkg.com/is-core-module/-/is-core-module-2.3.0.tgz#d341652e3408bca69c4671b79a0954a3d349f887"
+  integrity sha512-xSphU2KG9867tsYdLD4RWQ1VqdFl4HTO9Thf3I/3dLEfr0dbPTWKsuCKrgqMljg4nPE+Gq0VCnzT3gr0CyBmsw==
   dependencies:
     has "^1.0.3"
 

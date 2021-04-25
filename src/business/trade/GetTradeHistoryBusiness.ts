@@ -1,10 +1,8 @@
-import TradeHistoryRepository from "@src/repository/TradeHistoryRepository";
-import { GetTradeHistoryValidator } from "@src/validator/trade/GetTradeHistory";
-import { ITradeHistoryModel } from "bo-trading-common/lib/models/tradeHistories";
-import { validate } from "class-validator";
-import { PaginateResult } from "mongoose";
+import TradeHistoryRepository from '@src/repository/TradeHistoryRepository';
+import {GetTradeHistoryValidator} from '@src/validator/trade/GetTradeHistory';
+import {validate} from 'class-validator';
 
-export const getTradeHistoryBusiness = async (id: string, data: GetTradeHistoryValidator): Promise<PaginateResult<ITradeHistoryModel>> => {
+export const getTradeHistoryBusiness = async (id: string, data: GetTradeHistoryValidator): Promise<any> => {
   try {
     const validation = await validate(data);
     if (validation.length !== 0) {
