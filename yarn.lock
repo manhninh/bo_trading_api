@@ -1945,7 +1945,7 @@ bn.js@^5.0.0, bn.js@^5.1.1:
   resolved "https://registry.yarnpkg.com/bn.js/-/bn.js-5.2.0.tgz#358860674396c6997771a9d051fcc1b57d4ae002"
   integrity sha512-D7iWRBvnZE8ecXiLj/9wbxH7Tk79fAh8IHaTNq1RWRixsS02W+5qS+iE9yq6RYl0asXx5tw0bLhmT5pIfbSquw==
 
-bo-trading-common@^1.4.2:
+bo-trading-common@^1.4.23:
   version "1.4.2"
   resolved "https://registry.yarnpkg.com/bo-trading-common/-/bo-trading-common-1.4.2.tgz#b49b0ad017b22551d4795b42cd8428777c38b50c"
   integrity sha512-bUdYAGlcUMZn/QF/Jb4WNRR6+O/GZu2Wg9hNoYr7SziVV5LbDZAdGrooMOANZBk8X/+sChmvbJ7tztJo8rLtBA==
