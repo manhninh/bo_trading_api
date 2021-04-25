@@ -47,7 +47,7 @@ export default class UserRepository extends RepositoryBase<IUserModel> {
 
   public async activeUser(id: ObjectId): Promise<UpdateWriteOpResult> {
     try {
-      const result = await UserSchema.updateOne({_id: id}, {status: 1});
+      const result = await UserSchema.updateOne({ _id: id }, { status: 1 });
       return result;
     } catch (err) {
       throw err;
@@ -81,7 +81,7 @@ export default class UserRepository extends RepositoryBase<IUserModel> {
             email: '$email',
             ref_code: '$ref_code',
             isEnabledTFA: {
-              $cond: [{$ifNull: ['$tfa', false]}, true, false],
+              $cond: [{ $ifNull: ['$tfa', false] }, true, false],
             },
             is_sponsor: '$is_sponsor',
             amount: '$user_wallets.amount',
