@@ -16,4 +16,5 @@ export class GetTransactionsHistoryValidator {
   limit: number;
   user_id: number;
   type: number;
+  username: string;
 }
