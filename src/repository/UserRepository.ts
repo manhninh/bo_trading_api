@@ -1,7 +1,9 @@
-import {IUserModel} from 'bo-trading-common/lib/models/users';
-import {UserSchema, UserWalletSchema} from 'bo-trading-common/lib/schemas';
-import mongoose, {ObjectId, UpdateQuery, UpdateWriteOpResult} from 'mongoose';
-import {RepositoryBase} from './base';
+import { verifyTOTP } from '@src/middleware/auth/otp';
+import { decrypt } from '@src/utils/helpers';
+import { IUserModel } from 'bo-trading-common/lib/models/users';
+import { UserSchema, UserWalletSchema } from 'bo-trading-common/lib/schemas';
+import mongoose, { ObjectId, UpdateQuery, UpdateWriteOpResult } from 'mongoose';
+import { RepositoryBase } from './base';
 
 export default class UserRepository extends RepositoryBase<IUserModel> {
   constructor() {
@@ -11,7 +13,7 @@ export default class UserRepository extends RepositoryBase<IUserModel> {
   public async checkUserOrEmail(userOrEmail: string): Promise<IUserModel> {
     try {
       const result = await UserSchema.findOne({
-        $or: [{username: userOrEmail}, {email: userOrEmail}],
+        $or: [{ username: userOrEmail }, { email: userOrEmail }],
         type_user: 0,
       });
       return result;
@@ -37,7 +39,7 @@ export default class UserRepository extends RepositoryBase<IUserModel> {
     try {
       const faker = require('faker');
       const ref_code = faker.vehicle.vrm();
-      await UserSchema.findByIdAndUpdate(id, {ref_code}, {new: true, upsert: true});
+      await UserSchema.findByIdAndUpdate(id, { ref_code }, { new: true, upsert: true });
     } catch (err) {
       throw err;
     }
@@ -137,10 +139,19 @@ export default class UserRepository extends RepositoryBase<IUserModel> {
       if (!row) {
         return false;
       } else {
-        // TODO: Need to check TFA code
-        const wallet = await UserWalletSchema.findOne({user_id: row._id});
+        const wallet = await UserWalletSchema.findOne({ user_id: row._id });
         if (row.type_user == 0 && row.checkPassword(password) && wallet && wallet.amount >= amount) {
-          return true;
+          // TODO: Need to check TFA code
+          if (row?.tfa) {
+            const secret = decrypt(user_id, row.tfa);
+            if (verifyTOTP(tfa, secret)) {
+              return true;
+            } else {
+              return false;
+            }
+          } else {
+            return true;
+          }
         } else {
           return false;
         }
