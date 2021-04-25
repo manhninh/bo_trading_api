@@ -1,9 +1,9 @@
-import { verifyTOTP } from '@src/middleware/auth/otp';
-import { decrypt } from '@src/utils/helpers';
-import { IUserModel } from 'bo-trading-common/lib/models/users';
-import { UserSchema, UserWalletSchema } from 'bo-trading-common/lib/schemas';
-import mongoose, { ObjectId, UpdateQuery, UpdateWriteOpResult } from 'mongoose';
-import { RepositoryBase } from './base';
+import {verifyTOTP} from '@src/middleware/auth/otp';
+import {decrypt} from '@src/utils/helpers';
+import {IUserModel} from 'bo-trading-common/lib/models/users';
+import {UserSchema, UserWalletSchema} from 'bo-trading-common/lib/schemas';
+import mongoose, {ObjectId, UpdateQuery, UpdateWriteOpResult} from 'mongoose';
+import {RepositoryBase} from './base';
 
 export default class UserRepository extends RepositoryBase<IUserModel> {
   constructor() {
@@ -13,7 +13,7 @@ export default class UserRepository extends RepositoryBase<IUserModel> {
   public async checkUserOrEmail(userOrEmail: string): Promise<IUserModel> {
     try {
       const result = await UserSchema.findOne({
-        $or: [{ username: userOrEmail }, { email: userOrEmail }],
+        $or: [{username: userOrEmail}, {email: userOrEmail}],
         type_user: 0,
       });
       return result;
@@ -39,7 +39,7 @@ export default class UserRepository extends RepositoryBase<IUserModel> {
     try {
       const faker = require('faker');
       const ref_code = faker.vehicle.vrm();
-      await UserSchema.findByIdAndUpdate(id, { ref_code }, { new: true, upsert: true });
+      await UserSchema.findByIdAndUpdate(id, {ref_code}, {new: true, upsert: true});
     } catch (err) {
       throw err;
     }
@@ -47,7 +47,7 @@ export default class UserRepository extends RepositoryBase<IUserModel> {
 
   public async activeUser(id: ObjectId): Promise<UpdateWriteOpResult> {
     try {
-      const result = await UserSchema.updateOne({ _id: id }, { status: 1 });
+      const result = await UserSchema.updateOne({_id: id}, {status: 1});
       return result;
     } catch (err) {
       throw err;
@@ -81,7 +81,7 @@ export default class UserRepository extends RepositoryBase<IUserModel> {
             email: '$email',
             ref_code: '$ref_code',
             isEnabledTFA: {
-              $cond: [{ $ifNull: ['$tfa', false] }, true, false],
+              $cond: [{$ifNull: ['$tfa', false]}, true, false],
             },
             is_sponsor: '$is_sponsor',
             amount: '$user_wallets.amount',
@@ -139,7 +139,7 @@ export default class UserRepository extends RepositoryBase<IUserModel> {
       if (!row) {
         return false;
       } else {
-        const wallet = await UserWalletSchema.findOne({ user_id: row._id });
+        const wallet = await UserWalletSchema.findOne({user_id: row._id});
         if (row.type_user == 0 && row.checkPassword(password) && wallet && wallet.amount >= amount) {
           // TODO: Need to check TFA code
           if (row?.tfa) {
@@ -158,6 +158,80 @@ export default class UserRepository extends RepositoryBase<IUserModel> {
       }
     } catch (err) {
       return false;
+    }
+  }
+
+  public async commissionMemberList(
+    user_id: string,
+    fromDate: Date,
+    toDate: Date,
+    page: number,
+    limit: number,
+  ): Promise<any> {
+    try {
+      const options = {
+        page: page ?? 1,
+        limit: limit,
+      };
+      const aggregate = UserSchema.aggregate([
+        {
+          $match: {
+            commission_level: {
+              $elemMatch: {
+                $eq: user_id,
+              },
+            },
+            createdAt: {
+              $gte: fromDate,
+              $lte: toDate,
+            },
+          },
+        },
+        {
+          $sort: {
+            createdAt: -1,
+          },
+        },
+        {
+          $project: {
+            createdAt: 1,
+            username: 1,
+            level: {
+              $size: '$commission_level',
+            },
+            sponsor_id: {
+              $toObjectId: {
+                $arrayElemAt: ['$commission_level', -1],
+              },
+            },
+            is_sponsor: {$ifNull: [false, true]},
+          },
+        },
+        {
+          $lookup: {
+            from: 'users',
+            localField: 'sponsor_id',
+            foreignField: '_id',
+            as: 'user_sponsor',
+          },
+        },
+        {
+          $unwind: '$user_sponsor',
+        },
+        {
+          $project: {
+            createdAt: 1,
+            username: 1,
+            level: 1,
+            sponsor: '$user_sponsor.username',
+            agency: '$is_sponsor',
+          },
+        },
+      ]);
+      const result = await UserSchema.aggregatePaginate(aggregate, options);
+      return result;
+    } catch (err) {
+      throw err;
     }
   }
 }

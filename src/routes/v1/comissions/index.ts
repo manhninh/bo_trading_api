@@ -1,4 +1,6 @@
 import {Router} from 'express';
+import CommissionMemberList from './CommissionMemberList';
+import CommissionTradeDetail from './CommissionTradeDetail';
 import GetCommissions from './GetCommissions';
 
 export default class CommissionRouters {
@@ -6,5 +8,7 @@ export default class CommissionRouters {
 
   constructor() {
     GetCommissions(this.router);
+    CommissionTradeDetail(this.router);
+    CommissionMemberList(this.router);
   }
 }

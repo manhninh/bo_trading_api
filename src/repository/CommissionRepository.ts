@@ -37,4 +37,63 @@ export default class CommissionRepository extends RepositoryBase<ICommissionMode
       throw err;
     }
   }
+
+  public async commissionTradeDetail(
+    user_id: string,
+    fromDate: Date,
+    toDate: Date,
+    page: number,
+    limit: number,
+  ): Promise<any> {
+    try {
+      const options = {
+        page: page ?? 1,
+        limit: limit,
+      };
+
+      const aggregate = CommissionSchema.aggregate([
+        {
+          $match: {
+            type_commission: 0,
+            id_user_ref: this.toObjectId(user_id),
+            createdAt: {
+              $gte: fromDate,
+              $lte: toDate,
+            },
+          },
+        },
+        {
+          $sort: {
+            createdAt: -1,
+          },
+        },
+        {
+          $lookup: {
+            from: 'users',
+            localField: 'id_user',
+            foreignField: '_id',
+            as: 'users',
+          },
+        },
+        {
+          $unwind: '$users',
+        },
+        {
+          $project: {
+            createdAt: 1,
+            username: '$users.username',
+            level: 1,
+            investment_amount: 1,
+            commission: 1,
+            is_withdraw: 1,
+          },
+        },
+      ]);
+
+      const result = await CommissionSchema.aggregatePaginate(aggregate, options);
+      return result;
+    } catch (err) {
+      throw err;
+    }
+  }
 }
