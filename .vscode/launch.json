@@ -20,8 +20,8 @@
       "env": {
         "NODE_ENV": "development",
         "PORT": "5002",
-        "MONGODB_URI": "mongodb+srv://ninhpm:ninhpm123@cluster0.ofmu5.mongodb.net/bo_trading_new",
-        "TOKEN_LIFE": "8",
+        "MONGODB_URI": "mongodb://localhost:27017/bo_trading_new",
+        "TOKEN_LIFE": "14400",
         "WS_CANDLESTICK": "http://localhost:5000",
         "URL_WEB_VERIFICATION_EMAIL": "http://localhost:3000/verification/email/",
         "NODEMAILER_HOST": "email-smtp.ap-southeast-1.amazonaws.com",
@@ -45,7 +45,8 @@
         "TRON_HOT_WALLET_PRIVATE_KEY": "57c2ae6e54b842e897dfae138945acffd6152fd17f5bad35d5664cf30334fe60",
         "TRON_TRC20_DEPOSIT_MIN_AMOUNT": "20",
         "TRON_TRC20_TRANSACTION_FEE": "3",
-        "TRON_TRC20_SYMBOL": "USDT-TRC20"
+        "TRON_TRC20_SYMBOL": "USDT-TRC20",
+        "SYSTEM_ENABLE_AUTO_WITHDRAW_KEY":"ENABLE_AUTO_WITHDRAW",
       }
     }
   ]

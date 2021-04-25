@@ -1,7 +1,7 @@
-import {SendMailOptions} from 'bo-trading-common/lib/utils';
-import {config} from 'dotenv';
+import { SendMailOptions } from 'bo-trading-common/lib/utils';
+import { config } from 'dotenv';
 
-const envFound = config({path: `./.env.${process.env.NODE_ENV || 'development'}`});
+const envFound = config({ path: `./.env.${process.env.NODE_ENV || 'development'}` });
 if (!envFound) throw new Error("Couldn't find .env file");
 
 export default {
@@ -9,7 +9,7 @@ export default {
 
   port: process.env.PORT || 5002,
 
-  logs: {level: process.env.LOG_LEVEL || 'silly'},
+  logs: { level: process.env.LOG_LEVEL || 'silly' },
 
   MONGODB_URI: process.env.MONGODB_URI,
 
@@ -54,5 +54,5 @@ export const configSendEmail: SendMailOptions = {
   host: process.env.NODEMAILER_HOST,
   port: Number(process.env.NODEMAILER_PORT),
   secure: Boolean(process.env.NODEMAILER_SECURE),
-  auth: {user: process.env.NODEMAILER_USER, pass: process.env.NODEMAILER_PASS},
+  auth: { user: process.env.NODEMAILER_USER, pass: process.env.NODEMAILER_PASS },
 };
