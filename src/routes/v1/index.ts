@@ -19,7 +19,7 @@ class MainRoutes {
     this.routers.use('/orders', isAuthenticated, new OrderRouters().router);
     this.routers.use('/wallet', isAuthenticated, new WalletRoutes().router);
     this.routers.use('/trade', isAuthenticated, new TradeRoutes().router);
-    this.routers.use('/comissions', isAuthenticated, new ComissionRoutes().router);
+    this.routers.use('/commissions', isAuthenticated, new ComissionRoutes().router);
   }
 }
 

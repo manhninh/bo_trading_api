@@ -2,6 +2,7 @@ import { verifyTOTP } from '@src/middleware/auth/otp';
 import { decrypt } from '@src/utils/helpers';
 import { IUserModel } from 'bo-trading-common/lib/models/users';
 import { UserSchema, UserWalletSchema } from 'bo-trading-common/lib/schemas';
+import moment from 'moment';
 import mongoose, { ObjectId, UpdateQuery, UpdateWriteOpResult } from 'mongoose';
 import { RepositoryBase } from './base';
 export default class UserRepository extends RepositoryBase<IUserModel> {
@@ -183,8 +184,8 @@ export default class UserRepository extends RepositoryBase<IUserModel> {
               },
             },
             createdAt: {
-              $gte: fromDate,
-              $lte: toDate,
+              $gte: new Date(moment(fromDate).startOf('day').toISOString()),
+              $lte: new Date(moment(toDate).endOf('day').toISOString()),
             },
           },
         },
