@@ -48,6 +48,11 @@ export default {
 
   // SYSTEM CONFIG
   SYSTEM_ENABLE_AUTO_WITHDRAW_KEY: process.env.SYSTEM_ENABLE_AUTO_WITHDRAW_KEY,
+
+  // AWS S3 CONFIG
+  S3_ACCESS_KEY: process.env.S3_ACCESS_KEY,
+  S3_ACCESS_SECRET: process.env.S3_ACCESS_SECRET,
+  S3_BUCKET: process.env.S3_BUCKET,
 };
 
 export const configSendEmail: SendMailOptions = {
@@ -56,3 +61,4 @@ export const configSendEmail: SendMailOptions = {
   secure: Boolean(process.env.NODEMAILER_SECURE),
   auth: { user: process.env.NODEMAILER_USER, pass: process.env.NODEMAILER_PASS },
 };
+

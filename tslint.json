@@ -23,7 +23,6 @@
     "no-string-literal": false,
     "quotemark": [true, "single", "avoid-escape"],
     "no-console": false,
-    "forin": false,
-    "skipLibCheck": true
+    "forin": false
   }
 }
