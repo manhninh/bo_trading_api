@@ -1,7 +1,7 @@
 import UserRepository from '@src/repository/UserRepository';
-import {CommissionMemberListValidator} from '@src/validator/commissions/CommissionMemberListValidator';
-import {ICommissionModel} from 'bo-trading-common/lib/models/Commissions';
-import {validate} from 'class-validator';
+import { CommissionMemberListValidator } from '@src/validator/commissions/CommissionMemberListValidator';
+import { ICommissionModel } from 'bo-trading-common/lib/models/commissions';
+import { validate } from 'class-validator';
 
 export const CommissionMemberListBusiness = async (obj: CommissionMemberListValidator): Promise<ICommissionModel[]> => {
   try {

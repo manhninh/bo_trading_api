@@ -1,7 +1,7 @@
 import CommissionRepository from '@src/repository/CommissionRepository';
-import {CommissionTradeDetailValidator} from '@src/validator/commissions/CommissionTradeDetailValidator';
-import {ICommissionModel} from 'bo-trading-common/lib/models/Commissions';
-import {validate} from 'class-validator';
+import { CommissionTradeDetailValidator } from '@src/validator/commissions/CommissionTradeDetailValidator';
+import { ICommissionModel } from 'bo-trading-common/lib/models/commissions';
+import { validate } from 'class-validator';
 
 export const CommissionTradeDetailBusiness = async (
   obj: CommissionTradeDetailValidator,

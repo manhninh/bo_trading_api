@@ -1,8 +1,6 @@
 import CommissionRepository from '@src/repository/CommissionRepository';
-import UserRepository from '@src/repository/UserRepository';
-import {CommissionWithdrawValidator} from '@src/validator/commissions/CommissionWithdrawValidator';
-import {ICommissionModel} from 'bo-trading-common/lib/models/Commissions';
-import {validate} from 'class-validator';
+import { CommissionWithdrawValidator } from '@src/validator/commissions/CommissionWithdrawValidator';
+import { validate } from 'class-validator';
 
 export const CommissionWithdrawBusiness = async (obj: CommissionWithdrawValidator): Promise<boolean> => {
   try {
