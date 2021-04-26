@@ -13,5 +13,5 @@ export class VerifyOTPTokenValidator {
   })
   code: string;
 
-  secret: string;
+  secret?: string;
 }
