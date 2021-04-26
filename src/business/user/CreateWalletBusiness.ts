@@ -1,13 +1,16 @@
 import config from '@src/config';
 import walletConstant from '@src/config/wallet';
 import UserWalletRepository from '@src/repository/UserWalletRepository';
+import { erc20Abi } from '@src/utils/constract/abi';
 import { generateString } from '@src/utils/helpers';
 import { IUserWalletModel } from 'bo-trading-common/lib/models/userWallets';
 import lightwallet from 'eth-lightwallet';
+import moment from 'moment';
 import Web3 from 'web3';
 
 const web3 = new Web3();
 web3.setProvider(new Web3.providers.HttpProvider(walletConstant.RPC_ADDRESS));
+const usdtContract = new web3.eth.Contract(erc20Abi, walletConstant.ERC20_USDT_CONTRACT_ADDRESS);
 
 export const createUSDTTRC20 = async (user: any): Promise<any> => {
   try {
@@ -112,6 +115,121 @@ const createVaultPromise = (param) => {
     lightwallet.keystore.createVault(param, (err, data) => {
       if (err !== null) return reject(err);
       return resolve(data);
+    });
+  });
+};
+
+export const getBalanceEth = async (privateKey, address) => {
+  try {
+    const signer = web3.eth.accounts.privateKeyToAccount(privateKey);
+    web3.eth.accounts.wallet.add(signer);
+
+    return web3.utils.fromWei(await web3.eth.getBalance(address));
+  } catch (err) {
+    const loc = err.message.indexOf('at runCall');
+    const errMsg = loc > -1 ? err.message.slice(0, loc) : err.message;
+    throw new Error(errMsg);
+  }
+};
+
+export const getBalanceUsdt = async (privateKey, address) => {
+  try {
+    const signer = web3.eth.accounts.privateKeyToAccount(privateKey);
+    web3.eth.accounts.wallet.add(signer);
+    return await new Promise((resolve, reject) => {
+      usdtContract.methods.balanceOf(address).call((error, balance) => {
+        if (error) return reject(error);
+        balance = balance / (10 ** 6); // TODO: check calculator
+        return resolve(balance);
+      });
+    });
+  } catch (err) {
+    const loc = err.message.indexOf('at runCall');
+    const errMsg = loc > -1 ? err.message.slice(0, loc) : err.message;
+    throw new Error(errMsg);
+  }
+};
+
+export const getInfoEthTransaction = async (trans) => {
+  const { confirmations, hash, timeStamp } = trans;
+  const value = web3.utils.fromWei(trans.value);
+  const cumulativeGasUsed = web3.utils.toBN(trans.cumulativeGasUsed).toNumber();
+  const gasPrice = web3.utils.toBN(trans.gasPrice).toNumber();
+  const gas = web3.utils.toBN(trans.gas).toNumber();
+  let gasUsed = cumulativeGasUsed < gas ? gasPrice * cumulativeGasUsed : gasPrice * gas;
+  gasUsed = Number(web3.utils.fromWei(gasUsed.toString()));
+
+  return { coin: 'eth', hash, value, valueUSD: null, gasUsed, confirmations, createdAt: moment(timeStamp * 1000) };
+};
+
+export const getInfoUsdtTransaction = (trans) => {
+  const { confirmations, tokenDecimal, hash, timeStamp } = trans;
+  const value = web3.utils
+    .toBN(trans.value)
+    .div(web3.utils.toBN(10).pow(web3.utils.toBN(tokenDecimal)))
+    .toNumber();
+  const gasPrice = web3.utils.toBN(trans.gasPrice).toNumber();
+  let gasUsed = web3.utils.toBN(trans.gasUsed).toNumber() * gasPrice;
+  gasUsed = Number(web3.utils.fromWei(gasUsed.toString()));
+
+  return { coin: 'usdt', hash, value, valueUSD: value, gasUsed, confirmations, createdAt: moment(timeStamp * 1000) };
+};
+
+export const sendEth = async (privateKey, fromAddress, toAddress, amount) => {
+  try {
+    const signer = web3.eth.accounts.privateKeyToAccount(privateKey);
+    web3.eth.accounts.wallet.add(signer);
+    const sendParams = {
+      from: fromAddress,
+      to: toAddress,
+      value: web3.utils.toWei(amount),
+      gas: 0
+    };
+    sendParams.gas = walletConstant.MAX_GAS_FOR_ETH_SEND;
+    return await sendTransactionPromise(sendParams);
+  } catch (err) {
+    const loc = err.message.indexOf('at runCall');
+    const errMsg = loc > -1 ? err.message.slice(0, loc) : err.message;
+    throw new Error(errMsg);
+  }
+};
+
+export const sendUsdt = async (privateKey, fromAddress, toAddress, amount, gasPriceDefault = '30') => {
+  try {
+    const signer = web3.eth.accounts.privateKeyToAccount(privateKey);
+    web3.eth.accounts.wallet.add(signer);
+    // const gasPrice = await web3.eth.getGasPrice();
+    const gasPrice = web3.utils.toWei(gasPriceDefault, 'Gwei');
+    const sendParams = {
+      from: fromAddress,
+      value: '0x0',
+      gasPrice,
+      gas: walletConstant.MAX_GAS_FOR_TOKEN_SEND,
+    };
+    const tokenAmount = Math.round(Number(amount) * Math.pow(10, 6));
+
+    return await sendTokenPromise(usdtContract, toAddress, tokenAmount, sendParams);
+  } catch (err) {
+    const loc = err.message.indexOf('at runCall');
+    const errMsg = loc > -1 ? err.message.slice(0, loc) : err.message;
+    throw new Error(errMsg);
+  }
+};
+
+const sendTransactionPromise = (params) => {
+  return new Promise((resolve, reject) => {
+    web3.eth.sendTransaction(params, (err, data) => {
+      if (err !== null) return reject(err);
+      return resolve(data);
+    });
+  });
+};
+
+const sendTokenPromise = (tokenContract, sendToAddress, sendAmount, params) => {
+  return new Promise((resolve, reject) => {
+    tokenContract.methods.transfer(sendToAddress, sendAmount).send(params, (err, sendTx) => {
+      if (err) return reject(err);
+      return resolve(sendTx);
     });
   });
 };

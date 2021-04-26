@@ -1,9 +1,10 @@
 import config from '@src/config';
+import { default as wallet, default as walletConstant } from '@src/config/wallet';
 import UserRepository from '@src/repository/UserRepository';
 import { delay } from '@src/utils/helpers';
+import { createUSDTERC20, createUSDTTRC20, getBalanceEth, getBalanceUsdt, sendEth, sendUsdt } from '../user/CreateWalletBusiness';
 import { createDepositTransaction } from './createDepositTransaction';
 import { createSystemTransaction } from './createSystemTransaction';
-
 
 export const importDeposits = async (): Promise<any> => {
   try {
@@ -76,8 +77,72 @@ export const importDeposits = async (): Promise<any> => {
                 }
               }
             }
+          } else {
+            const user = {
+              id: row.user_id
+            };
+            createUSDTTRC20(user);
           }
           // END: Check for TRC20
+
+          // START: Check for ERC20
+          if (row?.erc20) {
+            const ethWallet = JSON.parse(row.erc20);
+            if (ethWallet !== undefined && typeof ethWallet == 'object') {
+              const walletAddress = ethWallet.address;
+
+              // Check amount user wallet and withdraw to cold wallet
+              const userETHWalletBalance = await getBalanceEth(ethWallet.address_private_key, walletAddress);
+              if (Number(userETHWalletBalance) > 0.01) {
+                const txHash = await sendEth(
+                  ethWallet.address_private_key,
+                  walletAddress,
+                  walletConstant.COOL_WALLET_ETH_ADDRESS,
+                  (Number(userETHWalletBalance) - 0.01) as Number
+                );
+              }
+
+              const userUSDTWalletBalance = await getBalanceUsdt(ethWallet.address_private_key, walletAddress);
+              // Send fee for withdraw usdt
+              if (userUSDTWalletBalance >= wallet.ETH_ERC20_DEPOSIT_MIN_AMOUNT) {
+                if (Number(userETHWalletBalance) < 0.01) {
+                  const hotETHWalletBalance = await getBalanceEth(walletConstant.HOT_WALLET_ETH_PRIVATE_KEY, walletConstant.HOT_WALLET_ETH_ADDRESS);
+                  if (Number(hotETHWalletBalance) > 0.01) {
+                    const tx = await sendEth(
+                      walletConstant.HOT_WALLET_ETH_PRIVATE_KEY,
+                      walletConstant.HOT_WALLET_ETH_ADDRESS,
+                      walletAddress,
+                      '0.01'
+                    );
+
+                    if (tx) {
+                      await createSystemTransaction(row, 0.01, wallet.ETH_ERC20_SYMBOL, walletAddress, tx);
+                    }
+                  }
+                } else {
+                  const configWithdrawGasPrice = null;
+                  const tx = await sendUsdt(
+                    ethWallet.address_private_key,
+                    walletAddress,
+                    walletConstant.COOL_WALLET_ETH_ADDRESS,
+                    String(userUSDTWalletBalance),
+                    (configWithdrawGasPrice ? configWithdrawGasPrice.config.gasPrice : '90')
+                  );
+
+                  if (tx) {
+                    await createDepositTransaction(row, (Number(userUSDTWalletBalance) - Number(wallet.ETH_ERC20_TRANSACTION_FEE)), config.TRON_TRC20_SYMBOL, walletAddress, tx);
+                  }
+                }
+              }
+            }
+          } else {
+            const user = {
+              id: row.user_id
+            };
+            createUSDTERC20(user);
+          }
+          // END: Check for ERC20
+
           await delay(250);
         } catch (err) {
           await delay(0);
