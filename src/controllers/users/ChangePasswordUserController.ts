@@ -9,6 +9,7 @@ export const changePasswordUserController = async (req: Request, res: Response, 
     const data = new ChangePasswordUserValidator();
     data.current_password = params.current_password;
     data.new_password = params.new_password;
+    data.tfa = params.tfa;
     const result = await changePasswordUserBusiness(id, data);
     res.status(200).send(result);
   } catch (err) {

@@ -12,4 +12,6 @@ export class ChangePasswordUserValidator {
     message: 'New Password must be at most 20 characters!',
   })
   new_password?: string;
+
+  tfa?: string;
 }
