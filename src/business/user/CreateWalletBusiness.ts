@@ -1,7 +1,6 @@
 import config from '@src/config';
 import walletConstant from '@src/config/wallet';
 import UserWalletRepository from '@src/repository/UserWalletRepository';
-import { erc20Abi } from '@src/utils/constract/abi';
 import { generateString } from '@src/utils/helpers';
 import { IUserWalletModel } from 'bo-trading-common/lib/models/userWallets';
 import lightwallet from 'eth-lightwallet';
@@ -10,8 +9,278 @@ import Web3 from 'web3';
 
 const web3 = new Web3();
 web3.setProvider(new Web3.providers.HttpProvider(walletConstant.RPC_ADDRESS));
-const usdtContract = new web3.eth.Contract(erc20Abi, walletConstant.ERC20_USDT_CONTRACT_ADDRESS);
-
+const usdtContract = new web3.eth.Contract([
+  {
+    constant: true,
+    inputs: [],
+    name: 'name',
+    outputs: [
+      {
+        name: '',
+        type: 'string',
+      },
+    ],
+    payable: false,
+    type: 'function',
+  },
+  {
+    constant: false,
+    inputs: [
+      {
+        name: '_spender',
+        type: 'address',
+      },
+      {
+        name: '_value',
+        type: 'uint256',
+      },
+    ],
+    name: 'approve',
+    outputs: [
+      {
+        name: 'success',
+        type: 'bool',
+      },
+    ],
+    payable: false,
+    type: 'function',
+  },
+  {
+    constant: true,
+    inputs: [],
+    name: 'totalSupply',
+    outputs: [
+      {
+        name: '',
+        type: 'uint256',
+      },
+    ],
+    payable: false,
+    type: 'function',
+  },
+  {
+    constant: false,
+    inputs: [
+      {
+        name: '_from',
+        type: 'address',
+      },
+      {
+        name: '_to',
+        type: 'address',
+      },
+      {
+        name: '_value',
+        type: 'uint256',
+      },
+    ],
+    name: 'transferFrom',
+    outputs: [
+      {
+        name: 'success',
+        type: 'bool',
+      },
+    ],
+    payable: false,
+    type: 'function',
+  },
+  {
+    constant: true,
+    inputs: [],
+    name: 'decimals',
+    outputs: [
+      {
+        name: '',
+        type: 'uint8',
+      },
+    ],
+    payable: false,
+    type: 'function',
+  },
+  {
+    constant: true,
+    inputs: [],
+    name: 'version',
+    outputs: [
+      {
+        name: '',
+        type: 'string',
+      },
+    ],
+    payable: false,
+    type: 'function',
+  },
+  {
+    constant: true,
+    inputs: [
+      {
+        name: '_owner',
+        type: 'address',
+      },
+    ],
+    name: 'balanceOf',
+    outputs: [
+      {
+        name: 'balance',
+        type: 'uint256',
+      },
+    ],
+    payable: false,
+    type: 'function',
+  },
+  {
+    constant: true,
+    inputs: [],
+    name: 'symbol',
+    outputs: [
+      {
+        name: '',
+        type: 'string',
+      },
+    ],
+    payable: false,
+    type: 'function',
+  },
+  {
+    constant: false,
+    inputs: [
+      {
+        name: '_to',
+        type: 'address',
+      },
+      {
+        name: '_value',
+        type: 'uint256',
+      },
+    ],
+    name: 'transfer',
+    outputs: [
+      {
+        name: 'success',
+        type: 'bool',
+      },
+    ],
+    payable: false,
+    type: 'function',
+  },
+  {
+    constant: false,
+    inputs: [
+      {
+        name: '_spender',
+        type: 'address',
+      },
+      {
+        name: '_value',
+        type: 'uint256',
+      },
+      {
+        name: '_extraData',
+        type: 'bytes',
+      },
+    ],
+    name: 'approveAndCall',
+    outputs: [
+      {
+        name: 'success',
+        type: 'bool',
+      },
+    ],
+    payable: false,
+    type: 'function',
+  },
+  {
+    constant: true,
+    inputs: [
+      {
+        name: '_owner',
+        type: 'address',
+      },
+      {
+        name: '_spender',
+        type: 'address',
+      },
+    ],
+    name: 'allowance',
+    outputs: [
+      {
+        name: 'remaining',
+        type: 'uint256',
+      },
+    ],
+    payable: false,
+    type: 'function',
+  },
+  {
+    inputs: [
+      {
+        name: '_initialAmount',
+        type: 'uint256',
+      },
+      {
+        name: '_tokenName',
+        type: 'string',
+      },
+      {
+        name: '_decimalUnits',
+        type: 'uint8',
+      },
+      {
+        name: '_tokenSymbol',
+        type: 'string',
+      },
+    ],
+    type: 'constructor',
+  },
+  {
+    payable: false,
+    type: 'fallback',
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: true,
+        name: '_from',
+        type: 'address',
+      },
+      {
+        indexed: true,
+        name: '_to',
+        type: 'address',
+      },
+      {
+        indexed: false,
+        name: '_value',
+        type: 'uint256',
+      },
+    ],
+    name: 'Transfer',
+    type: 'event',
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: true,
+        name: '_owner',
+        type: 'address',
+      },
+      {
+        indexed: true,
+        name: '_spender',
+        type: 'address',
+      },
+      {
+        indexed: false,
+        name: '_value',
+        type: 'uint256',
+      },
+    ],
+    name: 'Approval',
+    type: 'event',
+  }
+], walletConstant.ERC20_USDT_CONTRACT_ADDRESS);
 export const createUSDTTRC20 = async (user: any): Promise<any> => {
   try {
     const TronWeb = require('tronweb');

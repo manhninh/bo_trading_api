@@ -268,5 +268,5 @@ export const erc20Abi = [
     ],
     name: 'Approval',
     type: 'event',
-  }
+  },
 ];
