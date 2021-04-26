@@ -14,8 +14,6 @@ const upload = multer({ dest: 'uploads/' });
  * @apiHeaderExample {Header} Header-Example
  *    "Content-Type": "multipart/form-data"
  *
- * @apiParam {String} email
- * @apiParam {String} username
  * @apiParam {String} full_name
  * @apiParam {String} phone
  * @apiParam {object} avatar

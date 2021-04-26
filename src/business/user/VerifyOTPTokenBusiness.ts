@@ -9,6 +9,7 @@ import { validate } from 'class-validator';
  * @param password
  * @param code code từ Authenticator or Authy
  * @param id id của object Users
+ * @param secret string
  */
 export const VerifyOTPTokenBusiness = async (id: string, data: VerifyOTPTokenValidator): Promise<boolean> => {
   try {
