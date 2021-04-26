@@ -1,5 +1,5 @@
 import CommissionRepository from '@src/repository/CommissionRepository';
-import {ICommissionModel} from 'bo-trading-common/lib/models/Commissions';
+import { ICommissionModel } from 'bo-trading-common/lib/models/commissions';
 
 export const GetCommissionBusiness = async (userId: string): Promise<ICommissionModel[]> => {
   try {

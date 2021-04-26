@@ -12,6 +12,12 @@ export const getWalletAddressBusiness = async (id: string): Promise<any> => {
         if (typeof tronWallet == 'object')
           row.trc20 = tronWallet.address.base58;
       }
+
+      if (row?.erc20) {
+        const ETHWallet = JSON.parse(row.erc20);
+        if (typeof ETHWallet == 'object')
+          row.erc20 = ETHWallet.address;
+      }
     }
 
     return row;
