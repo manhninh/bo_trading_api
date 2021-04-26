@@ -1,9 +1,7 @@
 import CommissionTransactionRepository from '@src/repository/CommissionTransactionRepository';
-import UserRepository from '@src/repository/UserRepository';
-import {CommissionWithdrawHistoryValidator} from '@src/validator/commissions/CommissionWithdrawHistoryValidator';
-import {ICommissionModel} from 'bo-trading-common/lib/models/Commissions';
+import { CommissionWithdrawHistoryValidator } from '@src/validator/commissions/CommissionWithdrawHistoryValidator';
 import ICommissionTransactionModel from 'bo-trading-common/lib/models/commissionTransactions/ICommissionTransactionModel';
-import {validate} from 'class-validator';
+import { validate } from 'class-validator';
 
 export const CommissionWithdrawHistoryBusiness = async (obj: CommissionWithdrawHistoryValidator): Promise<ICommissionTransactionModel[]> => {
   try {
