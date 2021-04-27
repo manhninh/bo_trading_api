@@ -33,6 +33,7 @@
     "base32-decode": "^1.0.0",
     "base32-encode": "^1.2.0",
     "bcryptjs": "^2.4.3",
+    "bitcore-mnemonic": "8.1.1",
     "bo-trading-common": "^1.5.1",
     "body-parser": "^1.18.3",
     "class-validator": "^0.13.1",
