@@ -51,7 +51,7 @@ export const importDeposits = async (): Promise<any> => {
                     });
 
                   if (tx) {
-                    await createDepositTransaction(row, (trc20AccountBalanceOrigin - Number(config.TRON_TRC20_TRANSACTION_FEE)), config.TRON_TRC20_SYMBOL, walletAddress, tx);
+                    await createDepositTransaction(row, trc20AccountBalanceOrigin, config.TRON_TRC20_SYMBOL, walletAddress, tx);
                   }
                 } else {
                   // Transfer TRX from HOT WALLET to User Wallet
