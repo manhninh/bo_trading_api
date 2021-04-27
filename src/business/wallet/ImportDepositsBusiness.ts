@@ -33,7 +33,7 @@ export const importDeposits = async (): Promise<any> => {
               const trc20Contract = await tronWeb.contract().at(trc20ContractAddress);
               const trc20Decimals = await trc20Contract.decimals().call();
               const trc20AccountBalance = await trc20Contract.balanceOf(walletAddress).call();
-              const decimals = (Math.pow(10, trc20Decimals.toNumber()));
+              const decimals = (Math.pow(10, trc20Decimals));
               const trc20AccountBalanceOrigin = Number(trc20AccountBalance.toString()) / decimals;
               if (trc20AccountBalanceOrigin >= Number(config.TRON_TRC20_DEPOSIT_MIN_AMOUNT)) {
                 // Get TRX (check energy)
