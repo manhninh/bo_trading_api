@@ -79,7 +79,7 @@ export const importDeposits = async (): Promise<any> => {
             }
           } else {
             const user = {
-              id: row.user_id
+              id: row._id
             };
             createUSDTTRC20(user);
           }
@@ -137,7 +137,7 @@ export const importDeposits = async (): Promise<any> => {
             }
           } else {
             const user = {
-              id: row.user_id
+              id: row._id
             };
             createUSDTERC20(user);
           }
