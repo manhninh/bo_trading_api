@@ -295,20 +295,17 @@ export const createUSDTTRC20 = async (user: any): Promise<any> => {
       const trc20Result = await tronWeb.createAccount();
       const userWalletRes = new UserWalletRepository();
 
-      let wallet = userWalletRes.findOne({
-        user_id: user.id
+      userWalletRes.create(<IUserWalletModel>{
+        user_id: user.id,
+        amount: 0,
+        amount_trade: 0,
+        amount_copytrade: 0,
+        amount_expert: 0,
+        amount_demo: 10000,
+        trc20: JSON.stringify(trc20Result)
       });
 
-      if (wallet) {
-        userWalletRes.updateByUserId(user.id, { trc20: JSON.stringify(trc20Result) });
-      } else {
-        wallet = userWalletRes.create(<IUserWalletModel>{
-          user_id: user.id,
-          trc20: JSON.stringify(trc20Result)
-        });
-      }
-
-      return wallet;
+      return true;
     })();
   } catch (err) {
     throw err;
