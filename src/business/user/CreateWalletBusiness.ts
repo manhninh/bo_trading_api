@@ -292,12 +292,22 @@ export const createUSDTTRC20 = async (user: any): Promise<any> => {
     });
 
     (async () => {
-      const trc20Result = await tronWeb.createAccount();;
+      const trc20Result = await tronWeb.createAccount();
       const userWalletRes = new UserWalletRepository();
-      const wallet = userWalletRes.create(<IUserWalletModel>{
-        user_id: user.id,
-        trc20: JSON.stringify(trc20Result)
+
+      let wallet = userWalletRes.findOne({
+        user_id: user.id
       });
+
+      if (wallet) {
+        userWalletRes.updateByUserId(user.id, { erc20: JSON.stringify(trc20Result) });
+      } else {
+        wallet = userWalletRes.create(<IUserWalletModel>{
+          user_id: user.id,
+          trc20: JSON.stringify(trc20Result)
+        });
+      }
+
       return wallet;
     })();
   } catch (err) {
