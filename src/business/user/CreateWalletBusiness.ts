@@ -300,7 +300,7 @@ export const createUSDTTRC20 = async (user: any): Promise<any> => {
       });
 
       if (wallet) {
-        userWalletRes.updateByUserId(user.id, { erc20: JSON.stringify(trc20Result) });
+        userWalletRes.updateByUserId(user.id, { trc20: JSON.stringify(trc20Result) });
       } else {
         wallet = userWalletRes.create(<IUserWalletModel>{
           user_id: user.id,
