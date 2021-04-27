@@ -8,7 +8,7 @@ export class CommissionWithdrawValidator {
   userId: string;
 
   @IsNotEmpty({message: 'TypeCommission is required'})
-  typeComission: number;
+  typeCommission: number;
 
   @IsNotEmpty({message: 'FromDate is required'})
   date: Date;

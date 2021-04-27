@@ -1,7 +1,7 @@
-import { ICommissionModel } from 'bo-trading-common/lib/models/commissions';
-import { CommissionSchema, CommissionTransactionSchema, UserWalletSchema } from 'bo-trading-common/lib/schemas';
+import {ICommissionModel} from 'bo-trading-common/lib/models/commissions';
+import {CommissionSchema, CommissionTransactionSchema, UserWalletSchema} from 'bo-trading-common/lib/schemas';
 import moment from 'moment';
-import { RepositoryBase } from './base';
+import {RepositoryBase} from './base';
 
 export default class CommissionRepository extends RepositoryBase<ICommissionModel> {
   constructor() {
@@ -105,7 +105,7 @@ export default class CommissionRepository extends RepositoryBase<ICommissionMode
         {
           $match: {
             id_user_ref: this.toObjectId(user_id),
-            // is_withdraw: false,
+            is_withdraw: false,
             type_commission: typeCommission,
             createdAt: {
               $lte: date,
@@ -126,16 +126,16 @@ export default class CommissionRepository extends RepositoryBase<ICommissionMode
         amountCommission = Math.floor(amountCommission * 100) / 100;
         // cập nhật số tiền vào amount của tài khoản
         await UserWalletSchema.findOneAndUpdate(
-          { user_id: this.toObjectId(user_id) },
+          {user_id: this.toObjectId(user_id)},
           {
-            $inc: { amount: amountCommission },
+            $inc: {amount: amountCommission},
           },
         );
         // tạo bản ghi mới bên commission_transactions
         await CommissionTransactionSchema.create({
           type_commission: typeCommission,
           id_user: this.toObjectId(user_id),
-          amount: amountCommission
+          amount: amountCommission,
         });
 
         // thay đổi trạng thái của các commisson sang withdraw

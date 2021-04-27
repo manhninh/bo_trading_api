@@ -18,7 +18,15 @@ export const changePasswordUserBusiness = async (id: string, data: ChangePasswor
     const userRes = new UserRepository();
     const user = await userRes.findById(id);
     if (user) {
-      const success = await VerifyOTPTokenBusiness(id, { password: data.current_password, code: data.tfa });
+      let success;
+      if (!user.checkPassword(data.current_password)) throw new Error('Invalid password!');
+
+      if (user.tfa) {
+        success = await VerifyOTPTokenBusiness(id, { password: data.current_password, code: data.tfa });
+      } else {
+        success = true;
+      }
+
       if (success) {
         const salt = crypto.randomBytes(128).toString('hex');
         const hashed_password = crypto.pbkdf2Sync(data.new_password, salt, 10000, 512, 'sha512').toString('hex');
