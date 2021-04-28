@@ -1947,7 +1947,7 @@ bitcore-lib@8.1.1:
     inherits "=2.0.1"
     lodash "=4.17.11"
 
-bitcore-lib@^8.1.1, bitcore-lib@^8.25.8:
+bitcore-lib@^8.1.1:
   version "8.25.8"
   resolved "https://registry.yarnpkg.com/bitcore-lib/-/bitcore-lib-8.25.8.tgz#b4a9d6cd715596297d958d2ad12fdf09e54a16d7"
   integrity sha512-vxNJ+DLAeC2V8iPa6dRvUbb/Nm3Vr/cXKhCKSIxj8YPU2tP0QiwEz2Lu9sbqhtsmIerS+F1eeHulzS21MpS2GQ==
@@ -1966,14 +1966,6 @@ bitcore-mnemonic@8.1.1:
   integrity sha512-F9R+PKN6m8jDikmNbuD7yp47vdyWcNYGdu9jokiNW46VOm5E+HJM41BiIJdUIVeY9mf+U8T7URq6Knr985NVTg==
   dependencies:
     bitcore-lib "^8.1.1"
-    unorm "^1.4.1"
-
-bitcore-mnemonic@8.25.8:
-  version "8.25.8"
-  resolved "https://registry.yarnpkg.com/bitcore-mnemonic/-/bitcore-mnemonic-8.25.8.tgz#fbca9fda34d9f5fa66a6c13420b63b3ac10a4720"
-  integrity sha512-xViUIa9YiJ2UP5yNVAfFfsiCKB7ed+wJuPo6jz36GE91nPPxxNJ2LOMIVQMSYj89g77FsgQmAx/qj2g35G34WA==
-  dependencies:
-    bitcore-lib "^8.25.8"
     unorm "^1.4.1"
 
 bl@^2.2.1:
@@ -2024,10 +2016,10 @@ bn.js@^5.0.0, bn.js@^5.1.1:
   resolved "https://registry.yarnpkg.com/bn.js/-/bn.js-5.2.0.tgz#358860674396c6997771a9d051fcc1b57d4ae002"
   integrity sha512-D7iWRBvnZE8ecXiLj/9wbxH7Tk79fAh8IHaTNq1RWRixsS02W+5qS+iE9yq6RYl0asXx5tw0bLhmT5pIfbSquw==
 
-bo-trading-common@^1.5.2:
-  version "1.5.2"
-  resolved "https://registry.yarnpkg.com/bo-trading-common/-/bo-trading-common-1.5.2.tgz#f52fd33c26cdfbd894e92b859021cc0992d199f8"
-  integrity sha512-SJq9D6vZk/uEwVodVfbPDqY8tKW8lyDrzng7Jyy7XLasHQCfgIurNfRyInrkqh+Ok/s++9+1GJkG9q3b0lUNKA==
+bo-trading-common@^1.5.3:
+  version "1.5.3"
+  resolved "https://registry.yarnpkg.com/bo-trading-common/-/bo-trading-common-1.5.3.tgz#a80488fbe6b3ec779c48aec0d6a6353df36f00f6"
+  integrity sha512-TLOzfaJwYttQQbbjx/77pG/Qmq+mfdRFIaqWf+JhV3pdxcb2safxKTDD7cotX8o6RvsqUooWWyBc8SoNnyL/Mw==
   dependencies:
     express "^4.16.3"
     moment "^2.22.2"
