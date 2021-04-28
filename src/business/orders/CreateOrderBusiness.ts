@@ -13,7 +13,6 @@ export const CreateOrderBusiness = async (order: CreateOrderValidator, username:
           title: `Username ${username} - order ${order.typeOrder === TYPE_ORDER.BUY ? 'buy' : 'sell'}`,
           order,
         })
-        .priority('high')
         .save();
       return true;
     }

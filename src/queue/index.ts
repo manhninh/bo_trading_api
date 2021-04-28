@@ -33,9 +33,10 @@ export default class QueueKue {
         const order = job.data.order;
         /** kiểm tra số dư tài khoản có đủ để đặt lệnh */
         const userWalletRes = new UserWalletRepository();
+        console.log('123');
         const userWallet = await userWalletRes.findOne({user_id: order.userId});
-        console.log(userWallet, 'userWallet');
         if (userWallet) {
+          console.log(userWallet.amount_trade, 'amount_trade');
           let amountTrade = 0;
           let fieldUpdateAmount = '';
           switch (order.typeUser) {
@@ -58,7 +59,9 @@ export default class QueueKue {
           }
           const orderRes = new OrderRepository();
           // nếu như tổng số buy/sell hiện tại + số tiền đánh lệnh > số tiền hiện tại thì không được đánh lệnh
+          console.log(amountTrade, 'amountTrade');
           const totalAmountNew = amountTrade - order.amount;
+          console.log(totalAmountNew, 'totalAmountNew');
           if (totalAmountNew > 0) {
             const faker = require('faker');
             const order_uuid = faker.datatype.uuid();
@@ -68,6 +71,7 @@ export default class QueueKue {
               type_user: order.typeUser,
               status_order: order.typeOrder === TYPE_ORDER.BUY ? false : true,
               amount_order: order.amount,
+              prev_total_amount: amountTrade,
               status: false,
             });
             if (resultOrder) {
