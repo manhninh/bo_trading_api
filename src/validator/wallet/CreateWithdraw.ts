@@ -14,7 +14,7 @@ export class CreateWithdrawValidator {
   @IsNotEmpty({ message: 'Amount is required' })
   @Min(Number(config.TRON_TRC20_DEPOSIT_MIN_AMOUNT))
   @IsNumber({}, {
-    message: 'Amount is number and large than 20',
+    message: 'Amount is number and large than ' + config.TRON_TRC20_DEPOSIT_MIN_AMOUNT,
   })
   amount: number;
 
