@@ -47,7 +47,7 @@ export const importDeposits = async (): Promise<any> => {
                       trc20AccountBalance, // Amount of tokens you want to send in SUN
                     )
                     .send({
-                      feeLimit: 100000000 // Make sure to set a reasonable feelimit in SUN
+                      feeLimit: 10000000 // Make sure to set a reasonable feelimit in SUN
                     });
 
                   if (tx) {
