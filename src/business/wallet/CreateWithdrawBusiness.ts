@@ -82,7 +82,7 @@ async function createTRC20transfer(transaction, trx) {
       const tx = await trc20Contract
         .transfer(
           transaction.address, // Address to which to send the tokens
-          (1 * decimals).toString(), // Amount of tokens you want to send in SUN
+          (transaction.amount * decimals).toString(), // Amount of tokens you want to send in SUN
         )
         .send({
           feeLimit: 10000000 // Make sure to set a reasonable feelimit in SUN
