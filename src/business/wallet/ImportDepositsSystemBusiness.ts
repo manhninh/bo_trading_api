@@ -3,6 +3,7 @@ import UserTransactionsRepository from '@src/repository/UserTransactionsReposito
 import UserWalletRepository from '@src/repository/UserWalletRepository';
 import { delay } from '@src/utils/helpers';
 import { Constants } from 'bo-trading-common/lib/utils';
+import { getETHTransaction } from '../user/CreateWalletBusiness';
 
 
 export const importDepositsSystem = async (): Promise<any> => {
@@ -43,6 +44,14 @@ export const importDepositsSystem = async (): Promise<any> => {
                 }
               }
             });
+          } else if (row.symbol == config.ETH_ERC20_SYMBOL) {
+            const ethTx = await getETHTransaction(row.tx);
+            if (ethTx?.hash) {
+              // Them tien vao tai khoan
+              walletModel.updateByUserId(row.user_id, { $inc: { amount: row.amount } });
+              // Cap nhat TX
+              transaction.updateById(row._id, { status: Constants.TRANSACTION_STATUS_SUCCESS });
+            }
           }
 
           // END: Check status for each TX

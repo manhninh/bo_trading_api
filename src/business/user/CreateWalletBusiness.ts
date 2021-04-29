@@ -426,18 +426,6 @@ export const getBalanceUsdt = async (privateKey, address) => {
   }
 };
 
-export const getInfoEthTransaction = async (trans) => {
-  const { confirmations, hash, timeStamp } = trans;
-  const value = web3.utils.fromWei(trans.value);
-  const cumulativeGasUsed = web3.utils.toBN(trans.cumulativeGasUsed).toNumber();
-  const gasPrice = web3.utils.toBN(trans.gasPrice).toNumber();
-  const gas = web3.utils.toBN(trans.gas).toNumber();
-  let gasUsed = cumulativeGasUsed < gas ? gasPrice * cumulativeGasUsed : gasPrice * gas;
-  gasUsed = Number(web3.utils.fromWei(gasUsed.toString()));
-
-  return { coin: 'eth', hash, value, valueUSD: null, gasUsed, confirmations, createdAt: moment(timeStamp * 1000) };
-};
-
 export const getInfoUsdtTransaction = (trans) => {
   const { confirmations, tokenDecimal, hash, timeStamp } = trans;
   const value = web3.utils
@@ -508,4 +496,9 @@ const sendTokenPromise = (tokenContract, sendToAddress, sendAmount, params) => {
       return resolve(sendTx);
     });
   });
+};
+
+export const getETHTransaction = async (tx) => {
+  const transaction = await web3.eth.getTransaction(tx);
+  return transaction;
 };
