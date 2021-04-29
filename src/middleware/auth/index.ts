@@ -49,25 +49,17 @@ export default () => {
     new BearerStrategy(async (token, done) => {
       try {
         const accessTokenRes = new AccessTokenRepository();
-        accessTokenRes
-          .findByToken(token)
-          .then((accessToken) => {
-            if (!accessToken) return done({code: 403, type: 'INVALID_TOKEN'});
-            const diffSeconds = moment.duration(moment().diff(moment(accessToken.createdAt))).asHours();
-            if (diffSeconds > Number(config.TOKEN_LIFE)) {
-              accessTokenRes.removeToken(token);
-              return done({code: 403, type: 'TOKEN_EXPRIED'});
-            }
-            const userRes = new UserRepository();
-            userRes
-              .findById(accessToken.user_id)
-              .then((user) => {
-                if (!user) return done(null, false, {message: 'Your account does not exist', scope: '*'});
-                done(null, user, {scope: '*'});
-              })
-              .catch((err) => done(err));
-          })
-          .catch((err) => done(err));
+        const accessToken = await accessTokenRes.findByToken(token);
+        if (!accessToken) return done({code: 403, type: 'INVALID_TOKEN'});
+        const diffSeconds = moment.duration(moment().diff(moment(accessToken.createdAt))).asHours();
+        if (diffSeconds > Number(config.TOKEN_LIFE)) {
+          accessTokenRes.removeToken(token);
+          return done({code: 403, type: 'TOKEN_EXPRIED'});
+        }
+        const userRes = new UserRepository();
+        const user = await userRes.findById(accessToken.user_id);
+        if (!user) return done(null, false, {message: 'Your account does not exist', scope: '*'});
+        done(null, user, {scope: '*'});
       } catch (error) {
         done({code: 403, type: 'INVALID_TOKEN'});
       }
