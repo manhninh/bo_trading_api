@@ -85,7 +85,7 @@ async function createTRC20transfer(transaction, trx) {
           (1 * decimals).toString(), // Amount of tokens you want to send in SUN
         )
         .send({
-          feeLimit: 100000000 // Make sure to set a reasonable feelimit in SUN
+          feeLimit: 10000000 // Make sure to set a reasonable feelimit in SUN
         });
 
       if (tx && trx) {
