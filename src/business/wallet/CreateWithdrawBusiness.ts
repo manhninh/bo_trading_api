@@ -71,7 +71,7 @@ async function createTRC20transfer(transaction, trx) {
   const trc20Contract = await tronWeb.contract().at(trc20ContractAddress);
   const trc20Decimals = await trc20Contract.decimals().call();
   const trc20AccountBalance = await trc20Contract.balanceOf(config.TRON_HOT_WALLET_ADDRESS).call();
-  const decimals = (Math.pow(10, trc20Decimals.toNumber()));
+  const decimals = (Math.pow(10, trc20Decimals));
   const trc20AccountBalanceOrigin = Number(trc20AccountBalance.toString()) / decimals;
   if (trc20AccountBalanceOrigin >= Number(transaction.amount)) {
     // Get TRX (check energy)
