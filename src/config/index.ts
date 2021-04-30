@@ -56,6 +56,9 @@ export default {
   S3_ACCESS_KEY: process.env.S3_ACCESS_KEY,
   S3_ACCESS_SECRET: process.env.S3_ACCESS_SECRET,
   S3_BUCKET: process.env.S3_BUCKET,
+
+  // GOOGLE RECAPTCHA V3
+  GOOGLE_RECAPTCHA_SECRET_KEY: process.env.GOOGLE_RECAPTCHA_SECRET_KEY
 };
 
 export const configSendEmail: SendMailOptions = {
