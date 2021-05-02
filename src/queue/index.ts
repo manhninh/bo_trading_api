@@ -21,14 +21,14 @@ export default class QueueKue {
       },
       jobEvents: false,
     });
-
+    this.queue.setMaxListeners(20000);
     global.queue = this.queue;
 
     this.init();
+    this.eventsQueue();
   }
 
   private init() {
-    this.queue.setMaxListeners(20000);
 
     const userRes = new UserRepository();
     // tạo queue xử lý cho tất cả các user
@@ -86,12 +86,18 @@ export default class QueueKue {
                     orderRes.delete(resultOrder.id);
                     done(new Error('Order fail!'));
                   }
-                } else done(new Error('Order fail!'));
+                } else {
+                  orderRes.delete(resultOrder.id);
+                  done(new Error('Order fail!'));
+                }
               } else done(new Error('Your balance is not enough!'));
             } else done(new Error('Your balance is not enough!'));
           });
       });
     });
+  }
+
+  private eventsQueue = () => {
     this.queue
       // error handling
       .on('error', (err: any) => {
@@ -111,7 +117,7 @@ export default class QueueKue {
           this._logQueue(job, errorMessage);
         });
       });
-  }
+  };
 
   private _logQueue = (job: any, errMess?: string) => {
     const queueLogRes = new QueueLogRepository();

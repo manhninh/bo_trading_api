@@ -16,6 +16,7 @@ export const createRandomUserBusiness = async (): Promise<Boolean> => {
         password: faker.internet.password(),
         verify_code: uuid,
         ref_code: faker.vehicle.vrm(),
+        status: 1,
       });
       if (!user) throw new Error('Create user fail!');
 
