@@ -9,7 +9,7 @@ export default class RefreshTokenRepository extends RepositoryBase<IRefreshToken
 
   public removeByUserIdAndClientId(userId: string, clientId: string): void {
     try {
-      RefreshTokenSchema.remove({ userId: this.toObjectId(userId), client_id: clientId });
+      RefreshTokenSchema.remove({ user_id: this.toObjectId(userId), client_id: clientId });
     } catch (err) {
       throw err;
     }

@@ -1,5 +1,6 @@
 import {TYPE_ORDER} from '@src/contants/System';
 import {CreateOrderValidator} from '@src/validator/orders/CreateOrder';
+import {logger} from 'bo-trading-common/lib/utils';
 import {validate} from 'class-validator';
 
 export const CreateOrderBusiness = async (order: CreateOrderValidator, username: string): Promise<Boolean | String> => {
@@ -9,11 +10,15 @@ export const CreateOrderBusiness = async (order: CreateOrderValidator, username:
       throw new Error(Object.values(validation[0].constraints)[0]);
     } else {
       global.queue
-        .create(`Order Queue`, {
-          title: `Username ${username} - order ${order.typeOrder === TYPE_ORDER.BUY ? 'buy' : 'sell'}`,
+        .create(`Order Queue ${order.userId.toString()}`, {
+          title: `Username ${username} order ${order.typeOrder === TYPE_ORDER.BUY ? 'buy' : 'sell'} ${
+            order.amount
+          } USDF`,
           order,
         })
-        .save();
+        .save((err: any) => {
+          if (err) logger.error(err.message);
+        });
       return true;
     }
   } catch (err) {
