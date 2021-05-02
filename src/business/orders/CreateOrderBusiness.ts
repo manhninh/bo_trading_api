@@ -9,7 +9,7 @@ export const CreateOrderBusiness = async (order: CreateOrderValidator, username:
       throw new Error(Object.values(validation[0].constraints)[0]);
     } else {
       global.queue
-        .create(`Order Queue`, {
+        .create(`Order Queue ${order.userId.toString()}`, {
           title: `Username ${username} - order ${order.typeOrder === TYPE_ORDER.BUY ? 'buy' : 'sell'}`,
           order,
         })

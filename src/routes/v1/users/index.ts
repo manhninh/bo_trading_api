@@ -22,5 +22,6 @@ export default class UserRouters {
     changePasswordUser(this.router);
     disableMfaUser(this.router);
     buySponsor(this.router);
+    // createRandomUser(this.router);
   }
 }
