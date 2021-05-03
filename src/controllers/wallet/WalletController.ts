@@ -1,6 +1,8 @@
+import { CreateInternalTransferBusiness } from '@src/business/wallet/CreateInternalTransferBusiness';
 import { CreateTransferBusiness } from '@src/business/wallet/CreateTransferBusiness';
 import { CreateWithdrawBusiness } from '@src/business/wallet/CreateWithdrawBusiness';
 import { getTransactionsHistory } from '@src/business/wallet/GetTransactionsHistory';
+import { CreateInternalTransferValidator } from '@src/validator/wallet/CreateInternalTransfer';
 import { CreateTransferValidator } from '@src/validator/wallet/CreateTransfer';
 import { CreateWithdrawValidator } from '@src/validator/wallet/CreateWithdraw';
 import { GetTransactionsHistoryValidator } from '@src/validator/wallet/GetTransactionsHistory';
@@ -51,6 +53,22 @@ export const CreateWithdrawController = async (req: Request, res: Response, next
     data.tfa = params.tfa;
     data.symbol = params.symbol;
     const result = await CreateWithdrawBusiness(data);
+    res.status(200).send({ data: result });
+  } catch (err) {
+    next(err);
+  }
+};
+
+export const CreateInternalTransferController = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+  try {
+    const params = req.body;
+    const data = new CreateInternalTransferValidator();
+    data.user_id = req.user["id"];
+    data.password = params.password;
+    data.amount = Number(params.amount);
+    data.to_wallet = params.to_wallet;
+    data.tfa = params.tfa;
+    const result = await CreateInternalTransferBusiness(data);
     res.status(200).send({ data: result });
   } catch (err) {
     next(err);
