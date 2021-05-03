@@ -2,7 +2,7 @@ import UserTransactionsRepository from "@src/repository/UserTransactionsReposito
 import { IUserTransactionsModel } from "bo-trading-common/lib/models/userTransactions";
 import Constants from 'bo-trading-common/lib/utils/Constants';
 
-export const createWithdrawTransaction = async (user_id, amount, symbol, address, tx): Promise<any> => {
+export const createWithdrawTransaction = async (user_id, amount, symbol, address, tx, fee = 0): Promise<any> => {
   try {
     const userWalletRes = new UserTransactionsRepository();
     const trx = await userWalletRes.create(<IUserTransactionsModel>{
@@ -13,7 +13,8 @@ export const createWithdrawTransaction = async (user_id, amount, symbol, address
       address: address,
       tx: tx,
       status: Constants.TRANSACTION_STATUS_PENDING,
-      type: Constants.TRANSACTION_TYPE_WITHDRAW
+      type: Constants.TRANSACTION_TYPE_WITHDRAW,
+      fee: fee
     });
 
     return trx;
