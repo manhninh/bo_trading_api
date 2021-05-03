@@ -1,3 +1,4 @@
+import {logger} from 'bo-trading-common/lib/utils';
 import http from 'http';
 import 'module-alias/register';
 import mongoose from 'mongoose';
@@ -13,7 +14,7 @@ const server = http.createServer(app);
 server.listen(config.port);
 
 server.on('listening', () => {
-  // if (process.env.NODE_ENV !== 'production') mongoose.set('debug', true);
+  if (process.env.NODE_ENV !== 'production') mongoose.set('debug', true);
   mongoose.connect(config.MONGODB_URI, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
@@ -21,8 +22,8 @@ server.on('listening', () => {
     useFindAndModify: false,
   });
   mongoose.connection.once('open', () => {
-    console.info('\n🚀Connected to Mongo via Mongoose');
-    console.info(
+    logger.info('\n🚀Connected to Mongo via Mongoose');
+    logger.info(
       `\n🚀Server listening on port: ${config.port} - env: ${process.env.NODE_ENV}
       \n🚀API Document on http://localhost:${config.port}/apidoc/index.html\n`,
     );
@@ -32,7 +33,7 @@ server.on('listening', () => {
     CandlestickSocket(socket);
   });
   mongoose.connection.on('error', (err) => {
-    console.error('\n🚀Unable to connect to Mongo via Mongoose', err);
+    logger.error('\n🚀Unable to connect to Mongo via Mongoose', err);
   });
 });
 
@@ -41,10 +42,10 @@ server.on('error', (error: NodeJS.ErrnoException): void => {
   const bind = typeof config.port === 'string' ? 'Pipe ' + config.port : 'Port ' + config.port;
   switch (error.code) {
     case 'EACCES':
-      console.error(`${bind} requires elevated privileges`);
+      logger.error(`${bind} requires elevated privileges`);
       process.exit(1);
     case 'EADDRINUSE':
-      console.error(`${bind} is already in use`);
+      logger.error(`${bind} is already in use`);
       process.exit(1);
     default:
       throw error;

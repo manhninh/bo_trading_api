@@ -26,7 +26,7 @@ export default class AccessTokenRepository extends RepositoryBase<IAccessTokenMo
 
   public async removeByUserIdAndClientId(userId: string, clientId: string): Promise<void> {
     try {
-      await AccessTokenSchema.deleteMany({userId: this.toObjectId(userId), client_id: clientId});
+      await AccessTokenSchema.deleteMany({user_id: this.toObjectId(userId), client_id: clientId});
     } catch (err) {
       throw err;
     }

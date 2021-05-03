@@ -8,6 +8,8 @@ import getUserInfor from './getUserInfor';
 import updateUser from './updateUser';
 import verifyOTPToken from './verifyOTPToken';
 import verifyUser from './verifyUser';
+import createRandomUser from './createRandomUser';
+import createRandomOrderUser from './createRandomOrderUser';
 
 export default class UserRouters {
   public router: Router = Router();
@@ -22,5 +24,7 @@ export default class UserRouters {
     changePasswordUser(this.router);
     disableMfaUser(this.router);
     buySponsor(this.router);
+    createRandomUser(this.router);
+    createRandomOrderUser(this.router);
   }
 }

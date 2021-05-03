@@ -10,14 +10,16 @@ import {randomBytes} from 'crypto';
 import {createServer, exchange, ExchangeDoneFunction} from 'oauth2orize';
 import passport from 'passport';
 import {verifyTOTP} from './otp';
+import AdminRepository from '@src/repository/AdminRepository';
+import {IAdminModel} from 'bo-trading-common/lib/models/admins';
 
 // initialization token
-const initToken = async (user: IUserModel, client: IClientModel, done: ExchangeDoneFunction) => {
+const initToken = async (user: IUserModel | IAdminModel, client: IClientModel, done: ExchangeDoneFunction) => {
   try {
     const accessTokenRes = new AccessTokenRepository();
-    accessTokenRes.removeByUserIdAndClientId(user.id, client.client_id);
+    await accessTokenRes.removeByUserIdAndClientId(user.id, client.client_id);
     const refreshTokenRes = new RefreshTokenRepository();
-    refreshTokenRes.removeByUserIdAndClientId(user.id, client.client_id);
+    await refreshTokenRes.removeByUserIdAndClientId(user.id, client.client_id);
     const refreshToken = randomBytes(128).toString('hex');
     refreshTokenRes.create(<IAccessTokenModel>{
       user_id: user.id,
@@ -45,28 +47,39 @@ server.exchange(
     {},
     async (client: IClientModel, username: string, password: string, _scope, body: any, done: ExchangeDoneFunction) => {
       try {
-        const userRes = new UserRepository();
-        userRes
-          .checkUserOrEmail(username)
-          .then((user) => {
-            if (!user) return done(new Error('Your account does not exist!'));
-            if (user.tfa) {
-              if (body.tfa) {
-                const secret = decrypt(user.id, user.tfa);
-                const status = verifyTOTP(body.tfa, secret);
-                if (!status) return done(new Error('Invalid authentication code!'));
-              } else return done(new Error('NOT_FOUND_TFA'));
-            }
-            if (!user.checkPassword(password)) return done(new Error('Login failed!'));
-            if (user.status === STATUS.ACTIVE) {
-              initToken(user, client, done);
-            } else if (user.status === STATUS.BLOCK) {
-              return done(new Error('Your account is locked! Contact support for more details.'));
-            } else {
-              return done(new Error('Your account has not been verified!'));
-            }
-          })
-          .catch((err) => done(err));
+        if (body.admin) {
+          const adminRes = new AdminRepository();
+          const admin = await adminRes.findOne({email: username});
+          if (!admin) return done(new Error('Your account does not exist!'));
+          if (admin.tfa) {
+            if (body.tfa) {
+              const secret = decrypt(admin.id, admin.tfa);
+              const status = verifyTOTP(body.tfa, secret);
+              if (!status) return done(new Error('Invalid authentication code!'));
+            } else return done(new Error('NOT_FOUND_TFA'));
+          }
+          if (!admin.checkPassword(password)) return done(new Error('Login failed!'));
+          initToken(admin, client, done);
+        } else {
+          const userRes = new UserRepository();
+          const user = await userRes.checkUserOrEmail(username);
+          if (!user) return done(new Error('Your account does not exist!'));
+          if (user.tfa) {
+            if (body.tfa) {
+              const secret = decrypt(user.id, user.tfa);
+              const status = verifyTOTP(body.tfa, secret);
+              if (!status) return done(new Error('Invalid authentication code!'));
+            } else return done(new Error('NOT_FOUND_TFA'));
+          }
+          if (!user.checkPassword(password)) return done(new Error('Login failed!'));
+          if (user.status === STATUS.ACTIVE) {
+            initToken(user, client, done);
+          } else if (user.status === STATUS.BLOCK) {
+            return done(new Error('Your account is locked! Contact support for more details.'));
+          } else {
+            return done(new Error('Your account has not been verified!'));
+          }
+        }
       } catch (error) {
         done(error);
       }

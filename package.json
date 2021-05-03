@@ -27,7 +27,7 @@
   },
   "dependencies": {
     "apidoc": "^0.27.1",
-    "aws-sdk": "^2.894.0",
+    "aws-sdk": "^2.897.0",
     "axios": "^0.21.0",
     "base32-decode": "^1.0.0",
     "base32-encode": "^1.2.0",
@@ -46,7 +46,7 @@
     "kue": "^0.11.6",
     "module-alias": "^2.2.2",
     "moment": "^2.22.2",
-    "mongoose": "^5.12.6",
+    "mongoose": "^5.12.7",
     "multer": "^1.4.2",
     "ncp": "^2.0.0",
     "node-schedule": "^2.0.0",
@@ -64,8 +64,8 @@
     "winston": "^3.0.0"
   },
   "devDependencies": {
-    "@babel/core": "^7.13.16",
-    "@babel/preset-env": "^7.13.15",
+    "@babel/core": "^7.14.0",
+    "@babel/preset-env": "^7.14.0",
     "@babel/register": "^7.13.16",
     "@types/axios": "^0.14.0",
     "@types/body-parser": "^1.17.0",
