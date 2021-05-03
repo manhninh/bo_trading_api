@@ -28,7 +28,7 @@ export const CreateWithdrawBusiness = async (transaction: CreateWithdrawValidato
         // Withdraw with Tronweb
         if (transaction.symbol == config.TRON_TRC20_SYMBOL) {
           // Create tx
-          const trx = await createWithdrawTransaction(transaction.user_id, txAmount, config.TRON_TRC20_SYMBOL, transaction.address, null);
+          const trx = await createWithdrawTransaction(transaction.user_id, txAmount, config.TRON_TRC20_SYMBOL, transaction.address, null, Number(config.TRON_TRC20_TRANSACTION_FEE));
           if (trx) {
 
             // Decrement the user's amount
@@ -38,7 +38,7 @@ export const CreateWithdrawBusiness = async (transaction: CreateWithdrawValidato
             const configModel = new SystemConfigRepository();
             const enableWithdraw = await configModel.findOne({ key: config.SYSTEM_ENABLE_AUTO_WITHDRAW_KEY });
             if (enableWithdraw && Boolean(enableWithdraw.value)) {
-              createTRC20transfer(transaction, trx);
+              createTRC20transfer(transaction, trx, txAmount);
             }
           }
 
@@ -55,7 +55,7 @@ export const CreateWithdrawBusiness = async (transaction: CreateWithdrawValidato
   }
 };
 
-async function createTRC20transfer(transaction, trx) {
+async function createTRC20transfer(transaction, trx, txAmount) {
   // Valid amount
   if (transaction.amount < Number(config.TRON_TRC20_DEPOSIT_MIN_AMOUNT)) {
     throw new Error('Can not withdraw, the amount at least ' + config.TRON_TRC20_DEPOSIT_MIN_AMOUNT + '!');
@@ -79,10 +79,11 @@ async function createTRC20transfer(transaction, trx) {
     TRXBalance = TRXBalance / 1000000;
 
     if (TRXBalance >= 2) {
+      const amount = (txAmount * decimals).toString();
       const tx = await trc20Contract
         .transfer(
           transaction.address, // Address to which to send the tokens
-          (transaction.amount * decimals).toString(), // Amount of tokens you want to send in SUN
+          amount, // Amount of tokens you want to send in SUN
         )
         .send({
           feeLimit: 10000000 // Make sure to set a reasonable feelimit in SUN
