@@ -45,7 +45,7 @@ export default {
   REDIS_AUTH: process.env.REDIS_AUTH,
 
   //
-  TRANSFER_SYMBOL: process.env.TRANSFER,
+  TRANSFER_SYMBOL: process.env.TRANSFER_SYMBOL,
   ETH_ERC20_SYMBOL: process.env.ETH_ERC20_SYMBOL,
 
   // SYSTEM CONFIG

@@ -1,4 +1,5 @@
 import { Router } from 'express';
+import createInternalTransfer from './createInternalTransfer';
 import createTransfer from './createTransfer';
 import createWithdraw from './createWithdraw';
 import getAddress from './getAddress';
@@ -10,6 +11,7 @@ export default class WalletRoutes {
   constructor() {
     TransactionsHistory(this.router);
     createTransfer(this.router);
+    createInternalTransfer(this.router);
     createWithdraw(this.router);
     getAddress(this.router);
   }
