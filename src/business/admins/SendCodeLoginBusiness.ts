@@ -1,13 +1,12 @@
 import config, {configSendEmail} from '@src/config';
 import AdminRepository from '@src/repository/AdminRepository';
-import UserRepository from '@src/repository/UserRepository';
-import {SendCodeValidator} from '@src/validator/admins/SendCodeValidator';
+import {createHashedSalt} from '@src/utils/SecurityPass';
+import {SendCodeLoginValidator} from '@src/validator/admins/SendCodeLoginValidator';
 import {EmailConfig, logger} from 'bo-trading-common/lib/utils';
 import {validate} from 'class-validator';
 import handlebars from 'handlebars';
-import {createHashedSalt} from "@src/utils/SecurityPass";
 
-export const SendCodeBusiness = async (obj: SendCodeValidator): Promise<boolean> => {
+export const SendCodeLoginBusiness = async (obj: SendCodeLoginValidator): Promise<boolean> => {
   try {
     const validation = await validate(obj);
     if (validation.length > 0) {

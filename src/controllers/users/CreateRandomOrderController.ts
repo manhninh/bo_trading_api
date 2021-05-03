@@ -17,7 +17,8 @@ export const CreateRandomOrderController = async (req: Request, res: Response, n
           data.typeUser = item.type_user;
           data.typeOrder = Number(faker.datatype.boolean());
           data.amount = random(1, 2);
-          await CreateOrderBusiness(data, item.username);
+          data.username = item.username;
+          await CreateOrderBusiness(data);
         }),
       );
     });
