@@ -126,6 +126,9 @@ export default class UserRepository extends RepositoryBase<IUserModel> {
             email: '$email',
             trc20: '$user_wallets.trc20',
             erc20: '$user_wallets.erc20',
+            amount: '$user_wallets.amount',
+            amount_wallet: '$user_wallets.amount_wallet',
+            user_id: '$user_wallets.user_id',
           },
         },
       ]);
