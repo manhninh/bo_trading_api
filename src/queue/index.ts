@@ -1,7 +1,6 @@
 import config from '@src/config';
 import {TYPE_ORDER, TYPE_USER} from '@src/contants/System';
 import OrderRepository from '@src/repository/OrderRepository';
-import UserRepository from '@src/repository/UserRepository';
 import UserWalletRepository from '@src/repository/UserWalletRepository';
 import {IOrderModel} from 'bo-trading-common/lib/models/orders';
 import {logger} from 'bo-trading-common/lib/utils';
@@ -81,13 +80,13 @@ export default class QueueKue {
       },
       jobEvents: false,
     });
-    this.queue.setMaxListeners(20000);
+    // this.queue.setMaxListeners(20000);
     global.queue = this.queue;
-    this.eventsQueue();
+    // this.eventsQueue();
 
     //tạo queue xử lý cho tất cả các user
-    const userRes = new UserRepository();
-    userRes.findAll().then((user) => user.map((item) => this.processOrder(item.id.toString())));
+    // const userRes = new UserRepository();
+    // userRes.findAll().then((user) => user.map((item) => this.processOrder(item.id.toString())));
   }
 
   private eventsQueue = () => {
