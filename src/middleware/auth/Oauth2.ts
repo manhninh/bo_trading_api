@@ -49,7 +49,7 @@ server.exchange(
       try {
         if (body.admin) {
           const adminRes = new AdminRepository();
-          const admin = await adminRes.findOne({email: username});
+          const admin = await adminRes.findOne({email: username.toLocaleLowerCase().trim()});
           if (!admin) return done(new Error('Tài khoản không tồn tại!'));
           if (admin.tfa) {
             if (body.tfa) {
@@ -63,7 +63,7 @@ server.exchange(
           initToken(admin, client, done);
         } else {
           const userRes = new UserRepository();
-          const user = await userRes.checkUserOrEmail(username);
+          const user = await userRes.checkUserOrEmail(username.toLocaleLowerCase().trim());
           if (!user) return done(new Error('Your account does not exist!'));
           if (user.tfa) {
             if (body.tfa) {
