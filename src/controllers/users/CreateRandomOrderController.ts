@@ -10,17 +10,15 @@ export const CreateRandomOrderController = async (req: Request, res: Response, n
     const userRes = new UserRepository();
     const faker = require('faker');
     userRes.findAll().then((user) => {
-      Promise.all(
-        user.map(async (item) => {
-          const data = new CreateOrderValidator();
-          data.userId = item.id;
-          data.typeUser = item.type_user;
-          data.typeOrder = Number(faker.datatype.boolean());
-          data.amount = random(1, 2);
-          data.username = item.username;
-          await CreateOrderBusiness(data);
-        }),
-      );
+      user.map(async (item) => {
+        const data = new CreateOrderValidator();
+        data.userId = item.id;
+        data.typeUser = item.type_user;
+        data.typeOrder = Number(faker.datatype.boolean());
+        data.amount = random(1, 2);
+        data.username = item.username;
+        await CreateOrderBusiness(data);
+      });
     });
     res.status(200).send({data: true});
   } catch (err) {
