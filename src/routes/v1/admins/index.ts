@@ -1,10 +1,18 @@
 import {Router} from 'express';
-import sendCode from './sendCode';
+import CreateMFACode from './CreateMFACode';
+import GetAdminInfor from './GetAdminInfor';
+import SendCodeLogin from './SendCodeLogin';
+import SendCodeVerify from './SendCodeVerify';
+import VerifyOTPToken from './VerifyOTPToken';
 
 export default class UserRouters {
   public router: Router = Router();
 
   constructor() {
-    sendCode(this.router);
+    SendCodeLogin(this.router);
+    CreateMFACode(this.router);
+    GetAdminInfor(this.router);
+    SendCodeVerify(this.router);
+    VerifyOTPToken(this.router);
   }
 }
