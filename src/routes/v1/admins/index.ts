@@ -1,4 +1,5 @@
 import {Router} from 'express';
+import ActivateExchangeProtection from './ActivateExchangeProtection';
 import CreateMFACode from './CreateMFACode';
 import GetAdminInfor from './GetAdminInfor';
 import SendCodeLogin from './SendCodeLogin';
@@ -14,5 +15,6 @@ export default class UserRouters {
     GetAdminInfor(this.router);
     SendCodeVerify(this.router);
     VerifyOTPToken(this.router);
+    ActivateExchangeProtection(this.router);
   }
 }

@@ -1,4 +1,5 @@
 import UserRepository from '@src/repository/UserRepository';
+import {EMITS} from '@src/socketHandlers/EmitType';
 import {VerifyUserValidator} from '@src/validator/users/VerifyUser';
 import {validate} from 'class-validator';
 
@@ -21,7 +22,7 @@ export const verifyUserBusiness = async (verification: VerifyUserValidator): Pro
         // active cả tài khoản
         const activeAcount = await userRes.activeUser(user.id);
         if (activeAcount.ok) {
-          global.ioCalculator.emit('addProcessJob', user.id.toString());
+          global.ioCalculator.emit(EMITS.ADD_PROCESS_JOB, user.id.toString());
           return 1;
         } else return 3;
       }
