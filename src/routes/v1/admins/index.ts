@@ -5,6 +5,7 @@ import GetAdminInfor from './GetAdminInfor';
 import SendCodeLogin from './SendCodeLogin';
 import SendCodeVerify from './SendCodeVerify';
 import VerifyOTPToken from './VerifyOTPToken';
+import GetProtectHistory from './GetProtectHistory';
 
 export default class UserRouters {
   public router: Router = Router();
@@ -16,5 +17,6 @@ export default class UserRouters {
     SendCodeVerify(this.router);
     VerifyOTPToken(this.router);
     ActivateExchangeProtection(this.router);
+    GetProtectHistory(this.router);
   }
 }
