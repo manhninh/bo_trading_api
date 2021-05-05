@@ -5,6 +5,7 @@ import mongoose from 'mongoose';
 import IOClient from 'socket.io-client';
 import app from './App';
 import config from './config';
+import CalculatorSocket from './socketHandlers/calculator';
 import CandlestickSocket from './socketHandlers/candlestick';
 
 app.set('port', config.port);
@@ -29,8 +30,12 @@ server.on('listening', () => {
     );
 
     /** kết nối socket nến để lấy dữ liệu cần thiết */
-    const socket = IOClient(config.WS_CANDLESTICK);
+    const socket = IOClient(config.WS_CANDLESTICK, {query: {token: config.WS_TOKEN_API}});
     CandlestickSocket(socket);
+
+    /** kết nối socket CALCULATOR để tạo process job khi người dùng verify tài khoản xong */
+    const socketCalculator = IOClient(config.WS_CALCULATOR, {query: {token: config.WS_TOKEN_API}});
+    CalculatorSocket(socketCalculator);
   });
   mongoose.connection.on('error', (err) => {
     logger.error('\n🚀Unable to connect to Mongo via Mongoose', err);

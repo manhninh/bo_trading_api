@@ -1,5 +1,6 @@
 import config from '@src/config';
 import AccessTokenRepository from '@src/repository/AccessTokenRepository';
+import AdminRepository from '@src/repository/AdminRepository';
 import ClientRepository from '@src/repository/ClientRepository';
 import UserRepository from '@src/repository/UserRepository';
 import moment from 'moment';
@@ -58,8 +59,12 @@ export default () => {
         }
         const userRes = new UserRepository();
         const user = await userRes.findById(accessToken.user_id);
-        if (!user) return done(null, false, {message: 'Your account does not exist', scope: '*'});
-        done(null, user, {scope: '*'});
+        if (!user) {
+          const adminRes = new AdminRepository();
+          const admin = await adminRes.findById(accessToken.user_id);
+          if (!admin) done(null, false, {message: 'Your account does not exist', scope: '*'});
+          else done(null, admin, {scope: '*'});
+        } else done(null, user, {scope: '*'});
       } catch (error) {
         done({code: 403, type: 'INVALID_TOKEN'});
       }

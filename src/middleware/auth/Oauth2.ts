@@ -1,17 +1,17 @@
 import {STATUS} from '@src/contants/Response';
 import AccessTokenRepository from '@src/repository/AccessTokenRepository';
+import AdminRepository from '@src/repository/AdminRepository';
 import RefreshTokenRepository from '@src/repository/RefreshTokenRepository';
 import UserRepository from '@src/repository/UserRepository';
 import {decrypt} from '@src/utils/helpers';
 import {IAccessTokenModel} from 'bo-trading-common/lib/models/accessTokens';
+import {IAdminModel} from 'bo-trading-common/lib/models/admins';
 import {IClientModel} from 'bo-trading-common/lib/models/clients';
 import {IUserModel} from 'bo-trading-common/lib/models/users';
 import {randomBytes} from 'crypto';
 import {createServer, exchange, ExchangeDoneFunction} from 'oauth2orize';
 import passport from 'passport';
 import {verifyTOTP} from './otp';
-import AdminRepository from '@src/repository/AdminRepository';
-import {IAdminModel} from 'bo-trading-common/lib/models/admins';
 
 // initialization token
 const initToken = async (user: IUserModel | IAdminModel, client: IClientModel, done: ExchangeDoneFunction) => {
@@ -49,20 +49,21 @@ server.exchange(
       try {
         if (body.admin) {
           const adminRes = new AdminRepository();
-          const admin = await adminRes.findOne({email: username});
-          if (!admin) return done(new Error('Your account does not exist!'));
+          const admin = await adminRes.findOne({email: username.toLocaleLowerCase().trim()});
+          if (!admin) return done(new Error('Tài khoản không tồn tại!'));
           if (admin.tfa) {
             if (body.tfa) {
               const secret = decrypt(admin.id, admin.tfa);
               const status = verifyTOTP(body.tfa, secret);
-              if (!status) return done(new Error('Invalid authentication code!'));
+              if (!status) return done(new Error('Mã 2FA không đúng!'));
             } else return done(new Error('NOT_FOUND_TFA'));
           }
           if (!admin.checkPassword(password)) return done(new Error('Login failed!'));
+          adminRes.updateById(admin.id, {code: null});
           initToken(admin, client, done);
         } else {
           const userRes = new UserRepository();
-          const user = await userRes.checkUserOrEmail(username);
+          const user = await userRes.checkUserOrEmail(username.toLocaleLowerCase().trim());
           if (!user) return done(new Error('Your account does not exist!'));
           if (user.tfa) {
             if (body.tfa) {
@@ -73,6 +74,8 @@ server.exchange(
           }
           if (!user.checkPassword(password)) return done(new Error('Login failed!'));
           if (user.status === STATUS.ACTIVE) {
+            // const queue = new QueueKue();
+            // queue.processOrder(user.id.toString());
             initToken(user, client, done);
           } else if (user.status === STATUS.BLOCK) {
             return done(new Error('Your account is locked! Contact support for more details.'));

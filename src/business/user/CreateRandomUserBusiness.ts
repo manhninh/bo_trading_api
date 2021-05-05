@@ -8,7 +8,7 @@ export const createRandomUserBusiness = async (): Promise<Boolean> => {
     const userRes = new UserRepository();
     /** tạo url để gửi verification email */
     const uuid = faker.datatype.uuid();
-    for (let index = 0; index < 1000; index++) {
+    for (let index = 0; index < 400; index++) {
       /** create user */
       const user = await userRes.create(<IUserModel>{
         username: faker.internet.userName().toLowerCase(),

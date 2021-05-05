@@ -18,8 +18,12 @@ class App {
   constructor() {
     this.app = express();
     // config queue
-    new QueueKue();
+    const queue = new QueueKue();
+    queue.init();
+
+    // config route
     this.config();
+
     /** cronjob */
     new Scheduler().config();
   }
