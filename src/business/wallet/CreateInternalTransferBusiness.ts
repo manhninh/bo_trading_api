@@ -45,7 +45,7 @@ export const CreateInternalTransferBusiness = async (transaction: CreateInternal
         let inc = { $inc: {} };
 
         // TO WALLET
-        if (transaction.to_wallet == 'amount') {
+        if (transaction.to_wallet == 'spot') {
           inc.$inc['amount'] = transaction.amount;
         } else {
           inc.$inc['amount_' + transaction.to_wallet] = transaction.amount;
