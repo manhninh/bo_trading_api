@@ -4,6 +4,7 @@ import UserRepository from "@src/repository/UserRepository";
 import UserTransactionsRepository from "@src/repository/UserTransactionsRepository";
 import UserWalletRepository from "@src/repository/UserWalletRepository";
 import { CreateWithdrawValidator } from "@src/validator/wallet/CreateWithdraw";
+import axios from "axios";
 import { validate } from "class-validator";
 import { createWithdrawTransaction } from "./createWithdrawTransaction";
 
@@ -13,41 +14,55 @@ export const CreateWithdrawBusiness = async (transaction: CreateWithdrawValidato
     if (validation.length > 0) {
       throw new Error(Object.values(validation[0].constraints)[0]);
     } else {
-      // TODO
-      // Check user is real user && balance of user
-      const userModel = new UserRepository();
-      const txModel = new UserWalletRepository();
-      const canTransfer = await userModel.readyTransfer(transaction.user_id, transaction.amount, transaction.password, transaction.tfa);
+      const response = await axios({
+        method: 'POST',
+        url: `https://www.google.com/recaptcha/api/siteverify?secret=${config.GOOGLE_RECAPTCHA_SECRET_KEY}&response=${transaction.response}`,
+      });
 
-      if (!canTransfer) {
-        throw new Error('Can not withdraw, please try again later!');
-      }
+      if (response.status === 200 && response.status) {
+        const data = response.data;
+        if (data.score > 0.5) {
+          // TODO
+          // Check user is real user && balance of user
+          const userModel = new UserRepository();
+          const txModel = new UserWalletRepository();
+          const canWithdraw = await userModel.readyWithdraw(transaction.user_id, transaction.amount, transaction.password, transaction.tfa);
 
-      try {
-        const txAmount = (transaction.amount - Number(config.TRON_TRC20_TRANSACTION_FEE));
-        // Withdraw with Tronweb
-        if (transaction.symbol == config.TRON_TRC20_SYMBOL) {
-          // Create tx
-          const trx = await createWithdrawTransaction(transaction.user_id, txAmount, config.TRON_TRC20_SYMBOL, transaction.address, null, Number(config.TRON_TRC20_TRANSACTION_FEE));
-          if (trx) {
-
-            // Decrement the user's amount
-            txModel.updateByUserId(transaction.user_id, { $inc: { amount: (-1 * Number(transaction.amount)) } });
-
-            // Check auto withdraw for this user & system
-            const configModel = new SystemConfigRepository();
-            const enableWithdraw = await configModel.findOne({ key: config.SYSTEM_ENABLE_AUTO_WITHDRAW_KEY });
-            if (enableWithdraw && Boolean(enableWithdraw.value)) {
-              createTRC20transfer(transaction, trx, txAmount);
-            }
+          if (!canWithdraw) {
+            throw new Error('Can not withdraw, please try again later!');
           }
 
-          return trx;
+          try {
+            const txAmount = (transaction.amount - Number(config.TRON_TRC20_TRANSACTION_FEE));
+            // Withdraw with Tronweb
+            if (transaction.symbol == config.TRON_TRC20_SYMBOL) {
+              // Create tx
+              const trx = await createWithdrawTransaction(transaction.user_id, txAmount, config.TRON_TRC20_SYMBOL, transaction.address, null, Number(config.TRON_TRC20_TRANSACTION_FEE));
+              if (trx) {
+
+                // Decrement the user's amount
+                txModel.updateByUserId(transaction.user_id, { $inc: { amount: (-1 * Number(transaction.amount)) } });
+
+                // Check auto withdraw for this user & system
+                const configModel = new SystemConfigRepository();
+                const enableWithdraw = await configModel.findOne({ key: config.SYSTEM_ENABLE_AUTO_WITHDRAW_KEY });
+                if (enableWithdraw && Boolean(enableWithdraw.value)) {
+                  createTRC20transfer(transaction, trx, txAmount);
+                }
+              }
+
+              return trx;
+            } else {
+              throw new Error('This symbol does not support, please try with other!');
+            }
+          } catch (err) {
+            throw err;
+          }
         } else {
-          throw new Error('This symbol does not support, please try with other!');
+          throw new Error(`${response.data['error-codes'][0]}`);
         }
-      } catch (err) {
-        throw err;
+      } else {
+        throw new Error('Can not made the withdraw, please try again later!');
       }
     }
   } catch (err) {
