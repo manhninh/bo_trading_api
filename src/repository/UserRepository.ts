@@ -144,9 +144,26 @@ export default class UserRepository extends RepositoryBase<IUserModel> {
       if (!row) {
         return false;
       } else {
-        // TODO: Need to check TFA code
         const wallet = await UserWalletSchema.findOne({ user_id: row._id });
         if (row.type_user == 0 && wallet?.amount >= amount) {
+          return true;
+        } else {
+          return false;
+        }
+      }
+    } catch (err) {
+      return false;
+    }
+  }
+
+  public async readyInternalTransfer(user_id: string, amount: number, from_wallet: string): Promise<Boolean> {
+    try {
+      const row = await UserSchema.findById(user_id);
+      if (!row) {
+        return false;
+      } else {
+        const wallet = await UserWalletSchema.findOne({ user_id: row._id });
+        if (row.type_user == 0 && wallet?.[from_wallet] >= amount) {
           return true;
         } else {
           return false;
