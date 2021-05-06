@@ -59,7 +59,8 @@
         "SYSTEM_ENABLE_AUTO_WITHDRAW_KEY": "ENABLE_AUTO_WITHDRAW",
         "S3_ACCESS_KEY": "AKIA5BXFWY3BHNNZBS3U",
         "S3_ACCESS_SECRET": "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",
-        "S3_BUCKET": "finimix"
+        "S3_BUCKET": "finimix",
+        "GOOGLE_RECAPTCHA_SECRET_KEY": "6Le6ssAaAAAAADzP5deDYeNcoOZx66zww7WXg8I6"
       }
     }
   ]

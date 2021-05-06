@@ -38,6 +38,7 @@ export const CreateTransferController = async (req: Request, res: Response, next
     data.amount = Number(params.amount);
     data.username = params.username;
     data.tfa = params.tfa;
+    data.response = params.response;
     const result = await CreateTransferBusiness(data);
     res.status(200).send({ data: result });
   } catch (err) {
