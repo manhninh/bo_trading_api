@@ -19,9 +19,9 @@ export const CreateWithdrawERC20Business = async (transaction: CreateWithdrawERC
       // Check user is real user && balance of user
       const userModel = new UserRepository();
       const txModel = new UserWalletRepository();
-      const canTransfer = await userModel.readyTransfer(transaction.user_id, transaction.amount, transaction.password, transaction.tfa);
+      const canWithdraw = await userModel.readyWithdraw(transaction.user_id, transaction.amount, transaction.password, transaction.tfa);
 
-      if (!canTransfer) {
+      if (!canWithdraw) {
         throw new Error('Can not withdraw, please try again later!');
       }
 

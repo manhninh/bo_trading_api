@@ -34,10 +34,8 @@ export const CreateTransferController = async (req: Request, res: Response, next
     const params = req.body;
     const data = new CreateTransferValidator();
     data.user_id = req.user["id"];
-    data.password = params.password;
     data.amount = Number(params.amount);
     data.username = params.username;
-    data.tfa = params.tfa;
     data.response = params.response;
     const result = await CreateTransferBusiness(data);
     res.status(200).send({ data: result });
@@ -61,6 +59,7 @@ export const CreateWithdrawController = async (req: Request, res: Response, next
     data.address = params.address;
     data.tfa = params.tfa;
     data.symbol = params.symbol;
+    data.response = params.response;
 
     let result: any = {};
     if (params.symbol == config.ETH_ERC20_SYMBOL) {
@@ -80,10 +79,9 @@ export const CreateInternalTransferController = async (req: Request, res: Respon
     const params = req.body;
     const data = new CreateInternalTransferValidator();
     data.user_id = req.user["id"];
-    data.password = params.password;
     data.amount = Number(params.amount);
     data.to_wallet = params.to_wallet;
-    data.tfa = params.tfa;
+    data.response = params.response;
     const result = await CreateInternalTransferBusiness(data);
     res.status(200).send({ data: result });
   } catch (err) {

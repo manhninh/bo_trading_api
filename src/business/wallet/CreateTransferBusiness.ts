@@ -27,7 +27,7 @@ export const CreateTransferBusiness = async (transaction: CreateTransferValidato
           // Check user is real user && balance of user
           const userModel = new UserRepository();
           const receiver = await userModel.findOne({ username: transaction.username, type_user: 0 });
-          const canTransfer = await userModel.readyTransfer(transaction.user_id, transaction.amount, transaction.password, transaction.tfa);
+          const canTransfer = await userModel.readyTransfer(transaction.user_id, transaction.amount);
 
           if (!receiver) {
             throw new Error('Can not find the receiver by username, please try again later!');
@@ -38,7 +38,6 @@ export const CreateTransferBusiness = async (transaction: CreateTransferValidato
           }
 
           try {
-
             // Create transaction for transfer
             const faker = require('faker');
             const uuid = faker.datatype.uuid();
@@ -66,14 +65,11 @@ export const CreateTransferBusiness = async (transaction: CreateTransferValidato
         } else {
           throw new Error(`${response.data['error-codes'][0]}`);
         }
+      } else {
+        throw new Error('Can not made the transfer, please try again later!');
       }
-
     }
   } catch (err) {
     throw err;
   }
-};
-
-const verifyReptcha = (options: object) => {
-
 };

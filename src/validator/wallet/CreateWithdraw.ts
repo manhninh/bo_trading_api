@@ -24,4 +24,7 @@ export class CreateWithdrawValidator {
   @IsNotEmpty({ message: 'Symbol is required' })
   @IsIn([config.TRON_TRC20_SYMBOL])
   symbol: string;
+
+  @IsNotEmpty({ message: 'Response is required' })
+  response: string;
 }
