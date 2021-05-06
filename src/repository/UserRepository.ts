@@ -162,6 +162,7 @@ export default class UserRepository extends RepositoryBase<IUserModel> {
       if (!row) {
         return false;
       } else {
+        from_wallet = from_wallet == 'amount' ? from_wallet : 'amount_' + from_wallet;
         const wallet = await UserWalletSchema.findOne({ user_id: row._id });
         if (row.type_user == 0 && wallet?.[from_wallet] >= amount) {
           return true;
