@@ -62,6 +62,10 @@ export default {
 
   WS_CALCULATOR: process.env.WS_CALCULATOR,
   WS_TOKEN_API: process.env.WS_TOKEN_API,
+
+  SYSTEM_PROTECT_LEVEL_1: process.env.SYSTEM_PROTECT_LEVEL_1,
+  SYSTEM_PROTECT_LEVEL_2: process.env.SYSTEM_PROTECT_LEVEL_2,
+  SYSTEM_PROTECT_LEVEL_3: process.env.SYSTEM_PROTECT_LEVEL_3,
 };
 
 export const configSendEmail: SendMailOptions = {

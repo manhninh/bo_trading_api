@@ -34,4 +34,77 @@ export default class TradeHistoryRepository extends RepositoryBase<ITradeHistory
       throw err;
     }
   }
+
+  public async reportTransactionDay(fromDate: string, toDate: string): Promise<any[]> {
+    try {
+      const result = await TradeHistorySchema.aggregate([
+        // {
+        //   $match: {
+        //     order_uuid: {
+        //       $gte: fromDate,
+        //       $lte: toDate,
+        //     },
+        //   },
+        // },
+        {
+          $group: {
+            _id: {
+              order_uuid: '$order_uuid',
+              open_result: '$open_result',
+              close_result: '$close_result',
+              result_win: {
+                $cond: [
+                  {
+                    $gte: ['$open_result', '$close_result'],
+                  },
+                  true, //sell
+                  false, //buy
+                ],
+              },
+            },
+            buy_amount_order: {
+              $sum: '$buy_amount_order',
+            },
+            sell_amount_order: {
+              $sum: '$sell_amount_order',
+            },
+            amount_result: {
+              $sum: '$amount_result',
+            },
+          },
+        },
+        {
+          $project: {
+            _id: 0,
+            time: '$_id.order_uuid',
+            open_result: '$_id.open_result',
+            close_result: '$_id.close_result',
+            buy_amount_order: 1,
+            sell_amount_order: 1,
+            amount_result: {
+              $cond: {
+                if: {
+                  $eq: ['$_id.result_win', true],
+                },
+                then: {
+                  $subtract: ['$sell_amount_order', '$amount_result'],
+                },
+                else: {
+                  $subtract: ['$buy_amount_order', '$amount_result'],
+                },
+              },
+            },
+          },
+        },
+        {
+          $sort: {
+            time: -1,
+          },
+        },
+      ]);
+      return result;
+    } catch (err) {
+      throw err;
+    }
+  }
 }

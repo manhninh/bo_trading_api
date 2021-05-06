@@ -9,7 +9,7 @@ export default class ProtectLogRepository extends RepositoryBase<IProtectLogMode
 
   public async limitTopNewProtect(): Promise<IProtectLogModel[]> {
     try {
-      const result = await ProtectLogSchema.find({}).sort({createdAt: -1}).limit(8);
+      const result = await ProtectLogSchema.find({}).sort({createdAt: -1}).limit(20);
       return result.reverse();
     } catch (err) {
       throw err;

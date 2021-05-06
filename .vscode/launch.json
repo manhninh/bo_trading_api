@@ -61,7 +61,10 @@
         "S3_ACCESS_SECRET": "9Dn3WpdOpoo5QqnwQDB3H+6qGpwHSLGYdGuvmM/I",
         "S3_BUCKET": "finimix",
         "WS_CALCULATOR": "http://localhost:5001",
-        "WS_TOKEN_API": "0xad5bbac33ddde4cf7c4ec64f00cd1865b2da54a5"
+        "WS_TOKEN_API": "0xad5bbac33ddde4cf7c4ec64f00cd1865b2da54a5",
+        "SYSTEM_PROTECT_LEVEL_1": "PROTECT_LEVEL_1",
+        "SYSTEM_PROTECT_LEVEL_2": "PROTECT_LEVEL_2",
+        "SYSTEM_PROTECT_LEVEL_3": "PROTECT_LEVEL_3"
       }
     }
   ]

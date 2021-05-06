@@ -6,6 +6,10 @@ import SendCodeLogin from './SendCodeLogin';
 import SendCodeVerify from './SendCodeVerify';
 import VerifyOTPToken from './VerifyOTPToken';
 import GetProtectHistory from './GetProtectHistory';
+import GetProtectDetail from './GetProtectDetail';
+import SaveProtectDetail from './SaveProtectDetail';
+import ReportTransactionDay from './ReportTransactionDay';
+import GetAllUser from './GetAllUser';
 
 export default class UserRouters {
   public router: Router = Router();
@@ -18,5 +22,9 @@ export default class UserRouters {
     VerifyOTPToken(this.router);
     ActivateExchangeProtection(this.router);
     GetProtectHistory(this.router);
+    GetProtectDetail(this.router);
+    SaveProtectDetail(this.router);
+    ReportTransactionDay(this.router);
+    GetAllUser(this.router);
   }
 }

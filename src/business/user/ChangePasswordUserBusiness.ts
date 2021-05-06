@@ -14,7 +14,6 @@ export const changePasswordUserBusiness = async (id: string, data: ChangePasswor
     if (validation.length !== 0) {
       throw new Error(Object.values(validation[0].constraints)[0]);
     }
-    console.log(data);
     const userRes = new UserRepository();
     const user = await userRes.findById(id);
     if (user) {

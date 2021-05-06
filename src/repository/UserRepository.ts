@@ -240,4 +240,79 @@ export default class UserRepository extends RepositoryBase<IUserModel> {
       throw err;
     }
   }
+
+  public async getListUsers(textSearch: string, hideAmountSmall: boolean, page: number, limit: number): Promise<any> {
+    try {
+      const options = {
+        page: page ?? 1,
+        limit: limit,
+      };
+      let match = {};
+      let search = null;
+      let amountSmall = null;
+      if (textSearch)
+        search = {$or: [{username: {$regex: '.*' + textSearch + '.*'}}, {email: {$regex: '.*' + textSearch + '.*'}}]};
+      if (hideAmountSmall)
+        amountSmall = {
+          $or: [
+            {amount: {$gte: 1}},
+            {amount_trade: {$gte: 1}},
+            {amount_expert: {$gte: 1}},
+            {amount_copytrade: {$gte: 1}},
+          ],
+        };
+      if (search && hideAmountSmall) {
+        match = {
+          $and: [
+            {$or: [{username: {$regex: '.*' + textSearch + '.*'}}, {email: {$regex: '.*' + textSearch + '.*'}}]},
+            {
+              $or: [
+                {amount: {$gte: 1}},
+                {amount_trade: {$gte: 1}},
+                {amount_expert: {$gte: 1}},
+                {amount_copytrade: {$gte: 1}},
+              ],
+            },
+          ],
+        };
+      } else {
+        if (search) match = search;
+        else if (hideAmountSmall) match = amountSmall;
+      }
+      const aggregate = UserSchema.aggregate([
+        {
+          $lookup: {
+            from: 'user_wallets',
+            localField: '_id',
+            foreignField: 'user_id',
+            as: 'user_wallets',
+          },
+        },
+        {
+          $unwind: '$user_wallets',
+        },
+        {
+          $project: {
+            _id: '$_id',
+            username: '$username',
+            email: '$email',
+            avatar: '$avatar',
+            is_sponsor: '$is_sponsor',
+            is_expert: '$is_expert',
+            amount: '$user_wallets.amount',
+            amount_trade: '$user_wallets.amount_trade',
+            amount_expert: '$user_wallets.amount_expert',
+            amount_copytrade: '$user_wallets.amount_copytrade',
+          },
+        },
+        {
+          $match: match,
+        },
+      ]);
+      const result = await UserSchema.aggregatePaginate(aggregate, options);
+      return result;
+    } catch (err) {
+      throw err;
+    }
+  }
 }
