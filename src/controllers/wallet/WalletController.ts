@@ -80,6 +80,7 @@ export const CreateInternalTransferController = async (req: Request, res: Respon
     const data = new CreateInternalTransferValidator();
     data.user_id = req.user["id"];
     data.amount = Number(params.amount);
+    data.from_wallet = params.from_wallet;
     data.to_wallet = params.to_wallet;
     data.response = params.response;
     const result = await CreateInternalTransferBusiness(data);

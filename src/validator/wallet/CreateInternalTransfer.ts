@@ -8,6 +8,10 @@ export class CreateInternalTransferValidator {
   @IsIn(['spot', 'trade', 'expert', 'copytrade'])
   to_wallet: string;
 
+  @IsNotEmpty({ message: 'From Wallet is required' })
+  @IsIn(['spot', 'trade', 'expert', 'copytrade'])
+  from_wallet: string;
+
   @IsNotEmpty({ message: 'Amount is required' })
   @Min(Number(1))
   @IsNumber({}, {
