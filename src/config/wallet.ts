@@ -18,4 +18,5 @@ export default {
   HD_PATH_STRING: `m/44'/60'/0'/0`,
   MAX_GAS_FOR_ETH_SEND: 25000, /* Max gas for send transaction (not gas price) */
   MAX_GAS_FOR_TOKEN_SEND: 90000, /* Max gas for token send transaction (not gas price) */
+  ETH_ERC20_WITHDRAW_MIN_AMOUNT: process.env.ETH_ERC20_WITHDRAW_MIN_AMOUNT
 };
