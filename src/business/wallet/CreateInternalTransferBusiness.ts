@@ -43,7 +43,15 @@ export const CreateInternalTransferBusiness = async (transaction: CreateInternal
         // Update amount for Sender & Receiver (No fee)
         const txModel = new UserWalletRepository();
         let inc = { $inc: {} };
-        inc.$inc['amount_' + transaction.to_wallet] = transaction.amount;
+
+        // TO WALLET
+        if (transaction.to_wallet == 'amount') {
+          inc.$inc['amount'] = transaction.amount;
+        } else {
+          inc.$inc['amount_' + transaction.to_wallet] = transaction.amount;
+        }
+
+        // FROM WALLET
         if (transaction.from_wallet == 'amount') {
           inc.$inc['amount'] = -1 * transaction.amount;
         } else {
