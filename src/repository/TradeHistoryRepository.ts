@@ -38,14 +38,14 @@ export default class TradeHistoryRepository extends RepositoryBase<ITradeHistory
   public async reportTransactionDay(fromDate: string, toDate: string): Promise<any[]> {
     try {
       const result = await TradeHistorySchema.aggregate([
-        // {
-        //   $match: {
-        //     order_uuid: {
-        //       $gte: fromDate,
-        //       $lte: toDate,
-        //     },
-        //   },
-        // },
+        {
+          $match: {
+            order_uuid: {
+              $gte: fromDate,
+              $lte: toDate,
+            },
+          },
+        },
         {
           $group: {
             _id: {
