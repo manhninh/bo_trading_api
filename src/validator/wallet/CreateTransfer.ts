@@ -19,4 +19,7 @@ export class CreateTransferValidator {
 
   @IsOptional({})
   tfa: string;
+
+  @IsNotEmpty({ message: 'Response is required' })
+  response: string;
 }

@@ -1,7 +1,8 @@
 import config from '@src/config';
+import wallet from '@src/config/wallet';
 import { IsIn, IsNotEmpty, IsNumber, IsOptional, Min } from 'class-validator';
 
-export class CreateWithdrawValidator {
+export class CreateWithdrawERC20Validator {
   @IsNotEmpty({ message: 'User id is required' })
   user_id: string;
 
@@ -12,9 +13,9 @@ export class CreateWithdrawValidator {
   address: string;
 
   @IsNotEmpty({ message: 'Amount is required' })
-  @Min(Number(config.TRON_TRC20_DEPOSIT_MIN_AMOUNT))
+  @Min(Number(wallet.ETH_ERC20_WITHDRAW_MIN_AMOUNT))
   @IsNumber({}, {
-    message: 'Amount is number and large than ' + config.TRON_TRC20_DEPOSIT_MIN_AMOUNT,
+    message: 'Amount is number and large than ' + wallet.ETH_ERC20_WITHDRAW_MIN_AMOUNT,
   })
   amount: number;
 
@@ -22,9 +23,6 @@ export class CreateWithdrawValidator {
   tfa: string;
 
   @IsNotEmpty({ message: 'Symbol is required' })
-  @IsIn([config.TRON_TRC20_SYMBOL])
+  @IsIn([config.ETH_ERC20_SYMBOL])
   symbol: string;
-
-  @IsNotEmpty({ message: 'Response is required' })
-  response: string;
 }

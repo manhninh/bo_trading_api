@@ -1,10 +1,10 @@
-import {verifyTOTP} from '@src/middleware/auth/otp';
-import {decrypt} from '@src/utils/helpers';
-import {IUserModel} from 'bo-trading-common/lib/models/users';
-import {UserSchema, UserWalletSchema} from 'bo-trading-common/lib/schemas';
+import { verifyTOTP } from '@src/middleware/auth/otp';
+import { decrypt } from '@src/utils/helpers';
+import { IUserModel } from 'bo-trading-common/lib/models/users';
+import { UserSchema, UserWalletSchema } from 'bo-trading-common/lib/schemas';
 import moment from 'moment';
-import mongoose, {ObjectId, UpdateQuery, UpdateWriteOpResult} from 'mongoose';
-import {RepositoryBase} from './base';
+import mongoose, { ObjectId, UpdateQuery, UpdateWriteOpResult } from 'mongoose';
+import { RepositoryBase } from './base';
 export default class UserRepository extends RepositoryBase<IUserModel> {
   constructor() {
     super(UserSchema);
@@ -13,7 +13,7 @@ export default class UserRepository extends RepositoryBase<IUserModel> {
   public async checkUserOrEmail(userOrEmail: string): Promise<IUserModel> {
     try {
       const result = await UserSchema.findOne({
-        $or: [{username: userOrEmail}, {email: userOrEmail}],
+        $or: [{ username: userOrEmail }, { email: userOrEmail }],
         type_user: 0,
       });
       return result;
@@ -39,7 +39,7 @@ export default class UserRepository extends RepositoryBase<IUserModel> {
     try {
       const faker = require('faker');
       const ref_code = faker.vehicle.vrm();
-      await UserSchema.findByIdAndUpdate(id, {ref_code}, {new: true, upsert: true});
+      await UserSchema.findByIdAndUpdate(id, { ref_code }, { new: true, upsert: true });
     } catch (err) {
       throw err;
     }
@@ -47,7 +47,7 @@ export default class UserRepository extends RepositoryBase<IUserModel> {
 
   public async activeUser(id: ObjectId): Promise<UpdateWriteOpResult> {
     try {
-      const result = await UserSchema.updateOne({_id: id}, {status: 1});
+      const result = await UserSchema.updateOne({ _id: id }, { status: 1 });
       return result;
     } catch (err) {
       throw err;
@@ -82,7 +82,7 @@ export default class UserRepository extends RepositoryBase<IUserModel> {
             avatar: '$avatar',
             ref_code: '$ref_code',
             isEnabledTFA: {
-              $cond: [{$ifNull: ['$tfa', false]}, true, false],
+              $cond: [{ $ifNull: ['$tfa', false] }, true, false],
             },
             is_sponsor: '$is_sponsor',
             is_expert: '$is_expert',
@@ -138,14 +138,33 @@ export default class UserRepository extends RepositoryBase<IUserModel> {
     }
   }
 
-  public async readyTransfer(user_id: string, amount: number, password: string, tfa: string): Promise<Boolean> {
+  public async readyTransfer(user_id: string, amount: number): Promise<Boolean> {
     try {
       const row = await UserSchema.findById(user_id);
       if (!row) {
         return false;
       } else {
         // TODO: Need to check TFA code
-        const wallet = await UserWalletSchema.findOne({user_id: row._id});
+        const wallet = await UserWalletSchema.findOne({ user_id: row._id });
+        if (row.type_user == 0 && wallet?.amount >= amount) {
+          return true;
+        } else {
+          return false;
+        }
+      }
+    } catch (err) {
+      return false;
+    }
+  }
+
+  public async readyWithdraw(user_id: string, amount: number, password: string, tfa: string): Promise<Boolean> {
+    try {
+      const row = await UserSchema.findById(user_id);
+      if (!row) {
+        return false;
+      } else {
+        // TODO: Need to check TFA code
+        const wallet = await UserWalletSchema.findOne({ user_id: row._id });
         if (row.type_user == 0 && row.checkPassword(password) && wallet && wallet.amount >= amount) {
           // TODO: Need to check TFA code
           if (row?.tfa) {
@@ -210,7 +229,7 @@ export default class UserRepository extends RepositoryBase<IUserModel> {
                 $arrayElemAt: ['$commission_level', -1],
               },
             },
-            is_sponsor: {$ifNull: [false, true]},
+            is_sponsor: { $ifNull: [false, true] },
           },
         },
         {

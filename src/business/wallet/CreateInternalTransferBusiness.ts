@@ -16,14 +16,13 @@ export const CreateInternalTransferBusiness = async (transaction: CreateInternal
       // TODO
       // Check user is real user && balance of user
       const userModel = new UserRepository();
-      const canTransfer = await userModel.readyTransfer(transaction.user_id, transaction.amount, transaction.password, transaction.tfa);
+      const canTransfer = await userModel.readyTransfer(transaction.user_id, transaction.amount);
 
       if (!canTransfer) {
         throw new Error('Can not transfer, please try again later!');
       }
 
       try {
-
         // Create transaction for transfer
         const faker = require('faker');
         const uuid = faker.datatype.uuid();
@@ -48,7 +47,6 @@ export const CreateInternalTransferBusiness = async (transaction: CreateInternal
         txModel.updateByUserId(transaction.user_id, inc);
 
         return result;
-
       } catch (err) {
         throw err;
       }
