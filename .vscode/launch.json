@@ -20,7 +20,7 @@
       "env": {
         "NODE_ENV": "development",
         "PORT": "5002",
-        "MONGODB_URI": "mongodb+srv://ninhpm:ninhpm123@cluster0.ofmu5.mongodb.net/bo_trading_new",
+        "MONGODB_URI": "mongodb://localhost/bo_trading_new",
         "TOKEN_LIFE": "14400",
         "WS_CANDLESTICK": "http://localhost:5000",
         "URL_WEB_VERIFICATION_EMAIL": "http://localhost:3000/verification/email/",
@@ -33,7 +33,7 @@
         "PATH_TEMPLATE_EMAIL": "E:\\Freelancers\\BOTrading\\bo_trading_api\\email_template",
         "REDIS_PORT": "6379",
         "REDIS_HOST": "127.0.0.1",
-        "REDIS_AUTH": "foobared",
+        "REDIS_AUTH": "123456",
         "CRYPTO_PRIVATE_KEY": "57c2ae6e54b842e897dfae138945acffd6152fd17f5bad35d5664cf30334fe60",
         "TRON_FULL_NODE": "https://api.nileex.io",
         "TRON_EVENT_NODE": "https://event.nileex.io",
@@ -60,7 +60,9 @@
         "S3_ACCESS_KEY": "AKIA5BXFWY3BHNNZBS3U",
         "S3_ACCESS_SECRET": "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",
         "S3_BUCKET": "finimix",
-        "GOOGLE_RECAPTCHA_SECRET_KEY": "6Le6ssAaAAAAADzP5deDYeNcoOZx66zww7WXg8I6"
+        "GOOGLE_RECAPTCHA_SECRET_KEY": "6Le6ssAaAAAAADzP5deDYeNcoOZx66zww7WXg8I6",
+        "WS_CALCULATOR": "http://localhost:5001",
+        "WS_TOKEN_API": "0xad5bbac33ddde4cf7c4ec64f00cd1865b2da54a5"
       }
     }
   ]
