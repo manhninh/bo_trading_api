@@ -127,6 +127,8 @@ export default class UserTransactionsRepository extends RepositoryBase<IUserTran
             "updatedAt": 1,
             "to_username": "$userTo.username",
             "from_username": "$userFrom.username",
+            "from_wallet": 1,
+            "to_wallet": 1,
           }
         });
       }
