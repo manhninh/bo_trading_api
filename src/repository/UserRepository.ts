@@ -336,6 +336,9 @@ export default class UserRepository extends RepositoryBase<IUserModel> {
             avatar: '$avatar',
             is_sponsor: '$is_sponsor',
             is_expert: '$is_expert',
+            isEnabledTFA: {
+              $cond: [{ $ifNull: ['$tfa', false] }, true, false],
+            },
             amount: '$user_wallets.amount',
             amount_trade: '$user_wallets.amount_trade',
             amount_expert: '$user_wallets.amount_expert',
@@ -348,6 +351,15 @@ export default class UserRepository extends RepositoryBase<IUserModel> {
       ]);
       const result = await UserSchema.aggregatePaginate(aggregate, options);
       return result;
+    } catch (err) {
+      throw err;
+    }
+  }
+
+  public async updateNewPassword(id: string, salt: string, hashedPassword: string): Promise<true> {
+    try {
+      await UserSchema.updateOne({_id: this.toObjectId(id)}, {salt: salt, hashed_password: hashedPassword});
+      return true;
     } catch (err) {
       throw err;
     }
