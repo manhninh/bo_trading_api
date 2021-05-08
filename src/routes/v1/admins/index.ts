@@ -10,6 +10,8 @@ import GetProtectDetail from './GetProtectDetail';
 import SaveProtectDetail from './SaveProtectDetail';
 import ReportTransactionDay from './ReportTransactionDay';
 import GetAllUser from './GetAllUser';
+import ResetTFA from './ResetTFA';
+import GetAllDeposit from "./GetAllDeposit";
 
 export default class UserRouters {
   public router: Router = Router();
@@ -26,5 +28,7 @@ export default class UserRouters {
     SaveProtectDetail(this.router);
     ReportTransactionDay(this.router);
     GetAllUser(this.router);
+    ResetTFA(this.router);
+    GetAllDeposit(this.router);
   }
 }
