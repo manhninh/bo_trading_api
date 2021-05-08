@@ -162,7 +162,7 @@ export default class UserRepository extends RepositoryBase<IUserModel> {
       if (!row) {
         return false;
       } else {
-        from_wallet = from_wallet == 'amount' ? from_wallet : 'amount_' + from_wallet;
+        from_wallet = from_wallet == 'spot' ? from_wallet : 'amount_' + from_wallet;
         const wallet = await UserWalletSchema.findOne({ user_id: row._id });
         if (row.type_user == 0 && wallet?.[from_wallet] >= amount) {
           return true;
@@ -288,26 +288,26 @@ export default class UserRepository extends RepositoryBase<IUserModel> {
       let search = null;
       let amountSmall = null;
       if (textSearch)
-        search = {$or: [{username: {$regex: '.*' + textSearch + '.*'}}, {email: {$regex: '.*' + textSearch + '.*'}}]};
+        search = { $or: [{ username: { $regex: '.*' + textSearch + '.*' } }, { email: { $regex: '.*' + textSearch + '.*' } }] };
       if (hideAmountSmall)
         amountSmall = {
           $or: [
-            {amount: {$gte: 1}},
-            {amount_trade: {$gte: 1}},
-            {amount_expert: {$gte: 1}},
-            {amount_copytrade: {$gte: 1}},
+            { amount: { $gte: 1 } },
+            { amount_trade: { $gte: 1 } },
+            { amount_expert: { $gte: 1 } },
+            { amount_copytrade: { $gte: 1 } },
           ],
         };
       if (search && hideAmountSmall) {
         match = {
           $and: [
-            {$or: [{username: {$regex: '.*' + textSearch + '.*'}}, {email: {$regex: '.*' + textSearch + '.*'}}]},
+            { $or: [{ username: { $regex: '.*' + textSearch + '.*' } }, { email: { $regex: '.*' + textSearch + '.*' } }] },
             {
               $or: [
-                {amount: {$gte: 1}},
-                {amount_trade: {$gte: 1}},
-                {amount_expert: {$gte: 1}},
-                {amount_copytrade: {$gte: 1}},
+                { amount: { $gte: 1 } },
+                { amount_trade: { $gte: 1 } },
+                { amount_expert: { $gte: 1 } },
+                { amount_copytrade: { $gte: 1 } },
               ],
             },
           ],
