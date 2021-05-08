@@ -15,7 +15,6 @@ export const CreateInternalTransferBusiness = async (transaction: CreateInternal
     } else {
       // TODO
       // Check user is real user && balance of user
-      transaction.from_wallet = transaction.from_wallet == 'spot' ? 'amount' : transaction.from_wallet;
       const userModel = new UserRepository();
       const canTransfer = await userModel.readyInternalTransfer(transaction.user_id, transaction.amount, transaction.from_wallet);
 
@@ -37,7 +36,9 @@ export const CreateInternalTransferBusiness = async (transaction: CreateInternal
           tx: uuid,
           status: Constants.TRANSACTION_STATUS_SUCCESS,
           type: Constants.TRANSACTION_TYPE_TRANSFER,
-          noted: 'Transfer from ' + transaction.from_wallet + ' to ' + transaction.to_wallet
+          noted: 'Transfer from ' + transaction.from_wallet + ' to ' + transaction.to_wallet,
+          from_wallet: transaction.from_wallet,
+          to_wallet: transaction.to_wallet
         });
 
         // Update amount for Sender & Receiver (No fee)
@@ -52,7 +53,7 @@ export const CreateInternalTransferBusiness = async (transaction: CreateInternal
         }
 
         // FROM WALLET
-        if (transaction.from_wallet == 'amount') {
+        if (transaction.from_wallet == 'spot') {
           inc.$inc['amount'] = -1 * transaction.amount;
         } else {
           inc.$inc['amount_' + transaction.from_wallet] = -1 * transaction.amount;
