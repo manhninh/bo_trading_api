@@ -1,9 +1,9 @@
-import {IUserTransactionsModel} from 'bo-trading-common/lib/models/userTransactions';
-import {UserTransactionsSchema} from 'bo-trading-common/lib/schemas';
-import {Constants} from 'bo-trading-common/lib/utils';
+import { IUserTransactionsModel } from 'bo-trading-common/lib/models/userTransactions';
+import { UserTransactionsSchema } from 'bo-trading-common/lib/schemas';
+import { Constants } from 'bo-trading-common/lib/utils';
 import moment from 'moment';
-import {ObjectId, UpdateQuery} from 'mongoose';
-import {RepositoryBase} from './base';
+import { ObjectId, UpdateQuery } from 'mongoose';
+import { RepositoryBase } from './base';
 
 export default class UserTransactionsRepository extends RepositoryBase<IUserTransactionsModel> {
   constructor() {
@@ -63,7 +63,7 @@ export default class UserTransactionsRepository extends RepositoryBase<IUserTran
       const options = {
         page: input.page ?? 1,
         limit: input.limit ?? 10,
-        sort: {createdAt: -1},
+        sort: { createdAt: -1 },
       };
 
       const from = moment(input.from).startOf('day').toDate();
@@ -110,22 +110,24 @@ export default class UserTransactionsRepository extends RepositoryBase<IUserTran
         });
 
         aggregateData.push({
-          $project: {
-            amount: 1,
-            address: 1,
-            tx: 1,
-            user_id: 1,
-            fee: 1,
-            symbol: 1,
-            status: 1,
-            type: 1,
-            noted: 1,
-            to_user_id: 1,
-            createdAt: 1,
-            updatedAt: 1,
-            to_username: '$userTo.username',
-            from_username: '$userFrom.username',
-          },
+          "$project": {
+            "amount": 1,
+            "address": 1,
+            "tx": 1,
+            "user_id": 1,
+            "fee": 1,
+            "symbol": 1,
+            "status": 1,
+            "type": 1,
+            "noted": 1,
+            "to_user_id": 1,
+            "createdAt": 1,
+            "updatedAt": 1,
+            "to_username": "$userTo.username",
+            "from_username": "$userFrom.username",
+            "from_wallet": 1,
+            "to_wallet": 1,
+          }
         });
       }
 
@@ -176,13 +178,13 @@ export default class UserTransactionsRepository extends RepositoryBase<IUserTran
       } else {
         match = {
           ...match,
-          ...{status: status},
+          ...{ status: status },
         };
       }
 
       const aggregate = UserTransactionsSchema.aggregate([
-        {$match: match},
-        {$sort: {createdAt: -1}},
+        { $match: match },
+        { $sort: { createdAt: -1 } },
         {
           $lookup: {
             from: 'users',
@@ -191,7 +193,7 @@ export default class UserTransactionsRepository extends RepositoryBase<IUserTran
             as: 'users',
           },
         },
-        {$unwind: '$users'},
+        { $unwind: '$users' },
         {
           $project: {
             user_id: 1,
@@ -201,10 +203,10 @@ export default class UserTransactionsRepository extends RepositoryBase<IUserTran
             status: 1,
             createdAt: 1,
             username: '$users.username',
-						symbol:1,
+            symbol: 1,
           },
         },
-        {$match: {username: {$regex: '.*' + username + '.*'}}},
+        { $match: { username: { $regex: '.*' + username + '.*' } } },
       ]);
       const result = await UserTransactionsSchema.aggregatePaginate(aggregate, options);
       return result;
