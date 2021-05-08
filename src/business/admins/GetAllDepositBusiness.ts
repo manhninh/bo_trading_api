@@ -14,8 +14,8 @@ export const GetAllDepositBusiness = async (
 ): Promise<ICommissionTransactionModel[]> => {
   try {
     const userTransactionRes = new UserTransactionsRepository();
-    const from = new Date(moment(fromDate).startOf('day').toString());
-    const to = new Date(moment(toDate).endOf('day').toString());
+    const from = new Date(moment(fromDate).startOf('day').toISOString());
+    const to = new Date(moment(toDate).endOf('day').toISOString());
     const result = await userTransactionRes.depositUsers(username, status, from, to, page, limit);
     return result;
   } catch (err) {
