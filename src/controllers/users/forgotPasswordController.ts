@@ -1,5 +1,5 @@
 import { forgotPasswordBusiness } from '@src/business/user/ForgotPasswordBusiness';
-import { ForgotPasswordValidator } from '@src/validator/users/forgotPassword';
+import { ForgotPasswordValidator } from '@src/validator/users/ForgotPassword';
 import { NextFunction, Request, Response } from 'express';
 
 export const forgotPasswordController = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
