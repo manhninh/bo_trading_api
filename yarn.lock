@@ -2053,10 +2053,10 @@ bn.js@^5.0.0, bn.js@^5.1.1:
   resolved "https://registry.yarnpkg.com/bn.js/-/bn.js-5.2.0.tgz#358860674396c6997771a9d051fcc1b57d4ae002"
   integrity sha512-D7iWRBvnZE8ecXiLj/9wbxH7Tk79fAh8IHaTNq1RWRixsS02W+5qS+iE9yq6RYl0asXx5tw0bLhmT5pIfbSquw==
 
-bo-trading-common@^1.6.0:
-  version "1.6.0"
-  resolved "https://registry.yarnpkg.com/bo-trading-common/-/bo-trading-common-1.6.0.tgz#8c84bb5bdd2d63fd2f3544eb3ac4627d22dbc652"
-  integrity sha512-iHK7cZDRzpqpaBbdiU+Lvf0bxdKj38JvfeeLoRuP90z5J4KeVHTUEbMiTOsXznmL6rvQC6khPtWAhps4B5GB0g==
+bo-trading-common@^1.6.2:
+  version "1.6.2"
+  resolved "https://registry.yarnpkg.com/bo-trading-common/-/bo-trading-common-1.6.2.tgz#bbdb291927030818ed8663187a331024253f159d"
+  integrity sha512-h5LeU1LlX8aGXHs2TNNm137OofA6g+xkbwkpRZNqGL22V9sX/fEqvv4IPG4VdMCTfdlBFnmePmqOIa7TC/XKAg==
   dependencies:
     express "^4.16.3"
     moment "^2.22.2"
@@ -2979,10 +2979,10 @@ dot-prop@^5.2.0:
   dependencies:
     is-obj "^2.0.0"
 
-dotenv@^9.0.0:
-  version "9.0.0"
-  resolved "https://registry.yarnpkg.com/dotenv/-/dotenv-9.0.0.tgz#2408af4e39378375b7eebe30b7b54989e36d6e46"
-  integrity sha512-yy3x9XjojW8ROTBePD25AcMoHqGHsvHmtfw8QWlpEXyMMXXPj6brUA464AptUvHuTPRmNz6Sd3ZLNLeJl6dHJA==
+dotenv@^9.0.1:
+  version "9.0.1"
+  resolved "https://registry.yarnpkg.com/dotenv/-/dotenv-9.0.1.tgz#a889a28a3a515812dde1e7f8183ef5cdf3186b97"
+  integrity sha512-W8FNeNnnvJoYfgkFRKzp8kTgz0T2YY4TJ9xy1Ma0hSebPTK8iquRtpG12TUrSTX5zIN9D/wSLEEuI+Ad35tlyw==
 
 double-ended-queue@^2.1.0-0:
   version "2.1.0-0"

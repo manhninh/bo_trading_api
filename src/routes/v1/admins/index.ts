@@ -12,6 +12,9 @@ import ReportTransactionDay from './ReportTransactionDay';
 import GetAllUser from './GetAllUser';
 import ResetTFA from './ResetTFA';
 import GetAllDeposit from "./GetAllDeposit";
+import GetAllWithdraw from "./GetAllWithdraw";
+import GetAllTranfers from "./GetAllTranfers"
+import GetAllSponsor from "./GetAllSponsor";
 
 export default class UserRouters {
   public router: Router = Router();
@@ -30,5 +33,8 @@ export default class UserRouters {
     GetAllUser(this.router);
     ResetTFA(this.router);
     GetAllDeposit(this.router);
+    GetAllWithdraw(this.router);
+    GetAllTranfers(this.router);
+    GetAllSponsor(this.router);
   }
 }
