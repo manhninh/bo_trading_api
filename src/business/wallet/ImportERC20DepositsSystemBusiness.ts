@@ -6,7 +6,7 @@ import { Constants } from 'bo-trading-common/lib/utils';
 import { getETHTransaction } from '../user/CreateWalletBusiness';
 
 
-export const importDepositsSystem = async (): Promise<any> => {
+export const importERC20DepositsSystem = async (): Promise<any> => {
   try {
     const transaction = new UserTransactionsRepository();
     const walletModel = new UserWalletRepository();
@@ -29,22 +29,8 @@ export const importDepositsSystem = async (): Promise<any> => {
         try {
           // START: Check status for each TX
 
-          // FOR TRC20 - USDT
-          if (row.symbol == config.TRON_TRC20_SYMBOL) {
-            tronWeb.trx.getTransaction(row.tx).then((result) => {
-              if (result && result.ret !== undefined && result.ret[0] !== undefined) {
-                if (result.ret[0].contractRet == 'SUCCESS') {
-                  // Them tien vao tai khoan
-                  walletModel.updateByUserId(row.user_id, { $inc: { amount: row.amount } });
-                  // Cap nhat TX
-                  transaction.updateById(row._id, { status: Constants.TRANSACTION_STATUS_SUCCESS });
-                } else if (TRON_ERRORS.includes(result.ret[0].contractRet)) {
-                  // Cap nhat TX
-                  transaction.updateById(row._id, { status: Constants.TRANSACTION_STATUS_CANCELLED, noted: result.ret[0].contractRet });
-                }
-              }
-            });
-          } else if (row.symbol == config.ETH_ERC20_SYMBOL) {
+          // FOR ERC20 - USDT
+          if (row.symbol == config.ETH_ERC20_SYMBOL && row?.tx) {
             const ethTx = await getETHTransaction(row.tx);
             if (ethTx?.hash) {
               // Them tien vao tai khoan
@@ -55,7 +41,7 @@ export const importDepositsSystem = async (): Promise<any> => {
           }
 
           // END: Check status for each TX
-          await delay(250);
+          await delay(500);
         } catch (err) {
           await delay(0);
         }
