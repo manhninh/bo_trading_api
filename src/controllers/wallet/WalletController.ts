@@ -9,6 +9,7 @@ import { CreateTransferValidator } from '@src/validator/wallet/CreateTransfer';
 import { CreateWithdrawValidator } from '@src/validator/wallet/CreateWithdraw';
 import { CreateWithdrawERC20Validator } from '@src/validator/wallet/CreateWithdrawERC20';
 import { GetTransactionsHistoryValidator } from '@src/validator/wallet/GetTransactionsHistory';
+import { Constants } from 'bo-trading-common/lib/utils';
 import { NextFunction, Request, Response } from 'express';
 
 export const GetTransactionsHistory = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
@@ -19,7 +20,7 @@ export const GetTransactionsHistory = async (req: Request, res: Response, next: 
     data.username = req.user["username"];
     data.page = Number(params?.page) ?? 1;
     data.limit = Number(params?.limit) ?? 10;
-    data.type = params?.type ? Number(params?.type) : 0;
+    data.type = params?.type ? Number(params?.type) : Constants.TRANSACTION_TYPE_DEPOSIT;
     data.from = params?.from ? new Date(params.from as any) : new Date();
     data.to = params?.to ? new Date(params.to as any) : new Date();
     const result = await getTransactionsHistory(data);
