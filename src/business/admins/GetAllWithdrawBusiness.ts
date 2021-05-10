@@ -4,7 +4,7 @@ import ICommissionTransactionModel from 'bo-trading-common/lib/models/commission
 import {validate} from 'class-validator';
 import moment from 'moment';
 
-export const GetAllDepositBusiness = async (
+export const GetAllWithdrawBusiness = async (
   username: string,
   status: number,
   fromDate: Date,
@@ -16,7 +16,7 @@ export const GetAllDepositBusiness = async (
     const userTransactionRes = new UserTransactionsRepository();
     const from = new Date(moment(fromDate).startOf('day').toISOString());
     const to = new Date(moment(toDate).endOf('day').toISOString());
-    const result = await userTransactionRes.depositUsers(username, status, from, to, page, limit);
+    const result = await userTransactionRes.withdrawUsers(username, status, from, to, page, limit);
     return result;
   } catch (err) {
     throw err;

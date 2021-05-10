@@ -4,7 +4,10 @@ import ConfirmWithdraw from './ConfirmWithdraw';
 import CreateMFACode from './CreateMFACode';
 import GetAdminInfor from './GetAdminInfor';
 import GetAllDeposit from "./GetAllDeposit";
+import GetAllSponsor from "./GetAllSponsor";
+import GetAllTranfers from "./GetAllTranfers";
 import GetAllUser from './GetAllUser';
+import GetAllWithdraw from "./GetAllWithdraw";
 import GetProtectDetail from './GetProtectDetail';
 import GetProtectHistory from './GetProtectHistory';
 import RejectWithdraw from './RejectWithdraw';
@@ -34,5 +37,8 @@ export default class UserRouters {
     GetAllDeposit(this.router);
     ConfirmWithdraw(this.router);
     RejectWithdraw(this.router);
+    GetAllWithdraw(this.router);
+    GetAllTranfers(this.router);
+    GetAllSponsor(this.router);
   }
 }
