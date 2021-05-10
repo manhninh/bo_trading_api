@@ -1,17 +1,19 @@
-import {Router} from 'express';
+import { Router } from 'express';
 import ActivateExchangeProtection from './ActivateExchangeProtection';
+import ConfirmWithdraw from './ConfirmWithdraw';
 import CreateMFACode from './CreateMFACode';
 import GetAdminInfor from './GetAdminInfor';
+import GetAllDeposit from "./GetAllDeposit";
+import GetAllUser from './GetAllUser';
+import GetProtectDetail from './GetProtectDetail';
+import GetProtectHistory from './GetProtectHistory';
+import RejectWithdraw from './RejectWithdraw';
+import ReportTransactionDay from './ReportTransactionDay';
+import ResetTFA from './ResetTFA';
+import SaveProtectDetail from './SaveProtectDetail';
 import SendCodeLogin from './SendCodeLogin';
 import SendCodeVerify from './SendCodeVerify';
 import VerifyOTPToken from './VerifyOTPToken';
-import GetProtectHistory from './GetProtectHistory';
-import GetProtectDetail from './GetProtectDetail';
-import SaveProtectDetail from './SaveProtectDetail';
-import ReportTransactionDay from './ReportTransactionDay';
-import GetAllUser from './GetAllUser';
-import ResetTFA from './ResetTFA';
-import GetAllDeposit from "./GetAllDeposit";
 
 export default class UserRouters {
   public router: Router = Router();
@@ -30,5 +32,7 @@ export default class UserRouters {
     GetAllUser(this.router);
     ResetTFA(this.router);
     GetAllDeposit(this.router);
+    ConfirmWithdraw(this.router);
+    RejectWithdraw(this.router);
   }
 }

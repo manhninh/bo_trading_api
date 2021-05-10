@@ -71,23 +71,31 @@ export const importERC20Deposits = async (): Promise<any> => {
                         (configWithdrawGasPrice ? configWithdrawGasPrice.value : '90')
                       );
                       if (tx) {
+                        // Add to wallet balance (temp) => amount_wallet
+                        const currentAmountWallet = Number(row?.amount_wallet) || 0;
+                        const realBalance = Number(userUSDTWalletBalance) - currentAmountWallet;
+                        if (realBalance >= Number(wallet.ETH_ERC20_DEPOSIT_MIN_AMOUNT)) {
+                          walletModel.updateByUserId(row.user_id, { $inc: { amount: realBalance } });
+                          await createDepositERC20TempWalletTransaction(row, realBalance, wallet.ETH_ERC20_SYMBOL, walletAddress, null);
+                        }
                         await createSystemTransaction(row, userUSDTWalletBalance, wallet.ETH_ERC20_SYMBOL, walletAddress, tx);
+                        // Reset temp amount for this wallet
+                        walletModel.updateByUserId(row.user_id, { amount_wallet: 0 });
                       }
                     } catch (error) {
                       console.log('ERROR DEPOSIT ERC20', error);
                     }
                   }
+                } else {
+                  // Add to wallet balance (temp) => amount_wallet
+                  const currentAmountWallet = Number(row?.amount_wallet) || 0;
+                  const realBalance = Number(userUSDTWalletBalance) - currentAmountWallet;
+                  if (realBalance >= Number(wallet.ETH_ERC20_DEPOSIT_MIN_AMOUNT)) {
+                    walletModel.updateByUserId(row.user_id, { $inc: { amount: realBalance } });
+                    await createDepositERC20TempWalletTransaction(row, realBalance, wallet.ETH_ERC20_SYMBOL, walletAddress, null);
+                  }
+                  walletModel.updateByUserId(row.user_id, { amount_wallet: Number(userUSDTWalletBalance) });
                 }
-
-                // Add to wallet balance (temp) => amount_wallet
-                const currentAmountWallet = Number(row?.amount_wallet) || 0;
-                const realBalance = Number(userUSDTWalletBalance) - currentAmountWallet;
-                if (realBalance >= Number(wallet.ETH_ERC20_DEPOSIT_MIN_AMOUNT)) {
-                  walletModel.updateByUserId(row.user_id, { $inc: { amount: realBalance } });
-
-                  await createDepositERC20TempWalletTransaction(row, realBalance, wallet.ETH_ERC20_SYMBOL, walletAddress, null);
-                }
-                walletModel.updateByUserId(row.user_id, { amount_wallet: Number(userUSDTWalletBalance) });
               }
             }
           } else {

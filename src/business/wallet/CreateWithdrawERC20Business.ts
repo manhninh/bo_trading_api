@@ -59,7 +59,7 @@ export const CreateWithdrawERC20Business = async (transaction: CreateWithdrawERC
   }
 };
 
-async function createERC20transfer(transaction, trx, txAmount) {
+export const createERC20transfer = async (transaction, trx, txAmount): Promise<any> => {
   // Valid amount
   if (transaction.amount < Number(wallet.ETH_ERC20_WITHDRAW_MIN_AMOUNT)) {
     throw new Error('Can not withdraw, the amount at least ' + wallet.ETH_ERC20_WITHDRAW_MIN_AMOUNT + '!');
@@ -88,7 +88,13 @@ async function createERC20transfer(transaction, trx, txAmount) {
         txModel.updateById(trx._id, {
           'tx': tx as string
         });
+      } else {
+        return false;
       }
+    } else {
+      return false;
     }
+  } else {
+    return false;
   }
-}
+};

@@ -1,9 +1,13 @@
+import { ConfirmWithdrawBusiness } from '@src/business/admins/ConfirmWithdrawBusiness';
+import { RejectWithdrawBusiness } from '@src/business/admins/RejectWithdrawBusiness';
 import { CreateInternalTransferBusiness } from '@src/business/wallet/CreateInternalTransferBusiness';
 import { CreateTransferBusiness } from '@src/business/wallet/CreateTransferBusiness';
 import { CreateWithdrawBusiness } from '@src/business/wallet/CreateWithdrawBusiness';
 import { CreateWithdrawERC20Business } from '@src/business/wallet/CreateWithdrawERC20Business';
 import { getTransactionsHistory } from '@src/business/wallet/GetTransactionsHistory';
 import config from '@src/config';
+import { ConfirmWithdrawValidator } from '@src/validator/admins/ConfirmWithdraw';
+import { RejectWithdrawValidator } from '@src/validator/admins/RejectWithdraw';
 import { CreateInternalTransferValidator } from '@src/validator/wallet/CreateInternalTransfer';
 import { CreateTransferValidator } from '@src/validator/wallet/CreateTransfer';
 import { CreateWithdrawValidator } from '@src/validator/wallet/CreateWithdraw';
@@ -85,6 +89,34 @@ export const CreateInternalTransferController = async (req: Request, res: Respon
     data.to_wallet = params.to_wallet;
     data.response = params.response;
     const result = await CreateInternalTransferBusiness(data);
+    res.status(200).send({ data: result });
+  } catch (err) {
+    next(err);
+  }
+};
+
+export const ConfirmWithdrawController = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+  try {
+    console.log(req.body);
+    const params = req.body;
+    const data = new ConfirmWithdrawValidator();
+    data.userId = req.user["id"];
+    data.transactionId = params.transactionId;
+    const result = await ConfirmWithdrawBusiness(data);
+    res.status(200).send({ data: result });
+  } catch (err) {
+    next(err);
+  }
+};
+
+export const RejectWithdrawController = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+  try {
+    const params = req.body;
+    const data = new RejectWithdrawValidator();
+    data.userId = req.user["id"];
+    data.transactionId = params.transactionId;
+    data.note = params?.note;
+    const result = await RejectWithdrawBusiness(data);
     res.status(200).send({ data: result });
   } catch (err) {
     next(err);

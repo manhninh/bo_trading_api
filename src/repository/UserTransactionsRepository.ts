@@ -224,4 +224,13 @@ export default class UserTransactionsRepository extends RepositoryBase<IUserTran
       throw err;
     }
   }
+
+  public async GetTransactionDetail(transactionId: string): Promise<IUserTransactionsModel> {
+    try {
+      const result = await UserTransactionsSchema.findOne({ _id: this.toObjectId(transactionId) });
+      return result;
+    } catch (err) {
+      throw err;
+    }
+  }
 }
