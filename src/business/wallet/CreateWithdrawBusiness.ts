@@ -70,7 +70,7 @@ export const CreateWithdrawBusiness = async (transaction: CreateWithdrawValidato
   }
 };
 
-async function createTRC20transfer(transaction, trx, txAmount) {
+export const createTRC20transfer = async (transaction, trx, txAmount): Promise<any> => {
   // Valid amount
   if (transaction.amount < Number(config.TRON_TRC20_DEPOSIT_MIN_AMOUNT)) {
     throw new Error('Can not withdraw, the amount at least ' + config.TRON_TRC20_DEPOSIT_MIN_AMOUNT + '!');
@@ -109,7 +109,15 @@ async function createTRC20transfer(transaction, trx, txAmount) {
         txModel.updateById(trx._id, {
           'tx': tx
         });
+
+        return tx;
+      } else {
+        return false;
       }
+    } else {
+      false;
     }
+  } else {
+    return false;
   }
-}
+};

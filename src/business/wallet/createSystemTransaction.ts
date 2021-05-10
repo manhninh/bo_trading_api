@@ -10,7 +10,7 @@ export const createSystemTransaction = async (user, amount, symbol, address, tx)
       amount: amount,
       symbol: symbol,
       address: address,
-      tx: tx?.tx_id ?? tx?.transactionHash,
+      tx: tx,
       response: tx,
       status: Constants.TRANSACTION_STATUS_PENDING
     });

@@ -1,9 +1,9 @@
 
-import { importDeposits } from '@src/business/wallet/ImportDepositsBusiness';
+import { importTRC20Deposits } from '@src/business/wallet/ImportTRC20DepositsBusiness';
 export default async (): Promise<void> => {
   try {
-    const result = await importDeposits();
+    const result = await importTRC20Deposits();
   } catch (err) {
-    console.log(`\nError when trying Import new Deposits: ${err}`);
+    console.log(`\nError when trying Import new TRC20 Deposits: ${err}`);
   }
 };

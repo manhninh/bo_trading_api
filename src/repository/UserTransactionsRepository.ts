@@ -74,7 +74,7 @@ export default class UserTransactionsRepository extends RepositoryBase<IUserTran
       // Default to search
       aggregateData.push({
         $match: {
-          user_id: this.toObjectId(input.user_id),
+          //user_id: this.toObjectId(input.user_id),
           type: input.type ?? Constants.TRANSACTION_TYPE_DEPOSIT,
           createdAt: {
             $gte: from,
@@ -85,6 +85,14 @@ export default class UserTransactionsRepository extends RepositoryBase<IUserTran
 
       // Add more join
       if (input?.type == Constants.TRANSACTION_TYPE_TRANSFER) {
+        aggregateData[0].$match.$or = [
+          {
+            user_id: this.toObjectId(input.user_id)
+          },
+          {
+            to_user_id: this.toObjectId(input.user_id)
+          }
+        ];
         aggregateData.push({
           $lookup: {
             from: 'users',
@@ -129,6 +137,8 @@ export default class UserTransactionsRepository extends RepositoryBase<IUserTran
             to_wallet: 1,
           },
         });
+      } else {
+        aggregateData[0].$match.user_id = this.toObjectId(input.user_id);
       }
 
       const aggregate = UserTransactionsSchema.aggregate(aggregateData);
@@ -414,6 +424,15 @@ export default class UserTransactionsRepository extends RepositoryBase<IUserTran
         {$match: {username: {$regex: '.*' + username + '.*'}}},
       ]);
       const result = await UserTransactionsSchema.aggregatePaginate(aggregate, options);
+      return result;
+    } catch (err) {
+      throw err;
+    }
+  }
+
+  public async GetTransactionDetail(transactionId: string): Promise<IUserTransactionsModel> {
+    try {
+      const result = await UserTransactionsSchema.findOne({ _id: this.toObjectId(transactionId) });
       return result;
     } catch (err) {
       throw err;

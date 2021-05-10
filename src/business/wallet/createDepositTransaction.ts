@@ -12,7 +12,7 @@ export const createDepositTransaction = async (user, amount, symbol, address, tx
       symbol: symbol,
       address: address,
       tx: tx,
-      status: Constants.TRANSACTION_STATUS_PENDING,
+      status: Constants.TRANSACTION_STATUS_PROCESSING,
       type: Constants.TRANSACTION_TYPE_DEPOSIT
     });
 
