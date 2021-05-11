@@ -1,5 +1,6 @@
 import { Router } from 'express';
 import ActivateExchangeProtection from './ActivateExchangeProtection';
+import SystemConfig from './config/SystemConfig';
 import ConfirmWithdraw from './ConfirmWithdraw';
 import CreateMFACode from './CreateMFACode';
 import GetAdminInfor from './GetAdminInfor';
@@ -40,5 +41,6 @@ export default class UserRouters {
     GetAllWithdraw(this.router);
     GetAllTranfers(this.router);
     GetAllSponsor(this.router);
+    SystemConfig(this.router);
   }
 }
