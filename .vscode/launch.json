@@ -20,7 +20,7 @@
       "env": {
         "NODE_ENV": "development",
         "PORT": "5002",
-        "MONGODB_URI": "mongodb://localhost/bo_trading_new",
+        "MONGODB_URI": "mongodb://localhost/bo_trading_new2",
         "TOKEN_LIFE": "14400",
         "WS_CANDLESTICK": "http://localhost:5000",
         "URL_WEB_VERIFICATION_EMAIL": "http://localhost:3000/verification/email/",
