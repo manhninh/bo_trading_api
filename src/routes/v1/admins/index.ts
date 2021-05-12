@@ -1,14 +1,14 @@
-import { Router } from 'express';
+import {Router} from 'express';
 import ActivateExchangeProtection from './ActivateExchangeProtection';
 import SystemConfig from './config/SystemConfig';
 import ConfirmWithdraw from './ConfirmWithdraw';
 import CreateMFACode from './CreateMFACode';
 import GetAdminInfor from './GetAdminInfor';
-import GetAllDeposit from "./GetAllDeposit";
-import GetAllSponsor from "./GetAllSponsor";
-import GetAllTranfers from "./GetAllTranfers";
+import GetAllDeposit from './GetAllDeposit';
+import GetAllSponsor from './GetAllSponsor';
+import GetAllTranfers from './GetAllTranfers';
 import GetAllUser from './GetAllUser';
-import GetAllWithdraw from "./GetAllWithdraw";
+import GetAllWithdraw from './GetAllWithdraw';
 import GetProtectDetail from './GetProtectDetail';
 import GetProtectHistory from './GetProtectHistory';
 import RejectWithdraw from './RejectWithdraw';
@@ -17,6 +17,7 @@ import ResetTFA from './ResetTFA';
 import SaveProtectDetail from './SaveProtectDetail';
 import SendCodeLogin from './SendCodeLogin';
 import SendCodeVerify from './SendCodeVerify';
+import TotalTransaction from './TotalTransaction';
 import VerifyOTPToken from './VerifyOTPToken';
 
 export default class UserRouters {
@@ -42,5 +43,6 @@ export default class UserRouters {
     GetAllTranfers(this.router);
     GetAllSponsor(this.router);
     SystemConfig(this.router);
+    TotalTransaction(this.router);
   }
 }

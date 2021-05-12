@@ -87,11 +87,11 @@ export default class UserTransactionsRepository extends RepositoryBase<IUserTran
       if (input?.type == Constants.TRANSACTION_TYPE_TRANSFER) {
         aggregateData[0].$match.$or = [
           {
-            user_id: this.toObjectId(input.user_id)
+            user_id: this.toObjectId(input.user_id),
           },
           {
-            to_user_id: this.toObjectId(input.user_id)
-          }
+            to_user_id: this.toObjectId(input.user_id),
+          },
         ];
         aggregateData.push({
           $lookup: {
@@ -432,7 +432,33 @@ export default class UserTransactionsRepository extends RepositoryBase<IUserTran
 
   public async GetTransactionDetail(transactionId: string): Promise<IUserTransactionsModel> {
     try {
-      const result = await UserTransactionsSchema.findOne({ _id: this.toObjectId(transactionId) });
+      const result = await UserTransactionsSchema.findOne({_id: this.toObjectId(transactionId)});
+      return result;
+    } catch (err) {
+      throw err;
+    }
+  }
+
+  public async TotalTransactions(transactionId: string): Promise<any[]> {
+    try {
+      const result = await UserTransactionsSchema.aggregate([
+        {
+          $match: {
+            status: 1,
+            type: {
+              $in: [0, 2, 3, 4],
+            },
+          },
+        },
+        {
+          $group: {
+            _id: '$type',
+            amount: {
+              $sum: '$amount',
+            },
+          },
+        },
+      ]);
       return result;
     } catch (err) {
       throw err;
