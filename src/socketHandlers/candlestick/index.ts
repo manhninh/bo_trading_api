@@ -5,7 +5,6 @@ import {EVENTS, ROOM} from './type';
 export default (io: Socket) => {
   try {
     io.on('connect', () => {
-      logger.info(`Socket Candlestick Connection Success: ${io.id}`);
       io.emit(ROOM.ETHUSDT);
     });
 
@@ -18,7 +17,6 @@ export default (io: Socket) => {
     });
 
     io.on('disconnect', (reason: string) => {
-      logger.error(`Socket Candlestick Disconnected: ${reason}\n`);
     });
 
     /** nhận dữ liệu đóng mở trade mỗi 30s một lần */

@@ -80,51 +80,6 @@ export default class QueueKue {
       },
       jobEvents: false,
     });
-    // this.queue.setMaxListeners(20000);
     global.queue = this.queue;
-    // this.eventsQueue();
-
-    //tạo queue xử lý cho tất cả các user
-    // const userRes = new UserRepository();
-    // userRes.findAll().then((user) => user.map((item) => this.processOrder(item.id.toString())));
   }
-
-  private eventsQueue = () => {
-    this.queue
-      // error handling
-      .on('error', (err: any) => {
-        logger.error('QUEUE EROR: ', err);
-      })
-      // when job complete
-      .on('job complete', (id: number) => {
-        kue.Job.get(id, (err: any, job: any) => {
-          if (err) return;
-          this._logQueue(job);
-        });
-      })
-      // when job fail
-      .on('job failed', (id: number, errorMessage: string) => {
-        kue.Job.get(id, (err: any, job: any) => {
-          if (err) return;
-          this._logQueue(job, errorMessage);
-        });
-      });
-  };
-
-  private _logQueue = (job: any, errMess?: string) => {
-    // const queueLogRes = new QueueLogRepository();
-    // queueLogRes.create(<IQueueLogModel>{
-    //   logs: JSON.stringify({
-    //     id: job.id,
-    //     created_at: job.created_at,
-    //     data: job.data,
-    //     type: job.type,
-    //     workerId: job.workerId,
-    //     errorMessage: errMess,
-    //   }),
-    // });
-    job.remove((err: any) => {
-      if (err) throw err;
-    });
-  };
 }
