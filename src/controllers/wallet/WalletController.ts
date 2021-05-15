@@ -97,7 +97,6 @@ export const CreateInternalTransferController = async (req: Request, res: Respon
 
 export const ConfirmWithdrawController = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   try {
-    console.log(req.body);
     const params = req.body;
     const data = new ConfirmWithdrawValidator();
     data.userId = req.user["id"];
