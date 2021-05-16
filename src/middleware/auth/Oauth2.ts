@@ -21,13 +21,13 @@ const initToken = async (user: IUserModel | IAdminModel, client: IClientModel, d
     const refreshTokenRes = new RefreshTokenRepository();
     await refreshTokenRes.removeByUserIdAndClientId(user.id, client.client_id);
     const refreshToken = randomBytes(128).toString('hex');
-    refreshTokenRes.create(<IAccessTokenModel>{
+    await refreshTokenRes.create(<IAccessTokenModel>{
       user_id: user.id,
       client_id: client.client_id,
       token: refreshToken,
     });
     const accessToken = randomBytes(128).toString('hex');
-    accessTokenRes.create(<IAccessTokenModel>{
+    await accessTokenRes.create(<IAccessTokenModel>{
       user_id: user.id,
       client_id: client.client_id,
       token: accessToken,
@@ -74,8 +74,6 @@ server.exchange(
           }
           if (!user.checkPassword(password)) return done(new Error('Login failed!'));
           if (user.status === STATUS.ACTIVE) {
-            // const queue = new QueueKue();
-            // queue.processOrder(user.id.toString());
             initToken(user, client, done);
           } else if (user.status === STATUS.BLOCK) {
             return done(new Error('Your account is locked! Contact support for more details.'));

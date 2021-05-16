@@ -7,9 +7,9 @@ export default class RefreshTokenRepository extends RepositoryBase<IRefreshToken
     super(RefreshTokenSchema);
   }
 
-  public removeByUserIdAndClientId(userId: string, clientId: string): void {
+  public async removeByUserIdAndClientId(userId: string, clientId: string): Promise<void> {
     try {
-      RefreshTokenSchema.remove({ user_id: this.toObjectId(userId), client_id: clientId });
+      await RefreshTokenSchema.deleteMany({user_id: this.toObjectId(userId), client_id: clientId});
     } catch (err) {
       throw err;
     }
