@@ -15,7 +15,7 @@ export const createDepositTransaction = async (user, amount, symbol, address, tx
       status: Constants.TRANSACTION_STATUS_PROCESSING,
       type: Constants.TRANSACTION_TYPE_DEPOSIT
     });
-
+    return true;
   } catch (err) {
     throw err;
   }
@@ -34,7 +34,7 @@ export const createDepositERC20TempWalletTransaction = async (user, amount, symb
       status: Constants.TRANSACTION_STATUS_SUCCESS,
       type: Constants.TRANSACTION_TYPE_TEMP_DEPOSIT
     });
-
+    return true;
   } catch (err) {
     throw err;
   }
