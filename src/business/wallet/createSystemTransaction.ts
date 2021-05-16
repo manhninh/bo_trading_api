@@ -5,7 +5,7 @@ import Constants from 'bo-trading-common/lib/utils/Constants';
 export const createSystemTransaction = async (user, amount, symbol, address, tx): Promise<any> => {
   try {
     const systemWalletRes = new SystemTransactionsRepository();
-    systemWalletRes.create(<ISystemTransactionsModel>{
+    const res = systemWalletRes.create(<ISystemTransactionsModel>{
       user_id: user._id,
       amount: amount,
       symbol: symbol,
@@ -15,6 +15,7 @@ export const createSystemTransaction = async (user, amount, symbol, address, tx)
       status: Constants.TRANSACTION_STATUS_PENDING
     });
 
+    return res;
   } catch (err) {
     throw err;
   }
