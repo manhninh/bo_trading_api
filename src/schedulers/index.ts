@@ -8,7 +8,7 @@ export default class Scheduler {
   public config() {
     scheduler.scheduleJob('*/10 * * * *', ImportTRC20Deposits);
     scheduler.scheduleJob('*/10 * * * *', ImportERC20Deposits);
-    scheduler.scheduleJob('*/1 * * * *', ImportSystemTRC20Deposits);
+    scheduler.scheduleJob('*/5 * * * *', ImportSystemTRC20Deposits);
     //scheduler.scheduleJob('*/1 * * * *', ImportSystemERC20Deposits);
     scheduler.scheduleJob('*/5 * * * *', ScheduleVerifyTX);
 
