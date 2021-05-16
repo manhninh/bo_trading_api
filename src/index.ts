@@ -57,16 +57,16 @@ server.on('error', (error: NodeJS.ErrnoException): void => {
   }
 });
 
-process.on('uncaughtException', (error, origin) => {
-  logger.error('----- Uncaught exception -----')
-  logger.error(error)
-  logger.error('----- Exception origin -----')
-  logger.error(origin)
-})
+// process.on('uncaughtException', (error, origin) => {
+//   logger.error('----- Uncaught exception -----')
+//   logger.error(error)
+//   logger.error('----- Exception origin -----')
+//   logger.error(origin)
+// })
 
-process.on('unhandledRejection', (reason, promise) => {
-  logger.error('----- Unhandled Rejection at -----')
-  logger.error(promise)
-  logger.error('----- Reason -----')
-  logger.error(reason)
-})
+// process.on('unhandledRejection', (reason, promise) => {
+//   logger.error('----- Unhandled Rejection at -----')
+//   logger.error(promise)
+//   logger.error('----- Reason -----')
+//   logger.error(reason)
+// })
