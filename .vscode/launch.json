@@ -1,7 +1,7 @@
 {
   // Use IntelliSense to learn about possible attributes.
   // Hover to view descriptions of existing attributes.
-  // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+  // For more information, visit: https://go.microsoft.com/fwlink/?linkid:830387
   "version": "0.2.0",
   "configurations": [
     {
@@ -9,7 +9,7 @@
       "request": "launch",
       "name": "Launch Program",
       "program": "${workspaceFolder}/src/index.ts",
-      "preLaunchTask": "npm: build",
+      "preLaunchTask": "npm: build-apidoc",
       "sourceMaps": true,
       "smartStep": true,
       "internalConsoleOptions": "openOnSessionStart",
@@ -19,15 +19,53 @@
       "outputCapture": "std",
       "env": {
         "NODE_ENV": "development",
-        "PORT": "5000",
-        "MONGODB_URI": "mongodb+srv://ninhpm:ninhpm123@cluster0.ofmu5.mongodb.net/bo_trading_new",
-        "BINANCE_BASE_ENDPOINT": "wss://stream.binance.com:9443",
-        "TOKEN_LIFE": "3600",
+        "PORT": "5002",
+        "MONGODB_URI": "mongodb://localhost/bo_trading_new2",
+        "TOKEN_LIFE": "14400",
+        "WS_CANDLESTICK": "http://localhost:5000",
         "URL_WEB_VERIFICATION_EMAIL": "http://localhost:3000/verification/email/",
-        "NODEMAILER_USER": "AKIA2I73P5OFTY6N3I4W",
-        "NODEMAILER_PASS": "BInTABM7ZU13B9zdG/p5ZmDgHRuq0w5e64ZRppAFxcj1",
-        "EMAIL_ROOT": "IOGOETH manhninh91@gmail.com",
-        "PATH_TEMPLATE_EMAIL": "D:\\Freelancer\\BOTrading\\bo_trading_api\\email_template"
+        "NODEMAILER_HOST": "smtp.ethereal.email",
+        "NODEMAILER_PORT": "587",
+        "NODEMAILER_SECURE": "0",
+        "NODEMAILER_USER": "dayana.connelly@ethereal.email",
+        "NODEMAILER_PASS": "EYg9bv9WDCQkKT9BtF",
+        "EMAIL_ROOT": "Finimix no_reply@finimix.com",
+        "PATH_TEMPLATE_EMAIL": "E:\\Freelancers\\BOTrading\\bo_trading_api\\email_template",
+        "REDIS_PORT": "6379",
+        "REDIS_HOST": "127.0.0.1",
+        "REDIS_AUTH": "123456",
+        "CRYPTO_PRIVATE_KEY": "57c2ae6e54b842e897dfae138945acffd6152fd17f5bad35d5664cf30334fe60",
+        "TRON_FULL_NODE": "https://api.nileex.io",
+        "TRON_EVENT_NODE": "https://event.nileex.io",
+        "TRON_SOLIDITY_NODE": "https://api.nileex.io",
+        "TRON_API_KEY": "e293c752-3e27-4a18-8afb-ba1c4c31bcba",
+        "TRON_USDT_TRC20_CONTRACT_ADDRESS": "TLBaRhANQoJFTqre9Nf1mjuwNWjCJeYqUL",
+        "TRON_COOL_WALLET_ADDRESS": "TKRH3D8AW3YWviQfzzWr6LRQSSrgr3DQ93",
+        "TRON_HOT_WALLET_ADDRESS": "TWcRzeiCZufa2sEsuUvvZA1hCGGTJhpoLD",
+        "TRON_HOT_WALLET_PRIVATE_KEY": "57c2ae6e54b842e897dfae138945acffd6152fd17f5bad35d5664cf30334fe60",
+        "TRON_TRC20_DEPOSIT_MIN_AMOUNT": "20",
+        "TRON_TRC20_TRANSACTION_FEE": "3",
+        "TRON_TRC20_SYMBOL": "USDT-TRC20",
+        "ETH_RPC_ADDRESS": "https://ropsten.infura.io/v3/289c50b2ebb945a892bc1242c803282b",
+        "ETH_RPC_ERC20_CONTRACT_ADDRESS": "0x65bd1f48f1dd07bb285a3715c588f75684128ace",
+        "ETH_WALLET_ETHERSCAN_API_URL": "https://api-ropsten.etherscan.io",
+        "ETH_WALLET_ETHERSCAN_API_KEY": "4H3IGZP8JXGG4JQ93669DF3GZ1J7NWRTGF",
+        "ETH_HOT_WALLET_ADDRESS": "0xcf231DC8B569bE348BC8cBf7931EacDDB80354C0",
+        "ETH_HOT_WALLET_PRIVATE_KEY": "bc7042ba03a8dbf76fee7b58d4d2a2880659a53bf87f6c0a4605332c824d6239",
+        "ETH_COLD_WALLET_ADDRESS": "0x72A42f1E4fcb511B6Dea264Bc8F4833e57E407b2",
+        "ETH_ERC20_DEPOSIT_MIN_AMOUNT": "50",
+        "ETH_ERC20_TRANSACTION_FEE": "30",
+        "ETH_ERC20_SYMBOL": "USDT-ERC20",
+        "SYSTEM_ENABLE_AUTO_WITHDRAW_KEY": "ENABLE_AUTO_WITHDRAW",
+        "S3_ACCESS_KEY": "AKIA5BXFWY3BHNNZBS3U",
+        "S3_ACCESS_SECRET": "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",
+        "S3_BUCKET": "finimix",
+        "GOOGLE_RECAPTCHA_SECRET_KEY": "6Le6ssAaAAAAADzP5deDYeNcoOZx66zww7WXg8I6",
+        "WS_CALCULATOR": "http://localhost:5001",
+        "WS_TOKEN_API": "0xad5bbac33ddde4cf7c4ec64f00cd1865b2da54a5",
+        "SYSTEM_PROTECT_LEVEL_1": "PROTECT_LEVEL_1",
+        "SYSTEM_PROTECT_LEVEL_2": "PROTECT_LEVEL_2",
+        "SYSTEM_PROTECT_LEVEL_3": "PROTECT_LEVEL_3"
       }
     }
   ]

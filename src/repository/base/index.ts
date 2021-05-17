@@ -14,7 +14,7 @@ export class RepositoryBase<T extends mongoose.Document> implements IRead<T>, IW
       const result = await this._model.findById(id);
       return result as T;
     } catch (err) {
-      throw err.errors ? err.errors.shift() : err;
+      throw err;
     }
   }
 
@@ -23,7 +23,7 @@ export class RepositoryBase<T extends mongoose.Document> implements IRead<T>, IW
       const result = await this._model.findOne(filter);
       return result as T;
     } catch (err) {
-      throw err.errors ? err.errors.shift() : err;
+      throw err;
     }
   }
 
@@ -32,7 +32,7 @@ export class RepositoryBase<T extends mongoose.Document> implements IRead<T>, IW
       const result = await this._model.find({});
       return result as T[];
     } catch (err) {
-      throw err.errors ? err.errors.shift() : err;
+      throw err;
     }
   }
 
@@ -41,7 +41,7 @@ export class RepositoryBase<T extends mongoose.Document> implements IRead<T>, IW
       const result = await this._model.create(item);
       return result as T;
     } catch (err) {
-      throw err.errors ? err.errors.shift() : err;
+      throw err;
     }
   }
 
@@ -50,11 +50,11 @@ export class RepositoryBase<T extends mongoose.Document> implements IRead<T>, IW
       await this._model.remove({ id });
       return true;
     } catch (err) {
-      throw err.errors ? err.errors.shift() : err;
+      throw err;
     }
   }
 
   public toObjectId(id: string): mongoose.Types.ObjectId {
-    return mongoose.Types.ObjectId.createFromHexString(id);
+    return mongoose.Types.ObjectId(id);
   }
 }

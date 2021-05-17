@@ -1,34 +1,38 @@
-import config from '@src/config';
-import { STATUS } from '@src/contants/Response';
-import IAccessTokenModel from '@src/models/accessTokens/IAccessTokenModel';
-import IUserModel from '@src/models/users/IUserModel';
+import {STATUS} from '@src/contants/Response';
 import AccessTokenRepository from '@src/repository/AccessTokenRepository';
+import AdminRepository from '@src/repository/AdminRepository';
 import RefreshTokenRepository from '@src/repository/RefreshTokenRepository';
 import UserRepository from '@src/repository/UserRepository';
-import { randomBytes } from 'crypto';
-import { createServer, exchange, ExchangeDoneFunction } from 'oauth2orize';
+import {decrypt} from '@src/utils/helpers';
+import {IAccessTokenModel} from 'bo-trading-common/lib/models/accessTokens';
+import {IAdminModel} from 'bo-trading-common/lib/models/admins';
+import {IClientModel} from 'bo-trading-common/lib/models/clients';
+import {IUserModel} from 'bo-trading-common/lib/models/users';
+import {randomBytes} from 'crypto';
+import {createServer, exchange, ExchangeDoneFunction} from 'oauth2orize';
 import passport from 'passport';
+import {verifyTOTP} from './otp';
 
 // initialization token
-const initToken = async (user: IUserModel, client: any, done: ExchangeDoneFunction) => {
+const initToken = async (user: IUserModel | IAdminModel, client: IClientModel, done: ExchangeDoneFunction) => {
   try {
     const accessTokenRes = new AccessTokenRepository();
-    accessTokenRes.removeByUserIdAndClientId(user.id, client.clientId);
+    await accessTokenRes.removeByUserIdAndClientId(user.id, client.client_id);
     const refreshTokenRes = new RefreshTokenRepository();
-    refreshTokenRes.removeByUserIdAndClientId(user.id, client.clientId);
+    await refreshTokenRes.removeByUserIdAndClientId(user.id, client.client_id);
     const refreshToken = randomBytes(128).toString('hex');
-    refreshTokenRes.create(<IAccessTokenModel>{
+    await refreshTokenRes.create(<IAccessTokenModel>{
       user_id: user.id,
-      client_id: client.clientId,
-      token: refreshToken
+      client_id: client.client_id,
+      token: refreshToken,
     });
     const accessToken = randomBytes(128).toString('hex');
-    accessTokenRes.create(<IAccessTokenModel>{
+    await accessTokenRes.create(<IAccessTokenModel>{
       user_id: user.id,
-      client_id: client.clientId,
-      token: accessToken
+      client_id: client.client_id,
+      token: accessToken,
     });
-    done(null, accessToken, refreshToken, { 'expires_in': config.TOKEN_LIFE });
+    done(null, accessToken, refreshToken);
   } catch (error) {
     done(error);
   }
@@ -39,46 +43,78 @@ const server = createServer();
 
 // Exchange username & password for an access token.
 server.exchange(
-  exchange.password(async (client, username: string, password: string, _scope, done: ExchangeDoneFunction) => {
-    try {
-      const userRes = new UserRepository();
-      userRes.checkUserOrEmail(username).then(user => {
-        if (!user) return done(new Error('ACCOUNT_NOT_EXIST'));
-        if (!user.checkPassword(password)) return done(new Error('ACCOUNT_LOGIN_FAIL'));
-        if (user.status === STATUS.ACTIVE) {
-          initToken(user, client, done);
-        } else if (user.status === STATUS.BLOCK) {
-          return done(new Error('ACCOUNT_BLOCK'));
+  exchange.password(
+    {},
+    async (client: IClientModel, username: string, password: string, _scope, body: any, done: ExchangeDoneFunction) => {
+      try {
+        if (body.admin) {
+          const adminRes = new AdminRepository();
+          const admin = await adminRes.findOne({email: username.toLocaleLowerCase().trim()});
+          if (!admin) return done(new Error('Tài khoản không tồn tại!'));
+          if (admin.tfa) {
+            if (body.tfa) {
+              const secret = decrypt(admin.id, admin.tfa);
+              const status = verifyTOTP(body.tfa, secret);
+              if (!status) return done(new Error('Mã 2FA không đúng!'));
+            } else return done(new Error('NOT_FOUND_TFA'));
+          }
+          if (!admin.checkPassword(password)) return done(new Error('Login failed!'));
+          adminRes.updateById(admin.id, {code: null});
+          initToken(admin, client, done);
         } else {
-          return done(new Error('ACCOUNT_NOT_ACTIVE'));
+          const userRes = new UserRepository();
+          const user = await userRes.checkUserOrEmail(username.toLocaleLowerCase().trim());
+          if (!user) return done(new Error('Your account does not exist!'));
+          if (user.tfa) {
+            if (body.tfa) {
+              const secret = decrypt(user.id, user.tfa);
+              const status = verifyTOTP(body.tfa, secret);
+              if (!status) return done(new Error('Invalid authentication code!'));
+            } else return done(new Error('NOT_FOUND_TFA'));
+          }
+          if (!user.checkPassword(password)) return done(new Error('Login failed!'));
+          if (user.status === STATUS.ACTIVE) {
+            initToken(user, client, done);
+          } else if (user.status === STATUS.BLOCK) {
+            return done(new Error('Your account is locked! Contact support for more details.'));
+          } else {
+            return done(new Error('Your account has not been verified!'));
+          }
         }
-      }).catch(err => done(err));
-    } catch (error) {
-      done(error);
-    }
-  },
+      } catch (error) {
+        done(error);
+      }
+    },
   ),
 );
 
 // Exchange refreshToken for an access token.
-server.exchange(exchange.refreshToken(function (client, refreshToken, _scope, done) {
-  try {
-    const refreshTokenRes = new RefreshTokenRepository();
-    refreshTokenRes.findByToken(refreshToken).then((refreshToken) => {
-      if (!refreshToken) { return done(null, false); }
-      const userRes = new UserRepository();
-      userRes.findById(refreshToken.user_id).then(user => {
-        if (!user) { return done(null, false); }
-        initToken(user, client, done);
-      }).catch(err => done(err));
-    }).catch(err => done(err));
-  } catch (error) {
-    done(error);
-  }
-}));
+server.exchange(
+  exchange.refreshToken(function (client, refreshToken, _scope, done) {
+    try {
+      const refreshTokenRes = new RefreshTokenRepository();
+      refreshTokenRes
+        .findByToken(refreshToken)
+        .then((refreshToken) => {
+          if (!refreshToken) return done(null, false);
+          const userRes = new UserRepository();
+          userRes
+            .findById(refreshToken.user_id)
+            .then((user) => {
+              if (!user) return done(null, false);
+              initToken(user, client, done);
+            })
+            .catch((err) => done(err));
+        })
+        .catch((err) => done(err));
+    } catch (error) {
+      done(error);
+    }
+  }),
+);
 
 /**
- * @api {post} /oauth/token 2. Sign in
+ * @api {post} /api/v1/oauth/token Sign in
  * @apiVersion 1.0.0
  * @apiGroup I. Users
  *
@@ -137,12 +173,11 @@ server.exchange(exchange.refreshToken(function (client, refreshToken, _scope, do
  */
 
 const token = [
-  passport.authenticate(['basic', 'oauth2-client-password'], { session: false }),
+  passport.authenticate(['basic', 'oauth2-client-password'], {session: false}),
   server.token(),
   server.errorHandler(),
 ];
 
-const isAuthenticated = passport.authenticate('bearer', { session: false });
+const isAuthenticated = passport.authenticate('bearer', {session: false});
 
-export { token, isAuthenticated };
-
+export {token, isAuthenticated};

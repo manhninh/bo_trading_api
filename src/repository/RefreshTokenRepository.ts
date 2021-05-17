@@ -1,5 +1,5 @@
-import IRefreshTokenModel from '@src/models/refeshTokens/IRefeshTokenModel';
-import RefreshTokenSchema from '@src/schemas/RefreshTokenSchema';
+import { IRefreshTokenModel } from 'bo-trading-common/lib/models/refreshTokens';
+import { RefreshTokenSchema } from 'bo-trading-common/lib/schemas';
 import { RepositoryBase } from './base';
 
 export default class RefreshTokenRepository extends RepositoryBase<IRefreshTokenModel> {
@@ -7,11 +7,11 @@ export default class RefreshTokenRepository extends RepositoryBase<IRefreshToken
     super(RefreshTokenSchema);
   }
 
-  public removeByUserIdAndClientId(userId: string, clientId: string): void {
+  public async removeByUserIdAndClientId(userId: string, clientId: string): Promise<void> {
     try {
-      RefreshTokenSchema.remove({ userId: this.toObjectId(userId), client_id: clientId });
+      await RefreshTokenSchema.deleteMany({user_id: this.toObjectId(userId), client_id: clientId});
     } catch (err) {
-      throw err.errors ? err.errors.shift() : err;
+      throw err;
     }
   }
 
@@ -20,7 +20,7 @@ export default class RefreshTokenRepository extends RepositoryBase<IRefreshToken
       const result = await RefreshTokenSchema.findOne({ token });
       return result;
     } catch (err) {
-      throw err.errors ? err.errors.shift() : err;
+      throw err;
     }
   }
 }
