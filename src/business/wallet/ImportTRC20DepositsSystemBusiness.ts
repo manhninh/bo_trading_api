@@ -1,8 +1,9 @@
-import config from '@src/config';
+import config, { configSendEmail } from '@src/config';
+import AdminRepository from '@src/repository/AdminRepository';
 import UserTransactionsRepository from '@src/repository/UserTransactionsRepository';
 import UserWalletRepository from '@src/repository/UserWalletRepository';
 import { delay } from '@src/utils/helpers';
-import { Constants } from 'bo-trading-common/lib/utils';
+import { Constants, EmailConfig, logger } from 'bo-trading-common/lib/utils';
 
 export const importTRC20DepositsSystem = async (): Promise<any> => {
   try {
@@ -27,6 +28,11 @@ export const importTRC20DepositsSystem = async (): Promise<any> => {
         try {
           // START: Check status for each TX
 
+          // Get all email from admin
+          const adminRepos = new AdminRepository();
+          const admins = await adminRepos.findAll();
+          const emailConfig = new EmailConfig(configSendEmail);
+
           // FOR TRC20 - USDT
           if (row.symbol == config.TRON_TRC20_SYMBOL && row?.tx) {
             tronWeb.trx.getTransaction(row.tx).then((result) => {
@@ -43,15 +49,19 @@ export const importTRC20DepositsSystem = async (): Promise<any> => {
                   transaction.updateById(row._id, { status: Constants.TRANSACTION_STATUS_CANCELLED, noted: result.ret[0].contractRet });
 
                   // Send email to admin
-                  // const emailConfig = new EmailConfig(configSendEmail);
-                  // emailConfig.readHTMLFile(`${config.PATH_TEMPLATE_EMAIL}/transaction_error.html`, (html: string) => {
-                  //   const template = handlebars.compile(html);
-                  //   const replacements = {};
-                  //   const htmlToSend = template(replacements);
-                  //   emailConfig
-                  //     .send(config.EMAIL_ROOT, row.email, 'Transaction Error: Hot wallet not send enough TRX to user address. Can not send to Cold wallet!', htmlToSend)
-                  //     .catch((err) => logger.error(err.message));
-                  // });
+                  admins.map(async (admin) => {
+                    emailConfig.readHTMLFile(`${config.PATH_TEMPLATE_EMAIL}/transaction_error.html`, (html: string) => {
+                      const template = Handlebars.compile(html);
+                      const replacements = {
+                        'username': admin.email,
+                        'link': config.TRON_EXPLORER + '#/transaction/' + row.tx
+                      };
+                      const htmlToSend = template(replacements);
+                      emailConfig
+                        .send(config.EMAIL_ROOT, admin.email, 'TRC20 - Transaction Error: Hot wallet not send enough TRX!', htmlToSend)
+                        .catch((err) => logger.error(err.message));
+                    });
+                  });
                 }
               }
             });
