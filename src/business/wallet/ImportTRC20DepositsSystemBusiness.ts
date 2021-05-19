@@ -1,9 +1,8 @@
-import config, { configSendEmail } from '@src/config';
+import config from '@src/config';
 import UserTransactionsRepository from '@src/repository/UserTransactionsRepository';
 import UserWalletRepository from '@src/repository/UserWalletRepository';
 import { delay } from '@src/utils/helpers';
-import { Constants, EmailConfig, logger } from 'bo-trading-common/lib/utils';
-import handlebars from 'handlebars';
+import { Constants } from 'bo-trading-common/lib/utils';
 
 export const importTRC20DepositsSystem = async (): Promise<any> => {
   try {
@@ -44,15 +43,15 @@ export const importTRC20DepositsSystem = async (): Promise<any> => {
                   transaction.updateById(row._id, { status: Constants.TRANSACTION_STATUS_CANCELLED, noted: result.ret[0].contractRet });
 
                   // Send email to admin
-                  const emailConfig = new EmailConfig(configSendEmail);
-                  emailConfig.readHTMLFile(`${config.PATH_TEMPLATE_EMAIL}/transaction_error.html`, (html: string) => {
-                    const template = handlebars.compile(html);
-                    const replacements = {};
-                    const htmlToSend = template(replacements);
-                    emailConfig
-                      .send(config.EMAIL_ROOT, row.email, 'Transaction Error: Hot wallet not send enough TRX to user address. Can not send to Cold wallet!', htmlToSend)
-                      .catch((err) => logger.error(err.message));
-                  });
+                  // const emailConfig = new EmailConfig(configSendEmail);
+                  // emailConfig.readHTMLFile(`${config.PATH_TEMPLATE_EMAIL}/transaction_error.html`, (html: string) => {
+                  //   const template = handlebars.compile(html);
+                  //   const replacements = {};
+                  //   const htmlToSend = template(replacements);
+                  //   emailConfig
+                  //     .send(config.EMAIL_ROOT, row.email, 'Transaction Error: Hot wallet not send enough TRX to user address. Can not send to Cold wallet!', htmlToSend)
+                  //     .catch((err) => logger.error(err.message));
+                  // });
                 }
               }
             });
