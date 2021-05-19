@@ -1,6 +1,9 @@
 import config from '@src/config';
 import UserRepository from '@src/repository/UserRepository';
+import UserTransactionsRepository from '@src/repository/UserTransactionsRepository';
+import UserWalletRepository from '@src/repository/UserWalletRepository';
 import { delay } from '@src/utils/helpers';
+import { Constants } from 'bo-trading-common/lib/utils';
 import { createUSDTTRC20 } from '../user/CreateWalletBusiness';
 import { createDepositTransaction } from './createDepositTransaction';
 import { createSystemTransaction } from './createSystemTransaction';
@@ -14,6 +17,8 @@ export const importTRC20Deposits = async (): Promise<any> => {
       // First contstruct a tronWeb object with a private key
       const TronWeb = require('tronweb');
       const trc20ContractAddress = config.TRON_USDT_TRC20_CONTRACT_ADDRESS;
+      const walletModel = new UserWalletRepository();
+      const txModel = new UserTransactionsRepository();
 
       rows.forEach(async row => {
         try {
@@ -35,43 +40,71 @@ export const importTRC20Deposits = async (): Promise<any> => {
               const decimals = (Math.pow(10, trc20Decimals));
               const trc20AccountBalanceOrigin = Number(trc20AccountBalance.toString()) / decimals;
               if (trc20AccountBalanceOrigin >= Number(config.TRON_TRC20_DEPOSIT_MIN_AMOUNT)) {
-                // Get TRX (check energy)
-                let TRXBalance = await tronWeb.trx.getBalance(walletAddress);
-                TRXBalance = TRXBalance / 1000000;
 
-                if (TRXBalance >= 2) {
-                  const tx = await trc20Contract
-                    .transfer(
-                      config.TRON_COOL_WALLET_ADDRESS, // Address to which to send the tokens
-                      trc20AccountBalance, // Amount of tokens you want to send in SUN
-                    )
-                    .send({
-                      feeLimit: 10000000 // Make sure to set a reasonable feelimit in SUN
-                    });
+                // Add to wallet balance (temp) => amount_wallet
+                const currentAmountWallet = Number(row?.amount_wallet) || 0;
+                const realBalance = Number(trc20AccountBalanceOrigin) - currentAmountWallet;
+                if (realBalance >= Number(config.TRON_TRC20_DEPOSIT_MIN_AMOUNT)) {
+                  walletModel.updateByUserId(row.user_id, { $inc: { amount: realBalance } });
+                }
+                walletModel.updateByUserId(row.user_id, { amount_wallet: Number(trc20AccountBalanceOrigin) });
+                if (realBalance >= Number(config.TRON_TRC20_DEPOSIT_MIN_AMOUNT)) {
+                  // Create User transaction
+                  const userTx = await createDepositTransaction(row, realBalance, config.TRON_TRC20_SYMBOL, walletAddress, null);
+                  if (userTx) {
 
-                  if (tx) {
-                    await createDepositTransaction(row, trc20AccountBalanceOrigin, config.TRON_TRC20_SYMBOL, walletAddress, tx);
-                  }
-                } else {
-                  // Transfer TRX from HOT WALLET to User Wallet
-                  // Cần gửi TRX sang tài khoản user vì khi transfer TRC20 => cần TRX để convert energy
-                  tronWeb.setPrivateKey(config.TRON_HOT_WALLET_PRIVATE_KEY);
-                  let TRXHOTBalance = await tronWeb.trx.getBalance(config.TRON_HOT_WALLET_ADDRESS);
-                  TRXHOTBalance = TRXHOTBalance / 1000000;
-                  if (TRXHOTBalance >= 2) {
-                    try {
-                      const tx = await tronWeb.trx.sendTransaction(
-                        walletAddress, // TO Address
-                        2000000
-                      );
-                      if (tx !== undefined && tx.result !== undefined && tx.result) {
-                        await createSystemTransaction(row, 2, config.TRON_TRC20_SYMBOL, walletAddress, tx.txID);
+                    // Get TRX (check energy)
+                    let TRXBalance = await tronWeb.trx.getBalance(walletAddress);
+                    TRXBalance = TRXBalance / 1000000;
+
+                    if (TRXBalance >= config.TRON_TRC20_DEPOSIT_ENERGY_FEE) {
+                      const tx = await trc20Contract
+                        .transfer(
+                          config.TRON_COOL_WALLET_ADDRESS, // Address to which to send the tokens
+                          trc20AccountBalance, // Amount of tokens you want to send in SUN
+                        )
+                        .send({
+                          feeLimit: 10000000 // Make sure to set a reasonable feelimit in SUN
+                        });
+                      if (tx) {
+                        await txModel.updateMany(
+                          {
+                            user_id: row.user_id,
+                            symbol: config.TRON_TRC20_SYMBOL,
+                            status: Constants.TRANSACTION_STATUS_PROCESSING,
+                            type: Constants.TRANSACTION_TYPE_DEPOSIT,
+                            address: walletAddress,
+                            tx: null
+                          },
+                          {
+                            tx: tx,
+                            status: Constants.TRANSACTION_STATUS_PENDING
+                          }
+                        );
                       }
-                    } catch (error) {
-                      console.log(error);
+                    } else {
+                      // Transfer TRX from HOT WALLET to User Wallet
+                      // Cần gửi TRX sang tài khoản user vì khi transfer TRC20 => cần TRX để convert energy
+                      tronWeb.setPrivateKey(config.TRON_HOT_WALLET_PRIVATE_KEY);
+                      let TRXHOTBalance = await tronWeb.trx.getBalance(config.TRON_HOT_WALLET_ADDRESS);
+                      TRXHOTBalance = TRXHOTBalance / 1000000;
+                      if (TRXHOTBalance >= config.TRON_TRC20_DEPOSIT_ENERGY_FEE) {
+                        try {
+                          const tx = await tronWeb.trx.sendTransaction(
+                            walletAddress, // TO Address
+                            Number(config.TRON_TRC20_DEPOSIT_ENERGY_FEE) * 1000000
+                          );
+                          if (tx !== undefined && tx.result !== undefined && tx.result) {
+                            await createSystemTransaction(row, config.TRON_TRC20_DEPOSIT_ENERGY_FEE, config.TRON_TRC20_SYMBOL, walletAddress, tx.txID);
+                          }
+                        } catch (error) {
+                          console.log(error);
+                        }
+                      } else {
+                        // Gửi email thông báo cho Admin (Hết TRX trong Hot wallet)
+                      }
                     }
-                  } else {
-                    // Gửi email thông báo cho Admin (Hết TRX trong Hot wallet)
+
                   }
                 }
               }
