@@ -34,6 +34,7 @@ export default class UserTransactionsRepository extends RepositoryBase<IUserTran
           $project: {
             _id: '$_id',
             amount: '$amount',
+            fee: '$fee',
             address: '$address',
             tx: '$tx',
             user_id: '$user_id',
