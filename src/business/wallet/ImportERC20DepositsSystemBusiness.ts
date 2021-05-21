@@ -1,42 +1,55 @@
-import config from '@src/config';
+import config, { configSendEmail } from '@src/config';
+import AdminRepository from '@src/repository/AdminRepository';
 import UserTransactionsRepository from '@src/repository/UserTransactionsRepository';
 import UserWalletRepository from '@src/repository/UserWalletRepository';
 import { delay } from '@src/utils/helpers';
-import { Constants } from 'bo-trading-common/lib/utils';
+import { Constants, EmailConfig, logger } from 'bo-trading-common/lib/utils';
 import { getETHTransaction } from '../user/CreateWalletBusiness';
-
 
 export const importERC20DepositsSystem = async (): Promise<any> => {
   try {
     const transaction = new UserTransactionsRepository();
     const walletModel = new UserWalletRepository();
-    const rows = await transaction.getAllPendingTransactions();
+    const rows = await transaction.getAllPendingTransactions(Constants.TRANSACTION_TYPE_DEPOSIT);
     if (rows !== undefined && rows.length) {
-      // First contstruct a tronWeb object with a private key
-      const TronWeb = require('tronweb');
-      const tronWeb = new TronWeb({
-        fullHost: config.TRON_FULL_NODE,
-        headers: { "TRON-PRO-API-KEY": config.TRON_API_KEY }
-      });
-
-      const TRON_ERRORS = [
-        'OUT_OF_ENERGY',
-        'REVERT',
-        'OUT_OF_TIME'
-      ];
-
       rows.forEach(async row => {
         try {
           // START: Check status for each TX
 
+          // Get all email from admin
+          const adminRepos = new AdminRepository();
+          const admins = await adminRepos.findAll();
+          const emailConfig = new EmailConfig(configSendEmail);
+
           // FOR ERC20 - USDT
           if (row.symbol == config.ETH_ERC20_SYMBOL && row?.tx) {
-            const ethTx = await getETHTransaction(row.tx);
-            if (ethTx?.hash) {
-              // Them tien vao tai khoan
-              walletModel.updateByUserId(row.user_id, { $inc: { amount: row.amount } });
-              // Cap nhat TX
-              transaction.updateById(row._id, { status: Constants.TRANSACTION_STATUS_SUCCESS });
+            const result = await getETHTransaction(row.tx);
+            if (result) {
+              if (result?.status) {
+                // Cap nhat TX
+                transaction.updateById(row._id, { status: Constants.TRANSACTION_STATUS_SUCCESS });
+                // Cap nhat value trong temp wallet
+                walletModel.updateByUserId(row.user_id, { amount_erc20_wallet: 0 });
+
+              } else {
+                // Cap nhat TX
+                transaction.updateById(row._id, { status: Constants.TRANSACTION_STATUS_CANCELLED });
+
+                // Send email to admin
+                admins.map(async (admin) => {
+                  emailConfig.readHTMLFile(`${config.PATH_TEMPLATE_EMAIL}/transaction_error.html`, (html: string) => {
+                    const template = Handlebars.compile(html);
+                    const replacements = {
+                      'username': admin.email,
+                      'link': config.TRON_EXPLORER + '#/transaction/' + row.tx
+                    };
+                    const htmlToSend = template(replacements);
+                    emailConfig
+                      .send(config.EMAIL_ROOT, admin.email, 'ERC20 - Transaction Error: Hot wallet not send enough ETH!', htmlToSend)
+                      .catch((err) => logger.error(err.message));
+                  });
+                });
+              }
             }
           }
 

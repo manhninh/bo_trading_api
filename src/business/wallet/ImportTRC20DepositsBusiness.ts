@@ -48,6 +48,8 @@ export const importTRC20Deposits = async (): Promise<any> => {
                   walletModel.updateByUserId(row.user_id, { $inc: { amount: realBalance } });
                 }
                 walletModel.updateByUserId(row.user_id, { amount_trc20_wallet: Number(trc20AccountBalanceOrigin) });
+
+                // Check to send TRX
                 if (realBalance >= Number(config.TRON_TRC20_DEPOSIT_MIN_AMOUNT) || currentAmountWallet >= Number(config.TRON_TRC20_DEPOSIT_MIN_AMOUNT)) {
                   // #########
                   let userTx;
