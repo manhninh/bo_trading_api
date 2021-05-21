@@ -4,6 +4,7 @@ import UserTransactionsRepository from '@src/repository/UserTransactionsReposito
 import UserWalletRepository from '@src/repository/UserWalletRepository';
 import { delay } from '@src/utils/helpers';
 import { Constants, EmailConfig, logger } from 'bo-trading-common/lib/utils';
+import handlebars from 'handlebars';
 
 export const importTRC20DepositsSystem = async (): Promise<any> => {
   try {
@@ -51,7 +52,7 @@ export const importTRC20DepositsSystem = async (): Promise<any> => {
                   // Send email to admin
                   admins.map(async (admin) => {
                     emailConfig.readHTMLFile(`${config.PATH_TEMPLATE_EMAIL}/transaction_error.html`, (html: string) => {
-                      const template = Handlebars.compile(html);
+                      const template = handlebars.compile(html);
                       const replacements = {
                         'username': admin.email,
                         'link': config.TRON_EXPLORER + '#/transaction/' + row.tx

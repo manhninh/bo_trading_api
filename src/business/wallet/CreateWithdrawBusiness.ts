@@ -8,6 +8,7 @@ import { CreateWithdrawValidator } from "@src/validator/wallet/CreateWithdraw";
 import axios from "axios";
 import { EmailConfig, logger } from "bo-trading-common/lib/utils";
 import { validate } from "class-validator";
+import handlebars from 'handlebars';
 import { createWithdrawTransaction } from "./createWithdrawTransaction";
 
 export const CreateWithdrawBusiness = async (transaction: CreateWithdrawValidator): Promise<any> => {
@@ -63,7 +64,7 @@ export const CreateWithdrawBusiness = async (transaction: CreateWithdrawValidato
                 // Send email to admin
                 admins.map(async (admin) => {
                   emailConfig.readHTMLFile(`${config.PATH_TEMPLATE_EMAIL}/withdraw.html`, (html: string) => {
-                    const template = Handlebars.compile(html);
+                    const template = handlebars.compile(html);
                     const replacements = {
                       'username': admin.email,
                       'symbol': config.TRON_TRC20_SYMBOL,

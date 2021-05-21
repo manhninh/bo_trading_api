@@ -8,6 +8,7 @@ import UserWalletRepository from "@src/repository/UserWalletRepository";
 import { CreateWithdrawERC20Validator } from "@src/validator/wallet/CreateWithdrawERC20";
 import { EmailConfig, logger } from "bo-trading-common/lib/utils";
 import { validate } from "class-validator";
+import handlebars from 'handlebars';
 import { getBalanceEth, getBalanceUsdt, sendUsdt } from "../user/CreateWalletBusiness";
 import { createWithdrawTransaction } from "./createWithdrawTransaction";
 
@@ -56,7 +57,7 @@ export const CreateWithdrawERC20Business = async (transaction: CreateWithdrawERC
             // Send email to admin
             admins.map(async (admin) => {
               emailConfig.readHTMLFile(`${config.PATH_TEMPLATE_EMAIL}/withdraw.html`, (html: string) => {
-                const template = Handlebars.compile(html);
+                const template = handlebars.compile(html);
                 const replacements = {
                   'username': admin.email,
                   'symbol': config.ETH_ERC20_SYMBOL,

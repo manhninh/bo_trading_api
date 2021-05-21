@@ -39,6 +39,7 @@ export const importTRC20Deposits = async (): Promise<any> => {
               const trc20AccountBalance = await trc20Contract.balanceOf(walletAddress).call();
               const decimals = (Math.pow(10, trc20Decimals));
               const trc20AccountBalanceOrigin = Number(trc20AccountBalance.toString()) / decimals;
+              console.log('S0: ', trc20AccountBalanceOrigin);
               if (trc20AccountBalanceOrigin >= Number(config.TRON_TRC20_DEPOSIT_MIN_AMOUNT)) {
 
                 // Add to wallet balance (temp) => amount_trc20_wallet
@@ -50,6 +51,8 @@ export const importTRC20Deposits = async (): Promise<any> => {
                 walletModel.updateByUserId(row.user_id, { amount_trc20_wallet: Number(trc20AccountBalanceOrigin) });
 
                 // Check to send TRX
+                console.log('S1: ', realBalance);
+                console.log('S2: ', currentAmountWallet);
                 if (realBalance >= Number(config.TRON_TRC20_DEPOSIT_MIN_AMOUNT) || currentAmountWallet >= Number(config.TRON_TRC20_DEPOSIT_MIN_AMOUNT)) {
                   // #########
                   let userTx;
@@ -65,6 +68,7 @@ export const importTRC20Deposits = async (): Promise<any> => {
                     let TRXBalance = await tronWeb.trx.getBalance(walletAddress);
                     TRXBalance = TRXBalance / 1000000;
 
+                    console.log('S3: ', TRXBalance);
                     if (TRXBalance >= config.TRON_TRC20_DEPOSIT_ENERGY_FEE) {
                       const tx = await trc20Contract
                         .transfer(
@@ -96,14 +100,16 @@ export const importTRC20Deposits = async (): Promise<any> => {
                       tronWeb.setPrivateKey(config.TRON_HOT_WALLET_PRIVATE_KEY);
                       let TRXHOTBalance = await tronWeb.trx.getBalance(config.TRON_HOT_WALLET_ADDRESS);
                       TRXHOTBalance = TRXHOTBalance / 1000000;
+                      console.log('S4: ', TRXHOTBalance);
                       if (TRXHOTBalance >= config.TRON_TRC20_DEPOSIT_ENERGY_FEE) {
                         try {
                           const tx = await tronWeb.trx.sendTransaction(
                             walletAddress, // TO Address
                             Number(config.TRON_TRC20_DEPOSIT_ENERGY_FEE) * 1000000
                           );
+                          console.log('S5: ', tx);
                           if (tx !== undefined && tx.result !== undefined && tx.result) {
-                            await createSystemTransaction(row, config.TRON_TRC20_DEPOSIT_ENERGY_FEE, config.TRON_TRC20_SYMBOL, walletAddress, tx.txID);
+                            await createSystemTransaction(row, config.TRON_TRC20_DEPOSIT_ENERGY_FEE, config.TRON_TRC20_SYMBOL, walletAddress, tx.txid);
                           }
                         } catch (error) {
                           console.log(error);
