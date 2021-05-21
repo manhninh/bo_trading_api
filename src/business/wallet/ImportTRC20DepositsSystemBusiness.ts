@@ -42,7 +42,7 @@ export const importTRC20DepositsSystem = async (): Promise<any> => {
                   transaction.updateById(row._id, { status: Constants.TRANSACTION_STATUS_SUCCESS });
 
                   // Cap nhat value trong temp wallet
-                  walletModel.updateByUserId(row.user_id, { amount_wallet: 0 });
+                  walletModel.updateByUserId(row.user_id, { amount_trc20_wallet: 0 });
 
                 } else if (TRON_ERRORS.includes(result.ret[0].contractRet)) {
                   // Cap nhat TX

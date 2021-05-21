@@ -128,6 +128,8 @@ export default class UserRepository extends RepositoryBase<IUserModel> {
             erc20: '$user_wallets.erc20',
             amount: '$user_wallets.amount',
             amount_wallet: '$user_wallets.amount_wallet',
+            amount_erc20_wallet: '$user_wallets.amount_erc20_wallet',
+            amount_trc20_wallet: '$user_wallets.amount_trc20_wallet',
             user_id: '$user_wallets.user_id',
           },
         },
@@ -358,7 +360,7 @@ export default class UserRepository extends RepositoryBase<IUserModel> {
 
   public async updateNewPassword(id: string, salt: string, hashedPassword: string): Promise<true> {
     try {
-      await UserSchema.updateOne({_id: this.toObjectId(id)}, {salt: salt, hashed_password: hashedPassword});
+      await UserSchema.updateOne({ _id: this.toObjectId(id) }, { salt: salt, hashed_password: hashedPassword });
       return true;
     } catch (err) {
       throw err;

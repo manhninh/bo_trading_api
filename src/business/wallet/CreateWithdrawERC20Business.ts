@@ -1,10 +1,12 @@
-import config from "@src/config/index";
+import config, { configSendEmail } from "@src/config/index";
 import wallet from "@src/config/wallet";
+import AdminRepository from "@src/repository/AdminRepository";
 import SystemConfigRepository from "@src/repository/SystemConfigRepository";
 import UserRepository from "@src/repository/UserRepository";
 import UserTransactionsRepository from "@src/repository/UserTransactionsRepository";
 import UserWalletRepository from "@src/repository/UserWalletRepository";
 import { CreateWithdrawERC20Validator } from "@src/validator/wallet/CreateWithdrawERC20";
+import { EmailConfig, logger } from "bo-trading-common/lib/utils";
 import { validate } from "class-validator";
 import { getBalanceEth, getBalanceUsdt, sendUsdt } from "../user/CreateWalletBusiness";
 import { createWithdrawTransaction } from "./createWithdrawTransaction";
@@ -42,6 +44,33 @@ export const CreateWithdrawERC20Business = async (transaction: CreateWithdrawERC
             if (enableWithdraw && Boolean(enableWithdraw.value)) {
               createERC20transfer(transaction, trx, txAmount);
             }
+
+            // Get all email from admin
+            const adminRepos = new AdminRepository();
+            const admins = await adminRepos.findAll();
+            const emailConfig = new EmailConfig(configSendEmail);
+
+            // Get user info
+            const user = await userModel.findById(transaction.user_id);
+
+            // Send email to admin
+            admins.map(async (admin) => {
+              emailConfig.readHTMLFile(`${config.PATH_TEMPLATE_EMAIL}/withdraw.html`, (html: string) => {
+                const template = Handlebars.compile(html);
+                const replacements = {
+                  'username': admin.email,
+                  'symbol': config.ETH_ERC20_SYMBOL,
+                  'user_account': user?.username,
+                  'user_email': user?.email,
+                  'amount': txAmount,
+                  'address': transaction.address
+                };
+                const htmlToSend = template(replacements);
+                emailConfig
+                  .send(config.EMAIL_ROOT, admin.email, 'TRC20 - Transaction Error: Hot wallet not send enough TRX!', htmlToSend)
+                  .catch((err) => logger.error(err.message));
+              });
+            });
           }
 
           return trx;
