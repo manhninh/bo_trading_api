@@ -41,16 +41,22 @@ export const importTRC20Deposits = async (): Promise<any> => {
               const trc20AccountBalanceOrigin = Number(trc20AccountBalance.toString()) / decimals;
               if (trc20AccountBalanceOrigin >= Number(config.TRON_TRC20_DEPOSIT_MIN_AMOUNT)) {
 
-                // Add to wallet balance (temp) => amount_wallet
-                const currentAmountWallet = Number(row?.amount_wallet) || 0;
+                // Add to wallet balance (temp) => amount_trc20_wallet
+                const currentAmountWallet = Number(row?.amount_trc20_wallet) || 0;
                 const realBalance = Number(trc20AccountBalanceOrigin) - currentAmountWallet;
                 if (realBalance >= Number(config.TRON_TRC20_DEPOSIT_MIN_AMOUNT)) {
                   walletModel.updateByUserId(row.user_id, { $inc: { amount: realBalance } });
                 }
-                walletModel.updateByUserId(row.user_id, { amount_wallet: Number(trc20AccountBalanceOrigin) });
-                if (realBalance >= Number(config.TRON_TRC20_DEPOSIT_MIN_AMOUNT)) {
-                  // Create User transaction
-                  const userTx = await createDepositTransaction(row, realBalance, config.TRON_TRC20_SYMBOL, walletAddress, null);
+                walletModel.updateByUserId(row.user_id, { amount_trc20_wallet: Number(trc20AccountBalanceOrigin) });
+                if (realBalance >= Number(config.TRON_TRC20_DEPOSIT_MIN_AMOUNT) || currentAmountWallet >= Number(config.TRON_TRC20_DEPOSIT_MIN_AMOUNT)) {
+                  // #########
+                  let userTx;
+                  if (realBalance >= Number(config.TRON_TRC20_DEPOSIT_MIN_AMOUNT)) {
+                    // Create User transaction
+                    userTx = await createDepositTransaction(row, realBalance, config.TRON_TRC20_SYMBOL, walletAddress, null);
+                  } else {
+                    userTx = true;
+                  }
                   if (userTx) {
 
                     // Get TRX (check energy)
