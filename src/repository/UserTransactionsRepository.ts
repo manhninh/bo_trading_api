@@ -15,7 +15,7 @@ export default class UserTransactionsRepository extends RepositoryBase<IUserTran
       const result = await UserTransactionsSchema.aggregate([
         {
           $match: {
-            status: Constants.TRANSACTION_STATUS_PENDING,
+            system_status: Constants.TRANSACTION_STATUS_PENDING,
             type: type ?? Constants.TRANSACTION_TYPE_DEPOSIT,
           },
         },

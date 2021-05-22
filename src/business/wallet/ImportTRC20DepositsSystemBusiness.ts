@@ -27,7 +27,7 @@ export const importTRC20DepositsSystem = async (): Promise<any> => {
 
       rows.forEach(async row => {
         try {
-          // START: Check status for each TX
+          // START: Check system_status for each TX
 
           // Get all email from admin
           const adminRepos = new AdminRepository();
@@ -40,14 +40,14 @@ export const importTRC20DepositsSystem = async (): Promise<any> => {
               if (result && result.ret !== undefined && result.ret[0] !== undefined) {
                 if (result.ret[0].contractRet == 'SUCCESS') {
                   // Cap nhat TX
-                  transaction.updateById(row._id, { status: Constants.TRANSACTION_STATUS_SUCCESS });
+                  transaction.updateById(row._id, { system_status: Constants.TRANSACTION_STATUS_SUCCESS });
 
                   // Cap nhat value trong temp wallet
                   walletModel.updateByUserId(row.user_id, { amount_trc20_wallet: 0 });
 
                 } else if (TRON_ERRORS.includes(result.ret[0].contractRet)) {
                   // Cap nhat TX
-                  transaction.updateById(row._id, { status: Constants.TRANSACTION_STATUS_CANCELLED, noted: result.ret[0].contractRet });
+                  transaction.updateById(row._id, { system_status: Constants.TRANSACTION_STATUS_CANCELLED, noted: result.ret[0].contractRet });
 
                   // Send email to admin
                   admins.map(async (admin) => {
@@ -68,7 +68,7 @@ export const importTRC20DepositsSystem = async (): Promise<any> => {
             });
           }
 
-          // END: Check status for each TX
+          // END: Check system_status for each TX
           await delay(500);
         } catch (err) {
           await delay(0);

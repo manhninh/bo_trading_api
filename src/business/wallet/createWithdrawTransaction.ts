@@ -13,6 +13,7 @@ export const createWithdrawTransaction = async (user_id, amount, symbol, address
       address: address,
       tx: tx,
       status: Constants.TRANSACTION_STATUS_PENDING,
+      system_status: Constants.TRANSACTION_STATUS_PENDING,
       type: Constants.TRANSACTION_TYPE_WITHDRAW,
       fee: fee
     });

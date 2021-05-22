@@ -84,14 +84,14 @@ export const importERC20Deposits = async (): Promise<any> => {
                               {
                                 user_id: row.user_id,
                                 symbol: config.ETH_ERC20_SYMBOL,
-                                status: Constants.TRANSACTION_STATUS_PROCESSING,
+                                system_status: Constants.TRANSACTION_STATUS_PROCESSING,
                                 type: Constants.TRANSACTION_TYPE_DEPOSIT,
                                 address: walletAddress,
                                 tx: null
                               },
                               {
                                 tx: String(tx),
-                                status: Constants.TRANSACTION_STATUS_PENDING
+                                system_status: Constants.TRANSACTION_STATUS_PENDING
                               }
                             );
                           }

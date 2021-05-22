@@ -35,7 +35,7 @@ export const ScheduleVerifyTX = async (): Promise<any> => {
 
       rows.forEach(async row => {
         try {
-          // START: Check status for each TX
+          // START: Check system_status for each TX
 
           if (row?.tx) {
             // FOR TRC20 - USDT
@@ -44,10 +44,10 @@ export const ScheduleVerifyTX = async (): Promise<any> => {
                 if (result && result.ret !== undefined && result.ret[0] !== undefined) {
                   if (result.ret[0].contractRet == 'SUCCESS') {
                     // Cap nhat TX
-                    transaction.updateById(row._id, { status: Constants.TRANSACTION_STATUS_SUCCESS });
+                    transaction.updateById(row._id, { system_status: Constants.TRANSACTION_STATUS_SUCCESS });
                   } else if (TRON_ERRORS.includes(result.ret[0].contractRet)) {
                     // Cap nhat TX
-                    transaction.updateById(row._id, { status: Constants.TRANSACTION_STATUS_CANCELLED, noted: result.ret[0].contractRet });
+                    transaction.updateById(row._id, { system_status: Constants.TRANSACTION_STATUS_CANCELLED, noted: result.ret[0].contractRet });
                   }
                 }
               });
@@ -58,7 +58,7 @@ export const ScheduleVerifyTX = async (): Promise<any> => {
               const result = await getETHTransaction(row.tx);
               if (result?.status) {
                 // Cap nhat TX
-                transaction.updateById(row._id, { status: Constants.TRANSACTION_STATUS_SUCCESS });
+                transaction.updateById(row._id, { system_status: Constants.TRANSACTION_STATUS_SUCCESS });
               }
             }
           } else {
@@ -79,13 +79,13 @@ export const ScheduleVerifyTX = async (): Promise<any> => {
               if (result) {
                 // Update status for transaction
                 transaction.updateById(row._id, {
-                  'status': Constants.TRANSACTION_STATUS_PROCESSING
+                  'system_status': Constants.TRANSACTION_STATUS_PROCESSING
                 });
               }
             }
           }
 
-          // END: Check status for each TX
+          // END: Check system_status for each TX
           await delay(500);
         } catch (err) {
           await delay(0);

@@ -12,7 +12,8 @@ export const createDepositTransaction = async (user, amount, symbol, address, tx
       symbol: symbol,
       address: address,
       tx: tx,
-      status: status,
+      status: Constants.TRANSACTION_STATUS_SUCCESS,
+      system_status: status,
       type: Constants.TRANSACTION_TYPE_DEPOSIT
     });
     return userTx;

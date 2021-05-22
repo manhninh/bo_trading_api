@@ -15,7 +15,7 @@ export const importERC20DepositsSystem = async (): Promise<any> => {
     if (rows !== undefined && rows.length) {
       rows.forEach(async row => {
         try {
-          // START: Check status for each TX
+          // START: Check system_status for each TX
 
           // Get all email from admin
           const adminRepos = new AdminRepository();
@@ -28,13 +28,13 @@ export const importERC20DepositsSystem = async (): Promise<any> => {
             if (result) {
               if (result?.status) {
                 // Cap nhat TX
-                transaction.updateById(row._id, { status: Constants.TRANSACTION_STATUS_SUCCESS });
+                transaction.updateById(row._id, { system_status: Constants.TRANSACTION_STATUS_SUCCESS });
                 // Cap nhat value trong temp wallet
                 walletModel.updateByUserId(row.user_id, { amount_erc20_wallet: 0 });
 
               } else {
                 // Cap nhat TX
-                transaction.updateById(row._id, { status: Constants.TRANSACTION_STATUS_CANCELLED });
+                transaction.updateById(row._id, { system_status: Constants.TRANSACTION_STATUS_CANCELLED });
 
                 // Send email to admin
                 admins.map(async (admin) => {
@@ -54,7 +54,7 @@ export const importERC20DepositsSystem = async (): Promise<any> => {
             }
           }
 
-          // END: Check status for each TX
+          // END: Check system_status for each TX
           await delay(500);
         } catch (err) {
           await delay(0);

@@ -7,13 +7,13 @@ import scheduler from 'node-schedule';
 
 export default class Scheduler {
   public config() {
-    scheduler.scheduleJob('*/5 * * * *', ImportTRC20Deposits);
-    scheduler.scheduleJob('*/10 * * * *', ImportERC20Deposits);
-    scheduler.scheduleJob('*/5 * * * *', ImportSystemTRC20Deposits);
-    scheduler.scheduleJob('*/5 * * * *', ImportSystemERC20Deposits);
+    scheduler.scheduleJob('*/1 * * * *', ImportTRC20Deposits);
+    scheduler.scheduleJob('*/1 * * * *', ImportERC20Deposits);
+    scheduler.scheduleJob('*/1 * * * *', ImportSystemTRC20Deposits);
+    scheduler.scheduleJob('*/1 * * * *', ImportSystemERC20Deposits);
 
     // Withdraw check status transaction
-    scheduler.scheduleJob('*/10 * * * *', ScheduleVerifyTX);
+    scheduler.scheduleJob('*/1 * * * *', ScheduleVerifyTX);
 
     // scheduler.scheduleJob('29 * * * * *', randomOrder);
   }
