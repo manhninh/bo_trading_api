@@ -35,6 +35,7 @@ export const CreateInternalTransferBusiness = async (transaction: CreateInternal
           address: null,
           tx: uuid,
           status: Constants.TRANSACTION_STATUS_SUCCESS,
+          system_status: Constants.TRANSACTION_STATUS_SUCCESS,
           type: Constants.TRANSACTION_TYPE_TRANSFER,
           noted: 'Transfer from ' + transaction.from_wallet + ' to ' + transaction.to_wallet,
           from_wallet: transaction.from_wallet,

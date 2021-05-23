@@ -499,6 +499,6 @@ const sendTokenPromise = (tokenContract, sendToAddress, sendAmount, params) => {
 };
 
 export const getETHTransaction = async (tx) => {
-  const transaction = await web3.eth.getTransaction(tx);
+  const transaction = await web3.eth.getTransactionReceipt(tx);
   return transaction;
 };

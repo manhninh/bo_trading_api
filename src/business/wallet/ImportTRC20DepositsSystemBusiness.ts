@@ -1,15 +1,16 @@
-import config from '@src/config';
+import config, { configSendEmail } from '@src/config';
+import AdminRepository from '@src/repository/AdminRepository';
 import UserTransactionsRepository from '@src/repository/UserTransactionsRepository';
 import UserWalletRepository from '@src/repository/UserWalletRepository';
 import { delay } from '@src/utils/helpers';
-import { Constants } from 'bo-trading-common/lib/utils';
-
+import { Constants, EmailConfig, logger } from 'bo-trading-common/lib/utils';
+import handlebars from 'handlebars';
 
 export const importTRC20DepositsSystem = async (): Promise<any> => {
   try {
     const transaction = new UserTransactionsRepository();
     const walletModel = new UserWalletRepository();
-    const rows = await transaction.getAllPendingTransactions();
+    const rows = await transaction.getAllPendingTransactions(Constants.TRANSACTION_TYPE_DEPOSIT);
     if (rows !== undefined && rows.length) {
       // First contstruct a tronWeb object with a private key
       const TronWeb = require('tronweb');
@@ -26,26 +27,48 @@ export const importTRC20DepositsSystem = async (): Promise<any> => {
 
       rows.forEach(async row => {
         try {
-          // START: Check status for each TX
+          // START: Check system_status for each TX
+
+          // Get all email from admin
+          const adminRepos = new AdminRepository();
+          const admins = await adminRepos.findAll();
+          const emailConfig = new EmailConfig(configSendEmail);
 
           // FOR TRC20 - USDT
           if (row.symbol == config.TRON_TRC20_SYMBOL && row?.tx) {
             tronWeb.trx.getTransaction(row.tx).then((result) => {
               if (result && result.ret !== undefined && result.ret[0] !== undefined) {
                 if (result.ret[0].contractRet == 'SUCCESS') {
-                  // Them tien vao tai khoan
-                  walletModel.updateByUserId(row.user_id, { $inc: { amount: row.amount } });
                   // Cap nhat TX
-                  transaction.updateById(row._id, { status: Constants.TRANSACTION_STATUS_SUCCESS });
+                  transaction.updateById(row._id, { system_status: Constants.TRANSACTION_STATUS_SUCCESS });
+
+                  // Cap nhat value trong temp wallet
+                  walletModel.updateByUserId(row.user_id, { amount_trc20_wallet: 0 });
+
                 } else if (TRON_ERRORS.includes(result.ret[0].contractRet)) {
                   // Cap nhat TX
-                  transaction.updateById(row._id, { status: Constants.TRANSACTION_STATUS_CANCELLED, noted: result.ret[0].contractRet });
+                  transaction.updateById(row._id, { system_status: Constants.TRANSACTION_STATUS_CANCELLED, noted: result.ret[0].contractRet });
+
+                  // Send email to admin
+                  admins.map(async (admin) => {
+                    emailConfig.readHTMLFile(`${config.PATH_TEMPLATE_EMAIL}/transaction_error.html`, (html: string) => {
+                      const template = handlebars.compile(html);
+                      const replacements = {
+                        'username': admin.email,
+                        'link': config.TRON_EXPLORER + '#/transaction/' + row.tx
+                      };
+                      const htmlToSend = template(replacements);
+                      emailConfig
+                        .send(config.EMAIL_ROOT, admin.email, 'TRC20 - Transaction Error: Hot wallet not send enough TRX!', htmlToSend)
+                        .catch((err) => logger.error(err.message));
+                    });
+                  });
                 }
               }
             });
           }
 
-          // END: Check status for each TX
+          // END: Check system_status for each TX
           await delay(500);
         } catch (err) {
           await delay(0);

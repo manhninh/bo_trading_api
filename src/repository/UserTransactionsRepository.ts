@@ -1,9 +1,9 @@
-import {IUserTransactionsModel} from 'bo-trading-common/lib/models/userTransactions';
-import {UserTransactionsSchema} from 'bo-trading-common/lib/schemas';
-import {Constants} from 'bo-trading-common/lib/utils';
+import { IUserTransactionsModel } from 'bo-trading-common/lib/models/userTransactions';
+import { UserTransactionsSchema } from 'bo-trading-common/lib/schemas';
+import { Constants } from 'bo-trading-common/lib/utils';
 import moment from 'moment';
-import {ObjectId, UpdateQuery} from 'mongoose';
-import {RepositoryBase} from './base';
+import { ObjectId, UpdateQuery } from 'mongoose';
+import { RepositoryBase } from './base';
 
 export default class UserTransactionsRepository extends RepositoryBase<IUserTransactionsModel> {
   constructor() {
@@ -15,7 +15,7 @@ export default class UserTransactionsRepository extends RepositoryBase<IUserTran
       const result = await UserTransactionsSchema.aggregate([
         {
           $match: {
-            status: Constants.TRANSACTION_STATUS_PENDING,
+            system_status: Constants.TRANSACTION_STATUS_PENDING,
             type: type ?? Constants.TRANSACTION_TYPE_DEPOSIT,
           },
         },
@@ -34,6 +34,7 @@ export default class UserTransactionsRepository extends RepositoryBase<IUserTran
           $project: {
             _id: '$_id',
             amount: '$amount',
+            fee: '$fee',
             address: '$address',
             tx: '$tx',
             user_id: '$user_id',
@@ -57,13 +58,23 @@ export default class UserTransactionsRepository extends RepositoryBase<IUserTran
     }
   }
 
+  // Function update many transactions
+  public async updateMany(conditions: any = [], update: UpdateQuery<IUserTransactionsModel>): Promise<IUserTransactionsModel> {
+    try {
+      const result = await UserTransactionsSchema.updateMany(conditions, update);
+      return result;
+    } catch (err) {
+      throw err;
+    }
+  }
+
   // Function to get Transaction history by User
   public async transactiontHistory(input): Promise<any> {
     try {
       const options = {
         page: input.page ?? 1,
         limit: input.limit ?? 10,
-        sort: {createdAt: -1},
+        sort: { createdAt: -1 },
       };
 
       const from = moment(input.from).startOf('day').toDate();
@@ -165,7 +176,7 @@ export default class UserTransactionsRepository extends RepositoryBase<IUserTran
 
       let match = {
         type: 0,
-        createdAt: {$gte: fromDate, $lte: toDate},
+        createdAt: { $gte: fromDate, $lte: toDate },
       };
 
       if (status == -1) {
@@ -184,13 +195,13 @@ export default class UserTransactionsRepository extends RepositoryBase<IUserTran
       } else {
         match = {
           ...match,
-          ...{status: status},
+          ...{ status: status },
         };
       }
 
       const aggregate = UserTransactionsSchema.aggregate([
-        {$match: match},
-        {$sort: {createdAt: -1}},
+        { $match: match },
+        { $sort: { createdAt: -1 } },
         {
           $lookup: {
             from: 'users',
@@ -199,7 +210,7 @@ export default class UserTransactionsRepository extends RepositoryBase<IUserTran
             as: 'users',
           },
         },
-        {$unwind: '$users'},
+        { $unwind: '$users' },
         {
           $project: {
             user_id: 1,
@@ -212,7 +223,7 @@ export default class UserTransactionsRepository extends RepositoryBase<IUserTran
             symbol: 1,
           },
         },
-        {$match: {username: {$regex: '.*' + username + '.*'}}},
+        { $match: { username: { $regex: '.*' + username + '.*' } } },
       ]);
       const result = await UserTransactionsSchema.aggregatePaginate(aggregate, options);
       return result;
@@ -237,7 +248,7 @@ export default class UserTransactionsRepository extends RepositoryBase<IUserTran
 
       let match = {
         type: 2,
-        createdAt: {$gte: fromDate, $lte: toDate},
+        createdAt: { $gte: fromDate, $lte: toDate },
       };
 
       if (status == -1) {
@@ -257,13 +268,13 @@ export default class UserTransactionsRepository extends RepositoryBase<IUserTran
       } else {
         match = {
           ...match,
-          ...{status: status},
+          ...{ status: status },
         };
       }
 
       const aggregate = UserTransactionsSchema.aggregate([
-        {$match: match},
-        {$sort: {createdAt: -1}},
+        { $match: match },
+        { $sort: { createdAt: -1 } },
         {
           $lookup: {
             from: 'users',
@@ -272,7 +283,7 @@ export default class UserTransactionsRepository extends RepositoryBase<IUserTran
             as: 'users',
           },
         },
-        {$unwind: '$users'},
+        { $unwind: '$users' },
         {
           $project: {
             user_id: 1,
@@ -286,7 +297,7 @@ export default class UserTransactionsRepository extends RepositoryBase<IUserTran
             symbol: 1,
           },
         },
-        {$match: {username: {$regex: '.*' + username + '.*'}}},
+        { $match: { username: { $regex: '.*' + username + '.*' } } },
       ]);
       const result = await UserTransactionsSchema.aggregatePaginate(aggregate, options);
       return result;
@@ -311,7 +322,7 @@ export default class UserTransactionsRepository extends RepositoryBase<IUserTran
 
       let match = {
         type: 1,
-        createdAt: {$gte: fromDate, $lte: toDate},
+        createdAt: { $gte: fromDate, $lte: toDate },
       };
 
       if (status == -1) {
@@ -330,13 +341,13 @@ export default class UserTransactionsRepository extends RepositoryBase<IUserTran
       } else {
         match = {
           ...match,
-          ...{status: status},
+          ...{ status: status },
         };
       }
 
       const aggregate = UserTransactionsSchema.aggregate([
-        {$match: match},
-        {$sort: {createdAt: -1}},
+        { $match: match },
+        { $sort: { createdAt: -1 } },
         {
           $lookup: {
             from: 'users',
@@ -374,7 +385,7 @@ export default class UserTransactionsRepository extends RepositoryBase<IUserTran
         },
         {
           $match: {
-            $or: [{to_user: {$regex: '.*' + username + '.*'}}, {from_user: {$regex: '.*' + username + '.*'}}],
+            $or: [{ to_user: { $regex: '.*' + username + '.*' } }, { from_user: { $regex: '.*' + username + '.*' } }],
           },
         },
       ]);
@@ -421,7 +432,7 @@ export default class UserTransactionsRepository extends RepositoryBase<IUserTran
             username: '$users.username',
           },
         },
-        {$match: {username: {$regex: '.*' + username + '.*'}}},
+        { $match: { username: { $regex: '.*' + username + '.*' } } },
       ]);
       const result = await UserTransactionsSchema.aggregatePaginate(aggregate, options);
       return result;
@@ -432,7 +443,7 @@ export default class UserTransactionsRepository extends RepositoryBase<IUserTran
 
   public async GetTransactionDetail(transactionId: string): Promise<IUserTransactionsModel> {
     try {
-      const result = await UserTransactionsSchema.findOne({_id: this.toObjectId(transactionId)});
+      const result = await UserTransactionsSchema.findOne({ _id: this.toObjectId(transactionId) });
       return result;
     } catch (err) {
       throw err;

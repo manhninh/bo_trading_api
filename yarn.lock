@@ -2053,10 +2053,10 @@ bn.js@^5.0.0, bn.js@^5.1.1:
   resolved "https://registry.yarnpkg.com/bn.js/-/bn.js-5.2.0.tgz#358860674396c6997771a9d051fcc1b57d4ae002"
   integrity sha512-D7iWRBvnZE8ecXiLj/9wbxH7Tk79fAh8IHaTNq1RWRixsS02W+5qS+iE9yq6RYl0asXx5tw0bLhmT5pIfbSquw==
 
-bo-trading-common@^1.6.2:
-  version "1.6.2"
-  resolved "https://registry.yarnpkg.com/bo-trading-common/-/bo-trading-common-1.6.2.tgz#bbdb291927030818ed8663187a331024253f159d"
-  integrity sha512-h5LeU1LlX8aGXHs2TNNm137OofA6g+xkbwkpRZNqGL22V9sX/fEqvv4IPG4VdMCTfdlBFnmePmqOIa7TC/XKAg==
+bo-trading-common@^1.6.6:
+  version "1.6.6"
+  resolved "https://registry.yarnpkg.com/bo-trading-common/-/bo-trading-common-1.6.6.tgz#40164a7aa8b743676781c52a5109e3e7224e6750"
+  integrity sha512-vKAJ4IdBoQwJeZU8SS5y9VBGcmtgSs9y2Dymbgz1bsnwiQLbjnISfoOxjZTRU5L83wdCewOzQgi9Bd/OlxWUCA==
   dependencies:
     express "^4.16.3"
     moment "^2.22.2"
