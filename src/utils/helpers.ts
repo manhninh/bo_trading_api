@@ -1,7 +1,7 @@
 import crypto from "crypto";
 
-export const delay = (ms) => {
-  new Promise((resolve) => {
+export const delay = async (ms) => {
+  return await new Promise((resolve) => {
     setTimeout(() => resolve(true), ms);
   });
 };

@@ -9,11 +9,11 @@ export default class Scheduler {
   public config() {
     scheduler.scheduleJob('*/5 * * * *', ImportTRC20Deposits);
     scheduler.scheduleJob('*/5 * * * *', ImportERC20Deposits);
-    scheduler.scheduleJob('*/3 * * * *', ImportSystemTRC20Deposits);
-    scheduler.scheduleJob('*/3 * * * *', ImportSystemERC20Deposits);
+    scheduler.scheduleJob('*/7 * * * *', ImportSystemTRC20Deposits);
+    scheduler.scheduleJob('*/7 * * * *', ImportSystemERC20Deposits);
 
     // Withdraw check status transaction
-    scheduler.scheduleJob('*/4 * * * *', ScheduleVerifyTX);
+    scheduler.scheduleJob('4,8,12,16,22,26,29,33,37,41,46,52,56,59 * * * *', ScheduleVerifyTX);
 
     // scheduler.scheduleJob('29 * * * * *', randomOrder);
   }
