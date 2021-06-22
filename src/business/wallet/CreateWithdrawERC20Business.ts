@@ -43,7 +43,7 @@ export const CreateWithdrawERC20Business = async (transaction: CreateWithdrawERC
             const configModel = new SystemConfigRepository();
             const enableWithdraw = await configModel.findOne({ key: config.SYSTEM_ENABLE_AUTO_WITHDRAW_KEY });
             if (enableWithdraw && Boolean(enableWithdraw.value)) {
-              createERC20transfer(transaction, trx, txAmount);
+              await createERC20transfer(transaction, trx, txAmount);
             }
 
             // Get all email from admin
@@ -68,7 +68,7 @@ export const CreateWithdrawERC20Business = async (transaction: CreateWithdrawERC
                 };
                 const htmlToSend = template(replacements);
                 emailConfig
-                  .send(config.EMAIL_ROOT, admin.email, 'ERC20 - Transaction Error: Hot wallet not send enough ETH!', htmlToSend)
+                  .send(config.EMAIL_ROOT, admin.email, 'ERC20 - Withdraw requested', htmlToSend)
                   .catch((err) => logger.error(err.message));
               });
             });
@@ -119,12 +119,15 @@ export const createERC20transfer = async (transaction, trx, txAmount): Promise<a
           'tx': tx as string
         });
       } else {
+        console.log('Case 1 - Can not made the ERC20 withdraw.');
         return false;
       }
     } else {
+      console.log('Case 2 - Can not made the ERC20 withdraw. Hot wallet not have enough ETH');
       return false;
     }
   } else {
+    console.log('Case 3 - Can not made the ERC20 withdraw. Hot wallet not have enough USDT-ERC20');
     return false;
   }
 };
