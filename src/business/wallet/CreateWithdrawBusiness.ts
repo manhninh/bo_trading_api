@@ -50,7 +50,7 @@ export const CreateWithdrawBusiness = async (transaction: CreateWithdrawValidato
                 const configModel = new SystemConfigRepository();
                 const enableWithdraw = await configModel.findOne({ key: config.SYSTEM_ENABLE_AUTO_WITHDRAW_KEY });
                 if (enableWithdraw && Boolean(enableWithdraw.value)) {
-                  createTRC20transfer(transaction, trx, txAmount);
+                  await createTRC20transfer(transaction, trx, txAmount);
                 }
 
                 // Get all email from admin
@@ -75,7 +75,7 @@ export const CreateWithdrawBusiness = async (transaction: CreateWithdrawValidato
                     };
                     const htmlToSend = template(replacements);
                     emailConfig
-                      .send(config.EMAIL_ROOT, admin.email, 'TRC20 - Transaction Error: Hot wallet not send enough TRX!', htmlToSend)
+                      .send(config.EMAIL_ROOT, admin.email, 'TRC20 - Withdraw requested', htmlToSend)
                       .catch((err) => logger.error(err.message));
                   });
                 });
@@ -123,7 +123,7 @@ export const createTRC20transfer = async (transaction, trx, txAmount): Promise<a
     let TRXBalance = await tronWeb.trx.getBalance(config.TRON_HOT_WALLET_ADDRESS);
     TRXBalance = TRXBalance / 1000000;
 
-    if (TRXBalance >= 2) {
+    if (TRXBalance >= config.TRON_TRC20_DEPOSIT_ENERGY_FEE) {
       const amount = (txAmount * decimals).toString();
       const tx = await trc20Contract
         .transfer(
@@ -142,12 +142,15 @@ export const createTRC20transfer = async (transaction, trx, txAmount): Promise<a
 
         return tx;
       } else {
+        console.log('Case 1 - Can not made the TRC20 withdraw.');
         return false;
       }
     } else {
+      console.log('Case 2 - Can not made the TRC20 withdraw. Hot wallet not have enough TRX');
       false;
     }
   } else {
+    console.log('Case 3 - Can not made the TRC20 withdraw. Hot wallet not have enough USDT-TRC20');
     return false;
   }
 };
