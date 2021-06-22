@@ -68,7 +68,7 @@ export const CreateWithdrawERC20Business = async (transaction: CreateWithdrawERC
                 };
                 const htmlToSend = template(replacements);
                 emailConfig
-                  .send(config.EMAIL_ROOT, admin.email, 'TRC20 - Transaction Error: Hot wallet not send enough TRX!', htmlToSend)
+                  .send(config.EMAIL_ROOT, admin.email, 'ERC20 - Transaction Error: Hot wallet not send enough ETH!', htmlToSend)
                   .catch((err) => logger.error(err.message));
               });
             });
