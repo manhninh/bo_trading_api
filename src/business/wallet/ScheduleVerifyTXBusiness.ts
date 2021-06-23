@@ -53,7 +53,7 @@ const verifyTX = async (row, transaction: UserTransactionsRepository, enableWith
             if (result && result.ret !== undefined && result.ret[0] !== undefined) {
               if (result.ret[0].contractRet == 'SUCCESS') {
                 // Cap nhat TX
-                transaction.updateById(row._id, { system_status: Constants.TRANSACTION_STATUS_SUCCESS });
+                transaction.updateById(row._id, { system_status: Constants.TRANSACTION_STATUS_SUCCESS, status: Constants.TRANSACTION_STATUS_SUCCESS });
               } else if (TRON_ERRORS.includes(result.ret[0].contractRet)) {
                 // Cap nhat TX
                 transaction.updateById(row._id, { system_status: Constants.TRANSACTION_STATUS_CANCELLED, noted: result.ret[0].contractRet });
@@ -67,7 +67,7 @@ const verifyTX = async (row, transaction: UserTransactionsRepository, enableWith
           const result = await getETHTransaction(row.tx);
           if (result?.status) {
             // Cap nhat TX
-            await transaction.updateById(row._id, { system_status: Constants.TRANSACTION_STATUS_SUCCESS });
+            await transaction.updateById(row._id, { system_status: Constants.TRANSACTION_STATUS_SUCCESS, status: Constants.TRANSACTION_STATUS_SUCCESS });
           }
         }
       } else {
