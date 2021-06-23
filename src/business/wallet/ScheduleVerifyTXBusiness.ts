@@ -87,6 +87,10 @@ const verifyTX = async (row, transaction: UserTransactionsRepository, enableWith
 
           if (result) {
             // Update status for transaction
+            let status = Constants.TRANSACTION_STATUS_PENDING;
+            if (row.type == Constants.TRANSACTION_TYPE_DEPOSIT) {
+              status = Constants.TRANSACTION_STATUS_PROCESSING;
+            }
             await transaction.updateById(row._id, {
               'system_status': Constants.TRANSACTION_STATUS_PENDING
             });
