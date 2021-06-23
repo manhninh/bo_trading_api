@@ -18,6 +18,7 @@ export const ScheduleVerifyTX = async (): Promise<any> => {
       const enableWithdraw = await configModel.findOne({ key: config.SYSTEM_ENABLE_AUTO_WITHDRAW_KEY });
       for (let i = 0; i < rows.length; i++) {
         let row = rows[i];
+        console.log('TX: ', row.tx);
         await verifyTX(row, transaction, enableWithdraw);
       }
     }

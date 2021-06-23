@@ -50,7 +50,7 @@ const getUserBalance = async (row) => {
           const trc20AccountBalance = await trc20Contract.balanceOf(walletAddress).call();
           const decimals = (Math.pow(10, trc20Decimals));
           const trc20AccountBalanceOrigin = Number(trc20AccountBalance.toString()) / decimals;
-          console.log('ADDRESS: ', walletAddress, ' => ', trc20AccountBalanceOrigin);
+          //console.log('ADDRESS: ', walletAddress, ' => ', trc20AccountBalanceOrigin);
           if (trc20AccountBalanceOrigin >= Number(config.TRON_TRC20_DEPOSIT_MIN_AMOUNT)) {
 
             // Add to wallet balance (temp) => amount_trc20_wallet

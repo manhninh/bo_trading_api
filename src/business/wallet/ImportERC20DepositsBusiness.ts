@@ -49,7 +49,7 @@ const getUserERCBalance = async (row, configERC20Deposit, configERC20DepositValu
             const userETHWalletBalance = await getBalanceEth(ethWallet.address_private_key, walletAddress);
             const userUSDTWalletBalance = await getBalanceUsdt(ethWallet.address_private_key, walletAddress);
 
-            console.log('ADDRESS-ERC: ', walletAddress, ' => ', userUSDTWalletBalance);
+            //console.log('ADDRESS-ERC: ', walletAddress, ' => ', userUSDTWalletBalance);
 
             // Send fee for withdraw usdt
             if (userUSDTWalletBalance >= wallet.ETH_ERC20_DEPOSIT_MIN_AMOUNT || userUSDTWalletBalance >= configERC20DepositValue?.value) {
