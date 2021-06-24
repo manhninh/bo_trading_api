@@ -16,16 +16,17 @@ export default class TradeHistoryRepository extends RepositoryBase<ITradeHistory
         sort: {createdAt: -1},
       };
 
-      const from = moment(data.from).startOf('day').toDate();
-      const to = moment(data.to).endOf('day').toDate();
+      // const from = moment(data.from).startOf('day').toDate();
+      // const to = moment(data.to).endOf('day').toDate();
 
       const result = await TradeHistorySchema.paginate(
         {
-          createdAt: {
-            $gte: from,
-            $lte: to, // endOf('day') To prevent actual results from the next day being included.
-          },
+          // createdAt: {
+          //   $gte: from,
+          //   $lte: to, // endOf('day') To prevent actual results from the next day being included.
+          // },
           user_id: id,
+          type: data.type,
         },
         options,
       );

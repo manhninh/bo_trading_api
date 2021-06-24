@@ -13,10 +13,8 @@ import { Router } from 'express';
  *    "Content-Type": "application/json"
  *    "Accept": "application/json"
  *
- * @apiParam {String} from từ ngày nào
- * @apiParam {String} to đến ngày nào
+ * @apiParam {Number} type loại giao dịch
  * @apiParam {Number} page số trang
- * @apiParam {Number} limit giới hạn bao nhiêu bản ghi
  *
  * @apiSuccess {Object} data
  *
