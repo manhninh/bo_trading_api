@@ -360,8 +360,549 @@ export default class UserRepository extends RepositoryBase<IUserModel> {
 
   public async updateNewPassword(id: string, salt: string, hashedPassword: string): Promise<true> {
     try {
-      await UserSchema.updateOne({ _id: this.toObjectId(id) }, { salt: salt, hashed_password: hashedPassword });
+      await UserSchema.updateOne({_id: this.toObjectId(id)}, {salt: salt, hashed_password: hashedPassword});
       return true;
+    } catch (err) {
+      throw err;
+    }
+  }
+
+  // thông tin tổng hợp cho admin
+  public async detailUserOnAdmin(user_id: string): Promise<any> {
+    try {
+      const result = UserSchema.aggregate([
+        {
+          $match: {
+            _id: this.toObjectId(user_id),
+          },
+        },
+        // ---- Thông tin sponsor của user ----
+        {
+          $project: {
+            username: 1,
+            email: 1,
+            commission_level: {
+              $toObjectId: {
+                $last: '$commission_level',
+              },
+            },
+          },
+        },
+        {
+          $lookup: {
+            from: 'users',
+            localField: 'commission_level',
+            foreignField: '_id',
+            as: 'users_sponsor',
+          },
+        },
+        {
+          $unwind: {
+            path: '$users_sponsor',
+            preserveNullAndEmptyArrays: true,
+          },
+        },
+        {
+          $project: {
+            username: 1,
+            email: 1,
+            commission_level: 1,
+            sponsor: '$users_sponsor.username',
+          },
+        },
+        // ---- END: Thông tin sponsor của user ----
+        // ---- Join với bảng wallet để lấy thông tin ví ----
+        {
+          $lookup: {
+            from: 'user_wallets',
+            localField: '_id',
+            foreignField: 'user_id',
+            as: 'user_wallets',
+          },
+        },
+        {
+          $unwind: '$user_wallets',
+        },
+        {
+          $project: {
+            username: 1,
+            email: 1,
+            sponsor: 1,
+            trc20: '$user_wallets.trc20',
+            erc20: '$user_wallets.erc20',
+            amount_spot: '$user_wallets.amount',
+            amount_trade: '$user_wallets.amount_trade',
+          },
+        },
+        // ---- END: Join với bảng wallet để lấy thông tin ví ----
+        // ---- Join với bảng transaction để lấy tổng số tiền đã deposit ----
+        {
+          $lookup: {
+            from: 'user_transactions',
+            let: {
+              user_id: '$_id',
+            },
+            pipeline: [
+              {
+                $match: {
+                  $expr: {
+                    $and: [
+                      {
+                        $eq: ['$user_id', '$$user_id'],
+                      },
+                      {
+                        $eq: ['$type', 0],
+                      },
+                    ],
+                  },
+                },
+              },
+            ],
+            as: 'user_deposits',
+          },
+        },
+        {
+          $unwind: {
+            path: '$user_deposits',
+            preserveNullAndEmptyArrays: true,
+          },
+        },
+        {
+          $group: {
+            _id: {
+              _id: '$_id',
+              username: '$username',
+              email: '$email',
+              trc20: '$trc20',
+              erc20: '$erc20',
+              amount_spot: '$amount_spot',
+              amount_trade: '$amount_trade',
+              sponsor: '$sponsor',
+            },
+            user_deposits: {
+              $sum: '$user_deposits.amount',
+            },
+          },
+        },
+        {
+          $project: {
+            _id: '$_id._id',
+            username: '$_id.username',
+            email: '$_id.email',
+            sponsor: '$_id.sponsor',
+            trc20: '$_id.trc20',
+            erc20: '$_id.erc20',
+            amount_spot: '$_id.amount_spot',
+            amount_trade: '$_id.amount_trade',
+            user_deposits: 1,
+          },
+        },
+        // ---- END: Join với bảng transaction để lấy tổng số tiền đã deposit ----
+        // ---- Join với bảng transaction để lấy tổng số tiền đã withdraw ----
+        {
+          $lookup: {
+            from: 'user_transactions',
+            let: {
+              user_id: '$_id',
+            },
+            pipeline: [
+              {
+                $match: {
+                  $expr: {
+                    $and: [
+                      {
+                        $eq: ['$user_id', '$$user_id'],
+                      },
+                      {
+                        $eq: ['$type', 2],
+                      },
+                    ],
+                  },
+                },
+              },
+            ],
+            as: 'user_withdraws',
+          },
+        },
+        {
+          $unwind: {
+            path: '$user_withdraws',
+            preserveNullAndEmptyArrays: true,
+          },
+        },
+        {
+          $group: {
+            _id: {
+              _id: '$_id',
+              username: '$username',
+              email: '$email',
+              trc20: '$trc20',
+              erc20: '$erc20',
+              amount_spot: '$amount_spot',
+              amount_trade: '$amount_trade',
+              sponsor: '$sponsor',
+              user_deposits: '$user_deposits',
+            },
+            user_withdraws: {
+              $sum: '$user_withdraws.amount',
+            },
+          },
+        },
+        {
+          $project: {
+            _id: '$_id._id',
+            username: '$_id.username',
+            email: '$_id.email',
+            sponsor: '$_id.sponsor',
+            trc20: '$_id.trc20',
+            erc20: '$_id.erc20',
+            amount_spot: '$_id.amount_spot',
+            amount_trade: '$_id.amount_trade',
+            user_deposits: '$_id.user_deposits',
+            user_withdraws: '$user_withdraws',
+          },
+        },
+        // ---- END: Join với bảng transaction để lấy tổng số tiền đã withdraw ----
+        // ---- Join với bảng commissions để lấy tổng số tiền hoa hồng ----
+        {
+          $lookup: {
+            from: 'commissions',
+            localField: '_id',
+            foreignField: 'id_user_ref',
+            as: 'commissions',
+          },
+        },
+        {
+          $unwind: {
+            path: '$commissions',
+            preserveNullAndEmptyArrays: true,
+          },
+        },
+        {
+          $group: {
+            _id: {
+              _id: '$_id',
+              username: '$username',
+              email: '$email',
+              trc20: '$trc20',
+              erc20: '$erc20',
+              amount_spot: '$amount_spot',
+              amount_trade: '$amount_trade',
+              sponsor: '$sponsor',
+              user_deposits: '$user_deposits',
+              user_withdraws: '$user_withdraws',
+            },
+            commissions: {
+              $sum: '$commissions.commission',
+            },
+          },
+        },
+        {
+          $project: {
+            _id: '$_id._id',
+            username: '$_id.username',
+            email: '$_id.email',
+            sponsor: '$_id.sponsor',
+            trc20: '$_id.trc20',
+            erc20: '$_id.erc20',
+            amount_spot: '$_id.amount_spot',
+            amount_trade: '$_id.amount_trade',
+            user_deposits: '$_id.user_deposits',
+            user_withdraws: '$_id.user_withdraws',
+            commissions: '$commissions',
+          },
+        },
+        // ---- END: Join với bảng commissions để lấy tổng số tiền hoa hồng ----
+        // ---- Join với bảng trade_histories để lấy tổng số tiền đã win ----
+        {
+          $lookup: {
+            from: 'trade_histories',
+            let: {
+              user_id: '$_id',
+            },
+            pipeline: [
+              {
+                $match: {
+                  $expr: {
+                    $and: [
+                      {
+                        $eq: ['$user_id', '$$user_id'],
+                      },
+                      {
+                        $gte: ['$amount_result', 0],
+                      },
+                    ],
+                  },
+                },
+              },
+            ],
+            as: 'trade_win',
+          },
+        },
+        {
+          $unwind: {
+            path: '$trade_win',
+            preserveNullAndEmptyArrays: true,
+          },
+        },
+        {
+          $group: {
+            _id: {
+              _id: '$_id',
+              username: '$username',
+              email: '$email',
+              trc20: '$trc20',
+              erc20: '$erc20',
+              amount_spot: '$amount_spot',
+              amount_trade: '$amount_trade',
+              sponsor: '$sponsor',
+              user_deposits: '$user_deposits',
+              user_withdraws: '$user_withdraws',
+              commissions: '$commissions',
+            },
+            trade_win: {
+              $sum: '$trade_win.amount_result',
+            },
+          },
+        },
+        {
+          $project: {
+            _id: '$_id._id',
+            username: '$_id.username',
+            email: '$_id.email',
+            sponsor: '$_id.sponsor',
+            trc20: '$_id.trc20',
+            erc20: '$_id.erc20',
+            amount_spot: '$_id.amount_spot',
+            amount_trade: '$_id.amount_trade',
+            user_deposits: '$_id.user_deposits',
+            user_withdraws: '$_id.user_withdraws',
+            commissions: '$_id.commissions',
+            trade_win: '$trade_win',
+          },
+        },
+        // ---- END: Join với bảng trade_histories để lấy tổng số tiền đã win ----
+        // ---- Join với bảng trade_histories để lấy tổng số tiền đã loss ----
+        {
+          $lookup: {
+            from: 'trade_histories',
+            let: {
+              user_id: '$_id',
+            },
+            pipeline: [
+              {
+                $match: {
+                  $expr: {
+                    $and: [
+                      {
+                        $eq: ['$user_id', '$$user_id'],
+                      },
+                      {
+                        $lte: ['$amount_result', 0],
+                      },
+                    ],
+                  },
+                },
+              },
+            ],
+            as: 'trade_loss',
+          },
+        },
+        {
+          $unwind: {
+            path: '$trade_loss',
+            preserveNullAndEmptyArrays: true,
+          },
+        },
+        {
+          $group: {
+            _id: {
+              _id: '$_id',
+              username: '$username',
+              email: '$email',
+              trc20: '$trc20',
+              erc20: '$erc20',
+              amount_spot: '$amount_spot',
+              amount_trade: '$amount_trade',
+              sponsor: '$sponsor',
+              user_deposits: '$user_deposits',
+              user_withdraws: '$user_withdraws',
+              commissions: '$commissions',
+              trade_win: '$trade_win',
+            },
+            trade_loss: {
+              $sum: '$trade_loss.amount_result',
+            },
+          },
+        },
+        {
+          $project: {
+            _id: '$_id._id',
+            username: '$_id.username',
+            email: '$_id.email',
+            sponsor: '$_id.sponsor',
+            trc20: '$_id.trc20',
+            erc20: '$_id.erc20',
+            amount_spot: '$_id.amount_spot',
+            amount_trade: '$_id.amount_trade',
+            user_deposits: '$_id.user_deposits',
+            user_withdraws: '$_id.user_withdraws',
+            commissions: '$_id.commissions',
+            trade_win: '$_id.trade_win',
+            trade_loss: '$trade_loss',
+          },
+        },
+        // ---- END: Join với bảng trade_histories để lấy tổng số tiền đã loss ----
+        // ---- Join với bảng user_transactions để lấy tổng số tiền user đã tranfers sang người khác ----
+        {
+          $lookup: {
+            from: 'user_transactions',
+            let: {
+              user_id: '$_id',
+            },
+            pipeline: [
+              {
+                $match: {
+                  $expr: {
+                    $and: [
+                      {
+                        $eq: ['$user_id', '$$user_id'],
+                      },
+                      {
+                        $ne: ['$to_user_id', '$$user_id'],
+                      },
+                    ],
+                  },
+                },
+              },
+            ],
+            as: 'tranfers_to_user',
+          },
+        },
+        {
+          $unwind: {
+            path: '$tranfers_to_user',
+            preserveNullAndEmptyArrays: true,
+          },
+        },
+        {
+          $group: {
+            _id: {
+              _id: '$_id',
+              username: '$username',
+              email: '$email',
+              trc20: '$trc20',
+              erc20: '$erc20',
+              amount_spot: '$amount_spot',
+              amount_trade: '$amount_trade',
+              sponsor: '$sponsor',
+              user_deposits: '$user_deposits',
+              user_withdraws: '$user_withdraws',
+              commissions: '$commissions',
+              trade_win: '$trade_win',
+              trade_loss: '$trade_loss',
+            },
+            tranfers_to_user: {
+              $sum: '$tranfers_to_user.amount',
+            },
+          },
+        },
+        {
+          $project: {
+            _id: '$_id._id',
+            username: '$_id.username',
+            email: '$_id.email',
+            sponsor: '$_id.sponsor',
+            trc20: '$_id.trc20',
+            erc20: '$_id.erc20',
+            amount_spot: '$_id.amount_spot',
+            amount_trade: '$_id.amount_trade',
+            user_deposits: '$_id.user_deposits',
+            user_withdraws: '$_id.user_withdraws',
+            commissions: '$_id.commissions',
+            trade_win: '$_id.trade_win',
+            trade_loss: '$_id.trade_loss',
+            tranfers_to_user: '$tranfers_to_user',
+          },
+        },
+        // ---- END: Join với bảng user_transactions để lấy tổng số tiền user đã tranfers sang người khác ----
+        // ---- Join với bảng user_transactions để lấy tổng số tiền user nhận đc từ người khác ----
+        {
+          $lookup: {
+            from: 'user_transactions',
+            let: {
+              user_id: '$_id',
+            },
+            pipeline: [
+              {
+                $match: {
+                  $expr: {
+                    $and: [
+                      {
+                        $ne: ['$user_id', '$$user_id'],
+                      },
+                      {
+                        $eq: ['$to_user_id', '$$user_id'],
+                      },
+                    ],
+                  },
+                },
+              },
+            ],
+            as: 'receive_to_user',
+          },
+        },
+        {
+          $unwind: {
+            path: '$receive_to_user',
+            preserveNullAndEmptyArrays: true,
+          },
+        },
+        {
+          $group: {
+            _id: {
+              _id: '$_id',
+              username: '$username',
+              email: '$email',
+              trc20: '$trc20',
+              erc20: '$erc20',
+              amount_spot: '$amount_spot',
+              amount_trade: '$amount_trade',
+              sponsor: '$sponsor',
+              user_deposits: '$user_deposits',
+              user_withdraws: '$user_withdraws',
+              commissions: '$commissions',
+              trade_win: '$trade_win',
+              trade_loss: '$trade_loss',
+              tranfers_to_user: '$tranfers_to_user',
+            },
+            receive_to_user: {
+              $sum: '$receive_to_user.amount',
+            },
+          },
+        },
+        {
+          $project: {
+            _id: '$_id._id',
+            username: '$_id.username',
+            email: '$_id.email',
+            sponsor: '$_id.sponsor',
+            trc20: '$_id.trc20',
+            erc20: '$_id.erc20',
+            amount_spot: '$_id.amount_spot',
+            amount_trade: '$_id.amount_trade',
+            user_deposits: '$_id.user_deposits',
+            user_withdraws: '$_id.user_withdraws',
+            commissions: '$_id.commissions',
+            trade_win: '$_id.trade_win',
+            trade_loss: '$_id.trade_loss',
+            tranfers_to_user: '$_id.tranfers_to_user',
+            receive_to_user: '$receive_to_user',
+          },
+        },
+        // ---- END: Join với bảng user_transactions để lấy tổng số tiền user nhận đc từ người khác ----
+      ]);
+      return result;
     } catch (err) {
       throw err;
     }

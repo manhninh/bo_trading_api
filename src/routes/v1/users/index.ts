@@ -11,6 +11,7 @@ import verifyUser from './verifyUser';
 import createRandomUser from './createRandomUser';
 import createRandomOrderUser from './createRandomOrderUser';
 import forgotPassword from './forgotPassword';
+import detailUserOnAdmin from './detailUserOnAdmin';
 
 export default class UserRouters {
   public router: Router = Router();
@@ -28,5 +29,6 @@ export default class UserRouters {
     createRandomUser(this.router);
     createRandomOrderUser(this.router);
     forgotPassword(this.router);
+    detailUserOnAdmin(this.router);
   }
 }
