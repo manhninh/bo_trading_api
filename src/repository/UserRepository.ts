@@ -544,7 +544,7 @@ export default class UserRepository extends RepositoryBase<IUserModel> {
               user_deposits: '$user_deposits',
             },
             user_withdraws: {
-              $sum: '$user_withdraws.amount',
+              $sum: { $add: [ '$user_withdraws.amount', '$user_withdraws.fee' ] },
             },
           },
         },

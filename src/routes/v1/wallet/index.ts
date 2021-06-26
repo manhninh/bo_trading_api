@@ -4,6 +4,7 @@ import createTransfer from './createTransfer';
 import createWithdraw from './createWithdraw';
 import getAddress from './getAddress';
 import TransactionsHistory from './TransactionsHistory';
+import updateAmountDemo from './updateAmountDemo';
 
 export default class WalletRoutes {
   public router: Router = Router();
@@ -14,5 +15,6 @@ export default class WalletRoutes {
     createInternalTransfer(this.router);
     createWithdraw(this.router);
     getAddress(this.router);
+    updateAmountDemo(this.router);
   }
 }

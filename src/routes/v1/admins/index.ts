@@ -19,6 +19,9 @@ import SendCodeLogin from './SendCodeLogin';
 import SendCodeVerify from './SendCodeVerify';
 import TotalTransaction from './TotalTransaction';
 import VerifyOTPToken from './VerifyOTPToken';
+import CommissionTradeUser from './CommissionTradeUser';
+import GetTradeHistoryUser from './GetTradeHistoryUser';
+import GetTranferUserOnAdmin from './GetTranferUserOnAdmin';
 
 export default class UserRouters {
   public router: Router = Router();
@@ -44,5 +47,7 @@ export default class UserRouters {
     GetAllSponsor(this.router);
     SystemConfig(this.router);
     TotalTransaction(this.router);
+    CommissionTradeUser(this.router);
+    GetTranferUserOnAdmin(this.router);
   }
 }
