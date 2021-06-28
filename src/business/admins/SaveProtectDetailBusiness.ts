@@ -8,11 +8,12 @@ export const SaveProtectDetailBusiness = async (data: SaveProtectDetailValidator
     const validation = await validate(data);
     if (validation.length > 0) throw new Error(Object.values(validation[0].constraints)[0]);
     const systemConfig = new SystemConfigRepository();
-    systemConfig.saveConfigProtectLevel(data.protectLevel1, data.protectLevel2, data.protectLevel3);
+    systemConfig.saveConfigProtectLevel(data.protectLevel1, data.protectLevel2, data.protectLevel3, data.protectLevel4);
     global.ioCalculator.emit(EMITS.UPDATE_PROTECT_LEVEL, {
       protectLevel1: data.protectLevel1,
-      protectLevel2: data.protectLevel1,
-      protectLevel3: data.protectLevel1,
+      protectLevel2: data.protectLevel2,
+      protectLevel3: data.protectLevel3,
+      protectLevel4: data.protectLevel4,
     });
     return true;
   } catch (err) {

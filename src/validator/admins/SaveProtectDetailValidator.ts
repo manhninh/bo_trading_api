@@ -9,4 +9,7 @@ export class SaveProtectDetailValidator {
 
   @IsNotEmpty({message: 'Protect leve 3 is required'})
   protectLevel3: number;
+
+  @IsNotEmpty({message: 'Protect leve 4 is required'})
+  protectLevel4: number;
 }

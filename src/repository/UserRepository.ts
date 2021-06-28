@@ -629,6 +629,9 @@ export default class UserRepository extends RepositoryBase<IUserModel> {
                         $eq: ['$user_id', '$$user_id'],
                       },
                       {
+                          $eq: ['$type', 0],
+                      },
+                      {
                         $gte: ['$amount_result', 0],
                       },
                     ],
@@ -696,6 +699,9 @@ export default class UserRepository extends RepositoryBase<IUserModel> {
                     $and: [
                       {
                         $eq: ['$user_id', '$$user_id'],
+                      },
+                      {
+                          $eq: ['$type', 0],
                       },
                       {
                         $lte: ['$amount_result', 0],

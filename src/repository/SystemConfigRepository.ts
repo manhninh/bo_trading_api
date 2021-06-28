@@ -12,7 +12,7 @@ export default class SystemConfigRepository extends RepositoryBase<ISystemConfig
     try {
       const result = await SystemConfigSchema.find({
         key: {
-          $in: [config.SYSTEM_PROTECT_LEVEL_1, config.SYSTEM_PROTECT_LEVEL_2, config.SYSTEM_PROTECT_LEVEL_3],
+          $in: [config.SYSTEM_PROTECT_LEVEL_1, config.SYSTEM_PROTECT_LEVEL_2, config.SYSTEM_PROTECT_LEVEL_3, config.SYSTEM_PROTECT_LEVEL_4],
         },
       });
       return result;
@@ -21,11 +21,12 @@ export default class SystemConfigRepository extends RepositoryBase<ISystemConfig
     }
   }
 
-  public async saveConfigProtectLevel(level1: number, level2: number, level3: number): Promise<boolean> {
+  public async saveConfigProtectLevel(level1: number, level2: number, level3: number, level4: number): Promise<boolean> {
     try {
       await SystemConfigSchema.update({ key: config.SYSTEM_PROTECT_LEVEL_1 }, { $set: { value: level1 } });
       await SystemConfigSchema.update({ key: config.SYSTEM_PROTECT_LEVEL_2 }, { $set: { value: level2 } });
       await SystemConfigSchema.update({ key: config.SYSTEM_PROTECT_LEVEL_3 }, { $set: { value: level3 } });
+      await SystemConfigSchema.update({ key: config.SYSTEM_PROTECT_LEVEL_4 }, { $set: { value: level4 } });
       return true;
     } catch (err) {
       throw err;

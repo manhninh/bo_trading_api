@@ -9,6 +9,7 @@ export const SaveProtectDetailController = async (req: Request, res: Response, n
     data.protectLevel1 = params.protectLevel1;
     data.protectLevel2 = params.protectLevel2;
     data.protectLevel3 = params.protectLevel3;
+    data.protectLevel4 = params.protectLevel4;
     const result = await SaveProtectDetailBusiness(data);
     res.status(200).send(result);
   } catch (err) {
