@@ -48,6 +48,7 @@ export default class UserRouters {
     SystemConfig(this.router);
     TotalTransaction(this.router);
     CommissionTradeUser(this.router);
+    GetTradeHistoryUser(this.router);
     GetTranferUserOnAdmin(this.router);
   }
 }
