@@ -544,7 +544,9 @@ export default class UserRepository extends RepositoryBase<IUserModel> {
               user_deposits: '$user_deposits',
             },
             user_withdraws: {
-              $sum: { $add: [ '$user_withdraws.amount', '$user_withdraws.fee' ] },
+              $sum: {
+                $add: ['$user_withdraws.amount', '$user_withdraws.fee'],
+              },
             },
           },
         },
@@ -629,7 +631,7 @@ export default class UserRepository extends RepositoryBase<IUserModel> {
                         $eq: ['$user_id', '$$user_id'],
                       },
                       {
-                          $eq: ['$type', 0],
+                        $eq: ['$type', 0],
                       },
                       {
                         $gte: ['$amount_result', 0],
@@ -664,7 +666,21 @@ export default class UserRepository extends RepositoryBase<IUserModel> {
               commissions: '$commissions',
             },
             trade_win: {
-              $sum: '$trade_win.amount_result',
+              $sum: {
+                $switch: {
+                  branches: [
+                    {
+                      case: {$gte: ['$trade_win.open_result', '$trade_win.close_result']},
+                      then: {$subtract: ['$trade_win.amount_result', '$trade_win.sell_amount_order']},
+                    },
+                    {
+                      case: {$lt: ['$trade_win.open_result', '$trade_win.close_result']},
+                      then: {$subtract: ['$trade_win.amount_result', '$trade_win.buy_amount_order']},
+                    },
+                  ],
+                  default: 0,
+                },
+              },
             },
           },
         },
@@ -701,10 +717,10 @@ export default class UserRepository extends RepositoryBase<IUserModel> {
                         $eq: ['$user_id', '$$user_id'],
                       },
                       {
-                          $eq: ['$type', 0],
+                        $eq: ['$type', 0],
                       },
                       {
-                        $lte: ['$amount_result', 0],
+                        $lt: ['$amount_result', 0],
                       },
                     ],
                   },
